@@ -1,20 +1,10 @@
 import React, { Component, createRef } from "react";
 import {
-    Divider,
-    Paper,
     Avatar,
-    ListItemSecondaryAction,
-    ClickAwayListener,
-    MenuList,
-    Popper,
-    Grow,
-    Button,
 } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-
 
 import Brightness2Icon from '@material-ui/icons/Brightness2';
 import HelpIcon from '@material-ui/icons/Help';
@@ -23,6 +13,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import SettingsIcon from '@material-ui/icons/Settings';
 
 import { CustomThemeContext } from "../../_styles/theme/CustomThemeProvider"
+
 import {
     Switch,
     IconButton,
@@ -30,10 +21,12 @@ import {
     ListItemFirstAction,
     ListItemSecondAction,
     ListItemIcon,
-    ListItemText
+    ListItemText,
+    Button,
+    Divider
 } from "../"
 
-import { stylesActions } from "../../_actions";
+import { stylesActions, userActions } from "../../_actions";
 
 
 class NavbarActions extends Component {
@@ -42,9 +35,7 @@ class NavbarActions extends Component {
         super(props);
         this.wrapperRef = React.createRef();
         this.handleClickOutside = this.handleClickOutside.bind(this);
-        this.handleThemeChange = this.handleThemeChange.bind(this);
         this.anchorEl = createRef(null);
-        this.logOut = this.logOut.bind(this);
         this.state = {
             theme: this.props.currentTheme === 'light' ? false : true,
             isOpen: false,
@@ -97,8 +88,13 @@ class NavbarActions extends Component {
             this.setTheme();
         }
     }
+
     handleOpenDropdown() {
         document.getElementById("myDropdown").classList.toggle("show");
+    }
+
+    handleCloseDropdown() {
+        document.getElementById("myDropdown").classList.remove("show");
     }
 
     handleClickOutside(event) {
@@ -117,13 +113,17 @@ class NavbarActions extends Component {
     }
 
     logOut() {
-        AuthService.logout();
+        userActions.logout();
+        this.props.history.push('/sign-in');
     }
 
 
 
     render() {
-        const { classes, user } = this.props;
+        const { user } = this.props;
+        if(user) {
+            console.log(user)
+        }
         return (
             <div className='navbar-actions'>
                 <form role="search" className="search-input-root m-3">
@@ -144,21 +144,26 @@ class NavbarActions extends Component {
                     </IconButton>
                     <div id="myDropdown" className="dropdown-content">
                         {user ? (
-                            <Link to="/profile" onClick={this.handleClose}>
+                            <Link to="/profile" onClick={() => this.handleCloseDropdown()} className="p-0">
                                 <ListItem>
-                                    <ListItemIcon>
-                                        <Avatar alt="" src={user.avatar} />
-                                    </ListItemIcon>
-                                    <ListItemText primary={user.lastname + " " + user.firstname} secondary={"Статус: " + user.status} />
+                                    <ListItemFirstAction>
+                                        <ListItemIcon>
+                                            <Avatar alt="" src={user.avatar} />
+                                        </ListItemIcon>
+                                        <ListItemText title={user.lastname + " " + user.firstname} subtitle={"Статус: " + user.status} />
+                                    </ListItemFirstAction>
                                 </ListItem>
                             </Link>
                         ) : (
                                 <ListItem>
-                                    <ListItemIcon>
-                                        <Avatar alt="" src="http://lifestudio-test.ru/img/unnamed.png" />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Привет, посетитель!" />
+                                    <ListItemFirstAction>
+                                        <ListItemIcon>
+                                            <Avatar alt="" src="http://lifestudio-test.ru/img/unnamed.png" />
+                                        </ListItemIcon>
+                                        <ListItemText title="Привет, посетитель!" />
+                                    </ListItemFirstAction>
                                 </ListItem>
+
                             )}
 
                         <Divider />
@@ -169,113 +174,54 @@ class NavbarActions extends Component {
                                 <ListItemText title='Темная тема' />
                             </ListItemFirstAction>
                             <ListItemSecondAction>
-                                <Switch switched={this.state.switch} onColor="#EF476F" handleToggle={() => { this.handleToggleChange() }} />
+                                <Switch isToggled={this.state.theme} onToggle={() => this.handleThemeChange()} />
                             </ListItemSecondAction>
                         </ListItem>
 
+                        <ListItem>
+                            <ListItemFirstAction>
+                                <ListItemIcon>
+                                    <SettingsIcon />
+                                </ListItemIcon>
+                                <ListItemText title="Настройки" />
+                            </ListItemFirstAction>
 
-                        <ListItem button>
-                            <ListItemIcon>
-                                <SettingsIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Настройки" />
                         </ListItem>
 
-                        <ListItem button>
-                            <ListItemIcon>
-                                <HelpIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Справка" />
+                        <ListItem >
+                            <ListItemFirstAction>
+                                <ListItemIcon>
+                                    <HelpIcon />
+                                </ListItemIcon>
+                                <ListItemText title="Справка" />
+                            </ListItemFirstAction>
                         </ListItem>
 
                         <Divider />
+                        {user ? (
+                            <ListItem>
+                                <Button className='w-100' variant='outlined' onPress={() => {this.logOut(); this.handleCloseDropdown()}}>Выход</Button>
+                            </ListItem>
 
-                        <ListItem>
-                            <Button color="primary" href="/login" onClick={this.logOut} variant="outlined" style={{ width: "100%" }}>Выход</Button>
-                        </ListItem>
+                        ) : (
+                                <ListItem>
+                                    <ListItemIcon>
+                                        <Link to="/sign-in" onClick={() => this.handleCloseDropdown()}>
+                                            <Button color="primary" variant="outlined">Вход</Button>
+                                        </Link>
+                                    </ListItemIcon>
+                                    <ListItemText>
+                                        <Link to="/sign-ip" onClick={() => this.handleCloseDropdown()}>
+                                            <Button color="primary" variant="outlined">Регистрация</Button>
+                                        </Link>
+                                    </ListItemText>
+                                </ListItem>
+
+
+                            )}
 
                     </div>
                 </div>
-
-                {user ? (
-                    <Popper open={this.state.isOpen} anchorEl={this.anchorEl.current} transition disablePortal>
-                        {({ TransitionProps, placement }) => (
-                            <Grow
-                                {...TransitionProps}
-                                id="menu-list-grow"
-                                style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-                            >
-
-                            </Grow>
-                        )}
-                    </Popper>
-                ) : (
-                        <Popper open={this.state.isOpen} anchorEl={this.anchorEl.current} transition disablePortal>
-                            {({ TransitionProps, placement }) => (
-                                <Grow
-                                    {...TransitionProps}
-                                    id="menu-list-grow"
-                                    style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-                                >
-                                    <Paper>
-                                        <ClickAwayListener onClickAway={this.handleClose}>
-                                            <MenuList>
-
-                                                <ListItem>
-                                                    <ListItemIcon>
-                                                        <Avatar alt="" src="http://lifestudio-test.ru/img/unnamed.png" className={classes.avatar} />
-                                                    </ListItemIcon>
-                                                    <ListItemText primary="Привет, посетитель!" />
-                                                </ListItem>
-
-
-
-                                                <ListItem>
-                                                    <ListItemIcon>
-                                                        <Link to="/login" onClick={this.handleClose}>
-                                                            <Button color="primary" variant="outlined">Вход</Button>
-                                                        </Link>
-                                                    </ListItemIcon>
-                                                    <ListItemText inset >
-                                                        <Link to="/register" onClick={this.handleClose}>
-                                                            <Button color="primary" variant="outlined">Регистрация</Button>
-                                                        </Link>
-                                                    </ListItemText>
-                                                </ListItem>
-
-                                                <Divider />
-
-                                                <ListItem>
-                                                    <ListItemIcon>
-                                                        <Brightness2Icon />
-                                                    </ListItemIcon>
-                                                    <ListItemText primary="Темная тема" />
-                                                    <ListItemSecondaryAction style={{ display: "flex" }}>
-                                                        <Switch isOn={this.state.theme} onColor="#EF476F" handleToggle={this.handleThemeChange} />
-                                                    </ListItemSecondaryAction>
-                                                </ListItem>
-
-                                                <ListItem button>
-                                                    <ListItemIcon>
-                                                        <SettingsIcon />
-                                                    </ListItemIcon>
-                                                    <ListItemText primary="Настройки" />
-                                                </ListItem>
-
-                                                <ListItem button>
-                                                    <ListItemIcon>
-                                                        <HelpIcon />
-                                                    </ListItemIcon>
-                                                    <ListItemText primary="Справка" />
-                                                </ListItem>
-
-                                            </MenuList>
-                                        </ClickAwayListener>
-                                    </Paper>
-                                </Grow>
-                            )}
-                        </Popper>
-                    )}
             </div>
         );
     }

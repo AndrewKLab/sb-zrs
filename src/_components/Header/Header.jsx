@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navbar }from './'
 
-export const Header = () => (
-        <header> <Navbar /> </header>
+export const Header = (props) => (
+        <header> <Navbar history={props.history} /> </header>
 )

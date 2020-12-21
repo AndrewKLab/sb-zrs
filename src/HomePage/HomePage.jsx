@@ -8,21 +8,29 @@ import {
     ListItemFirstAction,
     ListItemSecondAction,
     ListItemIcon,
-    ListItemText
+    ListItemText,
+    Button,
 } from '../_components';
+
 
 class HomePage extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            switch: false
+            switch: false,
+            switchInList: false,
         }
     }
 
     handleToggleChange() {
-        console.log(this.state.switch)
         this.setState({
             switch: !this.state.switch
+        })
+    }
+
+    handleToggleChangeTwo() {
+        this.setState({
+            switchInList: !this.state.switchInList
         })
     }
 
@@ -39,8 +47,13 @@ class HomePage extends React.Component {
                 </p>
 
                 <p>Компоненты:</p>
+                <h5>Button</h5>
+                <div style={{display: 'flex', justifyContent: 'space-around'}}>
+                <Button variant='contained' onPress={() => console.log(123)}>Click Me</Button>
+                <Button variant='outlined'>Click Me</Button>
+                </div>
                 <h5>Switch</h5>
-                <Switch switched={this.state.switch} onColor="#EF476F" handleToggle={() => { this.handleToggleChange() }} />
+                <Switch isToggled={this.state.switch} onToggle={() => this.handleToggleChange()} />
                 <h5>ListItem</h5>
                 <ListItem>
                     <ListItemFirstAction>
@@ -48,7 +61,7 @@ class HomePage extends React.Component {
                         <ListItemText title='Title' subtitle='subtitle'/>
                     </ListItemFirstAction>
                     <ListItemSecondAction>
-                        <Switch switched={this.state.switch} onColor="#EF476F" handleToggle={() => { this.handleToggleChange() }} />
+                        <Switch isToggled={this.state.switchInList} onToggle={() => this.handleToggleChangeTwo()} />
                     </ListItemSecondAction>
                 </ListItem>
             </div>

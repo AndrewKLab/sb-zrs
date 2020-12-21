@@ -7,14 +7,20 @@ const initialState = {
     currentTheme: currentTheme,
       themes: {
         light: {
-          'primary-ligt-color': '#4dabf5',
-          'primary-main-color': '#2196f3',
-          'primary-dark-color': '#1769aa'
+          'primary-light-color': '77, 171, 245',
+          'primary-main-color': '33, 150, 243',
+          'primary-dark-color': '23, 105, 105',
+          'background-color': '255, 255, 255',
+          'text-light': '255, 255, 255',
+          'text-dark': '66, 66, 66',
         },
         dark: {
-          'primary-ligt-color': '#ffcd38',
-          'primary-main-color': '#ffc107',
-          'primary-dark-color': '#b28704'
+          'primary-light-color': '255, 205, 56',
+          'primary-main-color': '255, 193, 7',
+          'primary-dark-color': '178, 135, 4',
+          'background-color': '48, 48, 48',
+          'text-light': '66, 66, 66',
+          'text-dark': '255, 255, 255',
         }
       }
 };

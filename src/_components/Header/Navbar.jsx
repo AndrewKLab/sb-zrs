@@ -12,7 +12,7 @@ import { Nav, NavbarActions } from './'
 class Navbar extends Component {
 
     render() {
-        const { classes } = this.props;
+        const { history } = this.props;
         return (
             <div>
                     <Container>
@@ -26,7 +26,7 @@ class Navbar extends Component {
                                 </ul>
                             </nav>
 
-                            <NavbarActions />
+                            <NavbarActions history={history} />
                         </div>
                     </Container>
             </div>

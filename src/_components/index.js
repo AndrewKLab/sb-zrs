@@ -5,6 +5,10 @@ export * from './Footer/Footer';
 export * from './Container';
 export * from './Switch';
 export * from './IconButton'
+export * from './Button'
+export * from './Alert'
+export * from './Divider'
+
 
 //List
 export * from './List/ListItem'

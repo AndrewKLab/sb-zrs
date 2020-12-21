@@ -8,39 +8,39 @@ import {
     TextField,
     Typography,
     Grid,
-    Button,
     IconButton,
     Link,
     Avatar,
     Checkbox,
     FormControlLabel,
-  } from "@material-ui/core";
-  import Alert from '@material-ui/lab/Alert';
-  
-  import Visibility from '@material-ui/icons/Visibility';
-  import VisibilityOff from '@material-ui/icons/VisibilityOff';
-  import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-  
-  import { Formik, Form } from "formik";
-  import * as yup from "yup";
-  import "yup-phone";
+} from "@material-ui/core";
+
+import { Button, Alert } from '../_components'
+
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+
+import { Formik, Form } from "formik";
+import * as yup from "yup";
+import "yup-phone";
 
 const phoneRegex = RegExp(
     /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
-  );
-  
-  let SignupSchema = yup.object().shape({
+);
+
+let SignupSchema = yup.object().shape({
     phonenumber: yup
-    .string()
-    .min(10, "Этот номер слишком короткий.")
-    .max(10, "Этот номер слишким длинный.")
-    .matches(phoneRegex, "Этот номер является некорректным.")
-    .required("Это поле является обязательным для заполнения."),
-  
+        .string()
+        .min(10, "Этот номер слишком короткий.")
+        .max(10, "Этот номер слишким длинный.")
+        .matches(phoneRegex, "Этот номер является некорректным.")
+        .required("Это поле является обязательным для заполнения."),
+
     password: yup
-      .string()
-      .required("Это поле является обязательным для заполнения."),
-  });
+        .string()
+        .required("Это поле является обязательным для заполнения."),
+});
 
 
 class SignInPage extends React.Component {
@@ -53,21 +53,21 @@ class SignInPage extends React.Component {
             phonenumber: "",
             password: "",
             showPassword: false,
-      
+
             loading: false,
             submitted: false
         };
     }
 
     handleClickShowPassword(e) {
-        if(this.state.showPassword === true){
-          this.setState({
-            showPassword: false
-          });
-        }else{
-          this.setState({
-            showPassword: true
-          });
+        if (this.state.showPassword === true) {
+            this.setState({
+                showPassword: false
+            });
+        } else {
+            this.setState({
+                showPassword: true
+            });
         }
     };
 
@@ -77,7 +77,7 @@ class SignInPage extends React.Component {
             <div>
                 <Grid container>
                     <Grid item xs={12} sm={6}>
-                        <img src={"http://lifestudio-test.ru/assets/img/signin.png"} className={classes.img} alt="sign-in" />
+                        <img src={"http://lifestudio-test.ru/assets/img/signin.png"} className='img' alt="sign-in" />
                     </Grid>
 
                     <Grid item xs={12} sm={6} style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
@@ -99,18 +99,18 @@ class SignInPage extends React.Component {
                             }
                         >
                             {({ errors, handleChange, touched }) => (
-                                <Form className={classes.form}>
-                                    <Typography component="h1" variant="h5" className={classes.title}>
-                                        <Avatar className={classes.loginIcon}>
+                                <Form className='form'>
+                                    <Typography component="h1" variant="h5" className='title'>
+                                        <Avatar className='loginIcon'>
                                             <LockOutlinedIcon />
                                         </Avatar>
                                         Вход
                                     </Typography>
-                                    
+
                                     <Grid container spacing={2}>
                                         <Grid item xs={12}>
                                             {message && (
-                                                <Alert className={classes.error} severity="error">{message}</Alert>
+                                                <Alert className='error' severity="error">{message}</Alert>
                                             )}
                                             <TextField
                                                 error={errors.phonenumber && touched.phonenumber}
@@ -168,10 +168,7 @@ class SignInPage extends React.Component {
                                     />
                                     <Button
                                         type="submit"
-                                        fullWidth
-                                        variant="contained"
-                                        color="primary"
-                                        className={classes.submit}
+                                        className='submit w-100'
                                     >
                                         Вход
                                     </Button>

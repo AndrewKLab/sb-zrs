@@ -1,7 +1,7 @@
 :root {
-    --primary-ligt-color: #4dabf5;
-    --primary-main-color: #2196f3;
-    --primary-dark-color: #1769aa;
+    --primary-light-color: 77, 171, 245;
+    --primary-main-color: 33, 150, 243;
+    --primary-dark-color: 23, 105, 105;
     --secondary-ligt-color: #68b36b;
     --secondary-main-color: #43a047;
     --secondary-dark-color: #2e7031;
@@ -9,6 +9,7 @@
     --alert-warning-color: #68b36b;
     --alert-info-color: #43a047;
     --alert-success-color: #2e7031;
+    --background-color: 255, 255, 255;
     --text-light: 255, 255, 255;
     --text-dark: 66, 66, 66;
     --blue: #007bff;
@@ -53,14 +54,14 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 
 body {
     margin: 0;
-    color: var(--text-dark);
+    color: rgba(var(--text-dark));
     margin: 0;
     font-size: 0.875rem;
     font-family: var(--font-family-sans-serif);
     font-weight: 400;
     line-height: 1.43;
     letter-spacing: 0.01071em;
-    background-color: var(--light);
+    background-color: rgba(var(--background-color));
 }
 
 [tabindex="-1"]:focus {
@@ -145,7 +146,7 @@ sup {
 }
 
 a {
-    color: var(--primary-main-color);
+    color: rgba(var(--primary-main-color));
     text-decoration: none;
     background-color: transparent;
 }
@@ -374,6 +375,74 @@ h5, .h5 {
 
 h6, .h6 {
     font-size: 1rem;
+}
+
+/* width */
+
+.w-25 {
+    width: 25% !important;
+}
+
+.w-50 {
+    width: 50% !important;
+}
+
+.w-75 {
+    width: 75% !important;
+}
+
+.w-100 {
+    width: 100% !important;
+}
+
+.w-auto {
+    width: auto !important;
+}
+
+/* height */
+
+.h-25 {
+    height: 25% !important;
+}
+
+.h-50 {
+    height: 50% !important;
+}
+
+.h-75 {
+    height: 75% !important;
+}
+
+.h-100 {
+    height: 100% !important;
+}
+
+.h-auto {
+    height: auto !important;
+}
+
+.mw-100 {
+    max-width: 100% !important;
+}
+
+.mh-100 {
+    max-height: 100% !important;
+}
+
+.min-vw-100 {
+    min-width: 100vw !important;
+}
+
+.min-vh-100 {
+    min-height: 100vh !important;
+}
+
+.vw-100 {
+    width: 100vw !important;
+}
+
+.vh-100 {
+    height: 100vh !important;
 }
 
 /* margin */
@@ -755,7 +824,7 @@ h6, .h6 {
 /* Navbar */
 
 header {
-    background-color: var(--primary-main-color);
+    background-color: rgba(var(--primary-main-color));
     color: rgba(var(--text-light));
     top: 0;
     left: 0;
@@ -845,7 +914,7 @@ footer {
     color: var(--white);
     padding: 24px 16px;
     margin-top: auto;
-    background-color: var(--primary-main-color);
+    background-color: rgba(var(--primary-main-color));
 }
 
 /* Container */
@@ -891,6 +960,7 @@ footer {
 /* Dropdown */
 
 /* Dropdown Button */
+
 .dropbtn {
     background-color: #3498DB;
     color: white;
@@ -898,44 +968,119 @@ footer {
     font-size: 16px;
     border: none;
     cursor: pointer;
-  }
-  
-  /* Dropdown button on hover & focus */
-  .dropbtn:hover, .dropbtn:focus {
+}
+
+/* Dropdown button on hover & focus */
+
+.dropbtn:hover, .dropbtn:focus {
     background-color: #2980B9;
-  }
-  
-  /* The container <div> - needed to position the dropdown content */
-  .dropdown {
+}
+
+/* The container <div> - needed to position the dropdown content */
+
+.dropdown {
     position: relative;
     display: inline-block;
-  }
-  
-  /* Dropdown Content (Hidden by Default) */
-  .dropdown-content {
+}
+
+/* Dropdown Content (Hidden by Default) */
+
+.dropdown-content {
     display: none;
     position: absolute;
     top: 55px;
     right: -50px;
     background-color: rgba(var(--text-light));
     min-width: 300px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
-  }
-  
-  /* Links inside the dropdown */
-  .dropdown-content a {
+}
+
+/* Links inside the dropdown */
+
+.dropdown-content a {
     color: rgba(var(--text-dark)) !important;
-    padding: 12px 16px;
     text-decoration: none;
     display: block;
-  }
-  
-  /* Change color of dropdown links on hover */
-  .dropdown-content a:hover {background-color: #ddd}
-  
-  /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
-  .show {display:block;}
+}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+
+.show {
+    display: block;
+}
+
+/* Divider */
+
+.divider {
+    border: none;
+    height: 1px;
+    margin: 0;
+    flex-shrink: 0;
+    background-color: rgba(0, 0, 0, 0.12);
+}
+
+/* Alert */
+
+.alert {
+    display: flex;
+    padding: 6px 16px;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.43;
+    border-radius: 4px;
+    letter-spacing: 0.01071em;
+    background-color: transparent;
+}
+
+.alert-icon {
+    display: flex;
+    opacity: 0.9;
+    padding: 7px 0;
+    font-size: 22px;
+    margin-right: 12px;
+}
+
+.alert-message {
+    padding: 8px 0;
+}
+
+
+.alert-error {
+    color: rgb(97, 26, 21);
+    background-color: rgb(253, 236, 234);
+}
+
+.alert-error .alert-icon {
+    color: #f44336;
+}
+
+.alert-warning {
+    color: rgb(102, 60, 0);
+    background-color: rgb(255, 244, 229);
+}
+
+.alert-warning .alert-icon {
+    color: #ff9800;
+}
+
+.alert-info {
+    color: rgb(13, 60, 97);
+    background-color: rgb(232, 244, 253);
+}
+
+.alert-info .alert-icon {
+    color:#2196f3;
+}
+
+.alert-success {
+    color: rgb(30, 70, 32);
+    background-color: rgb(237, 247, 237);
+}
+
+.alert-success .alert-icon {
+    color: #4caf50;
+}
 
 /* Search Input */
 
@@ -1018,53 +1163,120 @@ footer {
     background-color: rgba(var(--text-dark), 0.2);
 }
 
-
 /* Switch */
 
-.switch {
-    display: flex;
-    align-items: center;
-}
-
-.switch-checkbox {
-    height: 0;
-    width: 0;
-    visibility: hidden;
-}
-
-.switch-label {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    width: 50px;
-    height: 24px;
-    background: grey;
-    border-radius: 24px;
+.toggle-switch {
     position: relative;
-    transition: background-color .2s;
-    margin: 0;
+    display: inline-block;
+    width: 50px;
+    height: 25px;
 }
 
-.switch-label .switch-button {
-    content: '';
+.toggle-switch input[type="checkbox"] {
+    display: none;
+}
+
+.toggle-switch .switch {
     position: absolute;
+    cursor: pointer;
+    background-color: #ccc;
+    border-radius: 25px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transition: background-color 0.2s ease;
+}
+
+.toggle-switch .switch::before {
+    position: absolute;
+    content: "";
     left: 2px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50px;
-    transition: 0.2s;
-    background: #fff;
-    box-shadow: 0 0 2px 0 rgba(10, 10, 10, 0.29);
+    top: 2px;
+    width: 21px;
+    height: 21px;
+    background-color: #aaa;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
 }
 
-.switch-checkbox:checked+.switch-label .switch-button {
-    left: calc(100% - 2px);
-    transform: translateX(-100%);
+.toggle-switch input[type="checkbox"]:checked+.switch::before {
+    transform: translateX(25px);
+    background-color: #ffffff;
 }
 
-.switch-label:active .switch-button {
-    width: 25px;
+.toggle-switch input[type="checkbox"]:checked+.switch {
+    background-color: rgba(var(--primary-main-color));
+}
+
+/* Button */
+
+.button {
+    display: inline-block;
+    border-radius: 4px;
+    padding: 6px 16px;
+    color: #ffffff;
+    transition: box-shadow 0.3s;
+    border-width: 0;
+}
+
+.button-contained {
+    background-color: rgba(var(--primary-main-color));
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+}
+
+.button-contained:hover {
+    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+}
+
+.button-outlined {
+    background-color: rgb(var(--text-light));
+    box-shadow: none;
+    color: rgba(var(--primary-main-color));
+    border: 1px solid rgb(var(--text-dark), 0.3);
+    padding: 5px 15px;
+    transition: border 0.2s;
+}
+
+.button-outlined div span {
+    background-color: rgba(var(--primary-main-color)) !important;
+}
+
+.button-outlined:hover {
+    border: 1px solid rgba(var(--primary-main-color)) !important;
+}
+
+.ripple {
+    position: relative;
+    overflow: hidden;
+    line-height: 1.75;
+    font-weight: 500;
+    letter-spacing: 0.02857em;
+    text-transform: uppercase;
+}
+
+.ripple .rippleContainer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.ripple .rippleContainer span {
+    transform: scale(0);
+    border-radius: 100%;
+    position: absolute;
+    opacity: 0.75;
+    background-color: #ffffff;
+    animation: ripple 850ms;
+}
+
+@keyframes ripple {
+    to {
+        opacity: 0;
+        transform: scale(2);
+    }
 }
 
 /* List */
@@ -1090,10 +1302,10 @@ footer {
 }
 
 .list-item-text {
-  padding-left: 20px;
-  justify-content: center;
-  display: flex;
-  flex-direction: column;
+    padding-left: 20px;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
 }
 
 .list-item-text-title {
@@ -1103,4 +1315,58 @@ footer {
 .list-item-text-subtitle {
     color: rgba(var(--text-dark), 0.54);
     margin: 0;
+}
+
+/* LoginPage RigisterPage */
+
+.form {
+    width: 75%;
+    margin-top: 15px;
+}
+
+.submit {
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+}
+
+.img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+}
+
+.title {
+    display: grid;
+    justify-content: center;
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+, .avatar {
+    width: 32px;
+    height: 32px;
+}
+
+.small {
+    width: 15px;
+    height: 15px;
+}
+
+.large {
+    width: 525px;
+    height: 525px;
+}
+
+.icons {
+    width: 30px;
+    height: 30px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.loginIcon {
+    margin: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+    background-color: rgba(var(--primary-main-color));
 }
