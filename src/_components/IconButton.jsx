@@ -1,11 +1,21 @@
-import React from 'react'
+import React from "react";
 
-export const IconButton = (props) => {
+export const IconButton = ({ children, className, onClick }) => {
+    let styleClass;
+
+    if (className) {
+        styleClass = " "+className
+    } else {
+        styleClass = ''
+    }
+
+
     return (
-        <button onClick={props.onClick} className={'icon-button'+" "+props.className} tabIndex="0" aria-haspopup="true" type="button">
-            {props.children}
+        <button onClick={onClick} className={'icon-button'+styleClass} tabIndex="0" aria-haspopup="true" type="button">
+            {children}
         </button>
-    )
-}
+    );
+};
+
 
 

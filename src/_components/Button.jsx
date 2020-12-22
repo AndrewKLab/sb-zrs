@@ -1,26 +1,5 @@
 import React from "react";
 
-const styleRipple = {
-    position: 'relative',
-    overflow: 'hidden'
-};
-const styleRippleContainer = {
-    position: 'absolute',
-    top: '0',
-    right: '0',
-    bottom: '0',
-    left: '0'
-}
-const styleSpan = {
-    transform: 'scale(0)',
-    borderRadius: '100%',
-    position: 'absolute',
-    opacity: '0.75',
-    backgroundColor: '#ffffff',
-    animation: 'ripple 850ms'
-}
-
-
 export class Button extends React.Component {
     constructor(props) {
         super(props)

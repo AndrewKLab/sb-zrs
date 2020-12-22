@@ -7,7 +7,15 @@ export * from './Switch';
 export * from './IconButton'
 export * from './Button'
 export * from './Alert'
+export * from './Loading'
 export * from './Divider'
+export * from './Checkbox'
+export * from './FormControlLabel'
+export * from './Form'
+export * from './Typography'
+
+//TextInput
+export * from './TextInput/TextInput'
 
 
 //List

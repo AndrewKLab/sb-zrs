@@ -12,8 +12,6 @@ import SearchIcon from '@material-ui/icons/Search';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import SettingsIcon from '@material-ui/icons/Settings';
 
-import { CustomThemeContext } from "../../_styles/theme/CustomThemeProvider"
-
 import {
     Switch,
     IconButton,
@@ -23,7 +21,7 @@ import {
     ListItemIcon,
     ListItemText,
     Button,
-    Divider
+    Divider,
 } from "../"
 
 import { stylesActions, userActions } from "../../_actions";
@@ -41,7 +39,6 @@ class NavbarActions extends Component {
             isOpen: false,
         };
     }
-    static contextType = CustomThemeContext;
 
     componentDidMount() {
         this.setTheme();
@@ -121,9 +118,6 @@ class NavbarActions extends Component {
 
     render() {
         const { user } = this.props;
-        if(user) {
-            console.log(user)
-        }
         return (
             <div className='navbar-actions'>
                 <form role="search" className="search-input-root m-3">

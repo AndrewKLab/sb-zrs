@@ -1,33 +1,49 @@
 import React from 'react';
-import { Router} from 'react-router-dom';
+import { Router } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { withStyles } from '@material-ui/core/styles';
-import { history, store } from '../_helpers';
+import { history } from '../_helpers';
 import { userActions } from '../_actions'
 
 
-import { Container, Header, Footer } from '../_components';
+import { Container, Header, Footer, Loading } from '../_components';
 
 import { MainRouter } from '../App';
 
 
 class App extends React.Component {
-    componentDidMount(){
-        const { jwt, dispatch } = this.props;
-        if(jwt){
-            dispatch(userActions.validateToken(jwt));
+    constructor(props) {
+        super(props)
+        this.state = {
+            loading: true,
         }
-        
+    }
+
+    componentDidMount() {
+        const { jwt, dispatch } = this.props;
+        if (jwt) {
+            dispatch(userActions.validateToken(jwt));
+            this.setState({loading: false})
+        } else {
+            this.setState({loading: false})
+        }
+
     }
     render() {
+        const { loading } = this.state;
+        var content;
+        if (loading) {
+            content = <Loading />
+        } else {
+            content = <MainRouter />
+        }
         return (
             <Router history={history}>
                 <div>
-                    <Header history={history}/>
+                    <Header history={history} />
                     <Container>
-                        <MainRouter />
+                        {content}
                     </Container>
-                    <Footer  />
+                    <Footer />
                 </div>
             </Router>
         );

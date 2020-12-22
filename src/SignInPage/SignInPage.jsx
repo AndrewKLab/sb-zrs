@@ -6,16 +6,14 @@ import { userActions } from '../_actions';
 import {
     InputAdornment,
     TextField,
-    Typography,
     Grid,
     IconButton,
-    Link,
     Avatar,
-    Checkbox,
-    FormControlLabel,
 } from "@material-ui/core";
 
-import { Button, Alert } from '../_components'
+import { Link } from 'react-router-dom';
+
+import { Button, Alert, Checkbox, FormControlLabel, Typography, TextInput } from '../_components'
 
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -54,6 +52,8 @@ class SignInPage extends React.Component {
             password: "",
             showPassword: false,
 
+            remember: false,
+
             loading: false,
             submitted: false
         };
@@ -71,8 +71,14 @@ class SignInPage extends React.Component {
         }
     };
 
+    remember() {
+        const { remember } = this.state;
+        this.setState({ remember: !remember })
+    }
+
     render() {
         const { loggingIn, classes, message } = this.props;
+        const { remember } = this.state
         return (
             <div>
                 <Grid container>
@@ -100,12 +106,11 @@ class SignInPage extends React.Component {
                         >
                             {({ errors, handleChange, touched }) => (
                                 <Form className='form'>
-                                    <Typography component="h1" variant="h5" className='title'>
-                                        <Avatar className='loginIcon'>
-                                            <LockOutlinedIcon />
-                                        </Avatar>
-                                        Вход
-                                    </Typography>
+
+                                    <div className='title'>
+                                        <Avatar className='loginIcon'><LockOutlinedIcon /></Avatar>
+                                        <Typography component="h1" variant="h5">Вход</Typography>
+                                    </ div>
 
                                     <Grid container spacing={2}>
                                         <Grid item xs={12}>
@@ -127,6 +132,35 @@ class SignInPage extends React.Component {
                                                 helperText={
                                                     errors.phonenumber && touched.phonenumber ? errors.phonenumber : null
                                                 }
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <TextInput
+                                                id="password"
+                                                label="Пароль"
+                                                type="password"
+                                                autoComplete="current-password"
+                                                onChange={handleChange}
+                                                helperText={
+                                                    errors.password && touched.password
+                                                        ? errors.password
+                                                        : null
+                                                }
+                                                InputProps={{
+                                                    endAdornment: (
+                                                        <InputAdornment position="end">
+                                                            <IconButton
+                                                                aria-label="Toggle password visibility"
+                                                                onClick={this.handleClickShowPassword}
+                                                                edge="end"
+                                                            >
+                                                                {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                                className='w-100' 
                                             />
                                         </Grid>
 
@@ -162,25 +196,25 @@ class SignInPage extends React.Component {
                                         </Grid>
 
                                     </Grid>
+
                                     <FormControlLabel
-                                        control={<Checkbox value="remember" color="primary" />}
-                                        label="Запомнить меня"
+                                        control={<Checkbox checked={remember} name='remember' onChange={() => this.remember()} />}
+                                        label="Запоминить меня"
                                     />
-                                    <Button
-                                        type="submit"
-                                        className='submit w-100'
-                                    >
+
+
+                                    <Button type="submit" className='my-3 w-100'>
                                         Вход
                                     </Button>
 
                                     <Grid container>
                                         <Grid item xs>
-                                            <Link href="#" variant="body2">
+                                            <Link to="#" >
                                                 Забыли пароль?
-                                        </Link>
+                                            </Link>
                                         </Grid>
                                         <Grid item>
-                                            <Link href="/sign-up" variant="body2">
+                                            <Link to="/sign-up" >
                                                 {"Регистрация"}
                                             </Link>
                                         </Grid>
