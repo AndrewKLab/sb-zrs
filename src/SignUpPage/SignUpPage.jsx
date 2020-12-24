@@ -3,17 +3,19 @@ import { connect } from 'react-redux';
 
 import { userActions } from '../_actions';
 
+import { Link } from 'react-router-dom';
+
 import {
-    InputAdornment,
-    TextField,
-    Typography,
-    Grid,
+    Avatar,
     Button,
+    Alert,
+    Checkbox,
+    FormControlLabel,
+    Typography,
+    TextInput,
     IconButton,
-    Link,
-    Paper
-} from "@material-ui/core";
-import Alert from '@material-ui/lab/Alert';
+    Grid
+} from '../_components'
 
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -84,7 +86,7 @@ class SignUpPage extends React.Component {
         const { classes, message } = this.props;
         return (
             <Grid container>
-                <Grid xs={12} sm={6} style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
+                <Grid xs={12} sm={6} className='center'>
                     <Formik
                         initialValues={{
                             firstname: "",
@@ -108,16 +110,18 @@ class SignUpPage extends React.Component {
                         }
                     >
                         {({ errors, handleChange, touched }) => (
-                            <Form className={classes.form}>
-                                <Typography component="h1" variant="h5" className={classes.title}>
-                                    Регистрация
-                                </Typography>
+                            <Form className='form'>
+
+                                <div className='title'>
+                                    <Typography component="h1" variant="h5">Регистрация</Typography>
+                                </div>
+
                                 {message && (
-                                    <Alert className={classes.error} severity="error">{message}</Alert>
+                                    <Alert severity="error">{message}</Alert>
                                 )}
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} sm={6}>
-                                        <TextField
+                                        <TextInput
                                             error={errors.firstname && touched.firstname}
                                             autoComplete="fname"
                                             name="firstname"
@@ -135,7 +139,7 @@ class SignUpPage extends React.Component {
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
-                                        <TextField
+                                        <TextInput
                                             error={errors.lastname && touched.lastname}
                                             variant="outlined"
                                             fullWidth
@@ -153,7 +157,7 @@ class SignUpPage extends React.Component {
                                     </Grid>
 
                                     <Grid item xs={12} sm={6}>
-                                        <TextField
+                                        <TextInput
                                             autoComplete="fname"
                                             name="country"
                                             variant="outlined"
@@ -164,7 +168,7 @@ class SignUpPage extends React.Component {
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
-                                        <TextField
+                                        <TextInput
 
                                             variant="outlined"
                                             fullWidth
@@ -178,7 +182,7 @@ class SignUpPage extends React.Component {
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <TextField
+                                        <TextInput
                                             error={errors.phonenumber && touched.phonenumber}
                                             variant="outlined"
                                             fullWidth
@@ -188,7 +192,7 @@ class SignUpPage extends React.Component {
                                             name="phonenumber"
                                             autoComplete="phonenumber"
                                             InputProps={{
-                                                startAdornment: <InputAdornment position="start">+7</InputAdornment>,
+                                                startAdornment: '+7',
                                             }}
                                             helperText={
                                                 errors.phonenumber && touched.phonenumber ? errors.phonenumber : null
@@ -197,7 +201,7 @@ class SignUpPage extends React.Component {
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <TextField
+                                        <TextInput
                                             error={errors.password && touched.password}
                                             fullWidth
                                             id="password"
@@ -213,22 +217,20 @@ class SignUpPage extends React.Component {
                                             }
                                             InputProps={{
                                                 endAdornment: (
-                                                    <InputAdornment position="end">
-                                                        <IconButton
-                                                            aria-label="Toggle password visibility"
-                                                            onClick={this.handleClickShowPassword}
-                                                            edge="end"
-                                                        >
-                                                            {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
-                                                        </IconButton>
-                                                    </InputAdornment>
+                                                    <IconButton
+                                                        aria-label="Toggle password visibility"
+                                                        onClick={this.handleClickShowPassword}
+                                                        edge="end"
+                                                    >
+                                                        {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
+                                                    </IconButton>
                                                 ),
                                             }}
                                         />
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <TextField
+                                        <TextInput
                                             error={errors.passwordConfirmation && touched.passwordConfirmation}
                                             variant="outlined"
                                             fullWidth
@@ -249,15 +251,13 @@ class SignUpPage extends React.Component {
                                 <Button
                                     type="submit"
                                     fullWidth
-                                    variant="contained"
-                                    color="primary"
-                                    className={classes.submit}
+                                    className='my-3'
                                 >
                                     Регистрация
                     </Button>
                                 <Grid container justify="flex-end">
                                     <Grid item>
-                                        <Link href="/sign-in" variant="body2">
+                                        <Link to="/sign-in" variant="body2">
                                             Уже есть аккаут? Войти
                         </Link>
                                     </Grid>
@@ -268,7 +268,7 @@ class SignUpPage extends React.Component {
                 </Grid>
 
                 <Grid xs={12} sm={6}>
-                    <img src={"http://lifestudio-test.ru/assets/img/signup.png"} className={classes.img} alt="sign-up" />
+                    <img src={"http://lifestudio-test.ru/assets/img/signup.png"} width='100%' alt="sign-up" />
                 </Grid>
             </Grid>
         );

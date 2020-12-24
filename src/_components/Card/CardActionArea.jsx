@@ -1,6 +1,8 @@
+
+
 import React from "react";
 
-export class Button extends React.Component {
+export class CardActionArea extends React.Component {
     constructor(props) {
         super(props)
         this.bounce;
@@ -56,51 +58,19 @@ export class Button extends React.Component {
     }
 
     render() {
-        const { type, children = null, className, variant, onPress = null, fullWidth } = this.props;
-        let buttonType;
-        let styleClass;
-        let styleVariant;
-        let fullWidthStyle = fullWidth === true ? ' w-100' : '';
+        const { children, className, onPress = null } = this.props;
+        let styleClass = className == undefined ? '' : ' ' + className;
 
-        switch (variant) {
-            case 'contained':
-                styleVariant = ' button-contained '
-                break;
-            case 'outlined':
-                styleVariant = ' button-outlined '
-                break;
-            default:
-                styleVariant = ' button-contained '
-                break;
-        }
 
-        switch (type) {
-            case 'button':
-                buttonType = 'button'
-                break;
-            case 'reset':
-                buttonType = 'reset'
-                break;
-            case 'submit':
-                buttonType = 'submit'
-                break;
-            default:
-                buttonType = 'button'
-                break;
-        }
-
-        if (className) {
-            styleClass =  className
-        } else {
-            styleClass = ''
-        }
         return (
-            <button type={buttonType} ref="targetElement" className={'button ripple' + styleVariant + styleClass + fullWidthStyle} onClick={onPress}>
+            <button ref="targetElement" className={'сard-button card-action-area сard-ripple'+styleClass} onClick={onPress} tabIndex="0" type="button">
                 {children}
-                <div className="rippleContainer" onMouseDown={this.showRipple} onMouseUp={this.callCleanUp(this.cleanUp, 2000)} >
+                <div className={"rippleContainer"} onMouseDown={this.showRipple} onMouseUp={this.callCleanUp(this.cleanUp, 2000)} >
                     {this.renderRippleSpan()}
                 </div>
             </button>
         );
     }
 }
+
+

@@ -1,8 +1,4 @@
 import React, { Component, createRef } from "react";
-import {
-    Avatar,
-} from "@material-ui/core";
-
 import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
 
@@ -22,6 +18,7 @@ import {
     ListItemText,
     Button,
     Divider,
+    Avatar
 } from "../"
 
 import { stylesActions, userActions } from "../../_actions";
@@ -125,7 +122,7 @@ class NavbarActions extends Component {
                     <input type="search" className='search-input' placeholder="Поиск..." />
                 </form>
 
-                <IconButton>
+                <IconButton className='text-light'>
                     <NotificationsIcon />
                 </IconButton>
 
@@ -134,7 +131,7 @@ class NavbarActions extends Component {
                         onClick={() => this.handleOpenDropdown()}
                         className="dropbtn"
                     >
-                        <Avatar alt="" src="http://lifestudio-test.ru/img/unnamed.png" />
+                        <Avatar alt="" src="http://lifestudio-test.ru/assets/img/unnamed.png" />
                     </IconButton>
                     <div id="myDropdown" className="dropdown-content">
                         {user ? (
@@ -152,7 +149,7 @@ class NavbarActions extends Component {
                                 <ListItem>
                                     <ListItemFirstAction>
                                         <ListItemIcon>
-                                            <Avatar alt="" src="http://lifestudio-test.ru/img/unnamed.png" />
+                                            <Avatar alt="" src="http://lifestudio-test.ru/assets/img/unnamed.png" />
                                         </ListItemIcon>
                                         <ListItemText title="Привет, посетитель!" />
                                     </ListItemFirstAction>
@@ -205,7 +202,7 @@ class NavbarActions extends Component {
                                         </Link>
                                     </ListItemIcon>
                                     <ListItemText>
-                                        <Link to="/sign-ip" onClick={() => this.handleCloseDropdown()}>
+                                        <Link to="/sign-up" onClick={() => this.handleCloseDropdown()}>
                                             <Button color="primary" variant="outlined">Регистрация</Button>
                                         </Link>
                                     </ListItemText>

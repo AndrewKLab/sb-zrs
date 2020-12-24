@@ -11,16 +11,26 @@ const initialState = {
           'primary-main-color': '33, 150, 243',
           'primary-dark-color': '23, 105, 105',
           'background-color': '255, 255, 255',
+
           'text-light': '255, 255, 255',
           'text-dark': '66, 66, 66',
+
+          'alert-danger-background-color': '253, 236, 234',
+          'alert-danger-text-color': '97, 26, 21',
+          'alert-danger-icon-color': '244, 67, 54'
         },
         dark: {
           'primary-light-color': '255, 205, 56',
           'primary-main-color': '255, 193, 7',
           'primary-dark-color': '178, 135, 4',
           'background-color': '48, 48, 48',
+
           'text-light': '66, 66, 66',
           'text-dark': '255, 255, 255',
+          
+          'alert-danger-background-color': '244, 67, 54',
+          'alert-danger-text-color': '255, 255, 255',
+          'alert-danger-icon-color': '255, 255, 255'
         }
       }
 };

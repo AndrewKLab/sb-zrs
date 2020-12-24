@@ -84,6 +84,7 @@ function getAll() {
 
     return fetch(`${config.apiUrl}/users`, requestOptions).then(handleResponse);
 }
+//
 
 function handleResponse(response) {
     return response.text().then(text => {

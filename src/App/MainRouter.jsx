@@ -9,6 +9,7 @@ import { PrivateRoute } from '../_components';
 import { HomePage } from '../HomePage';
 import { SignInPage } from '../SignInPage';
 import { SignUpPage } from '../SignUpPage';
+import { CategoriesPage } from '../CategoriesPage';
 import { ProfilePage } from '../ProfilePage';
 import getTheme from '../_styles/theme/base'
 
@@ -30,6 +31,7 @@ class MainRouter extends React.Component {
             <div>
                 <Route path="/sign-in" component={SignInPage} />
                 <Route path="/sign-up" component={SignUpPage} />
+                <Route path="/courses" component={CategoriesPage} />
                 <PrivateRoute exact path="/profile" component={ProfilePage} />
                 <PrivateRoute exact path="/" component={HomePage} />
             </div>

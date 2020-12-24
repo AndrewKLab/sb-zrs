@@ -3,17 +3,19 @@ import { connect } from 'react-redux';
 
 import { userActions } from '../_actions';
 
-import {
-    InputAdornment,
-    TextField,
-    Grid,
-    IconButton,
-    Avatar,
-} from "@material-ui/core";
-
 import { Link } from 'react-router-dom';
 
-import { Button, Alert, Checkbox, FormControlLabel, Typography, TextInput } from '../_components'
+import {
+    Avatar,
+    Button,
+    Alert,
+    Checkbox,
+    FormControlLabel,
+    Typography,
+    TextInput,
+    IconButton,
+    Grid
+} from '../_components'
 
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -77,7 +79,7 @@ class SignInPage extends React.Component {
     }
 
     render() {
-        const { loggingIn, classes, message } = this.props;
+        const { message } = this.props;
         const { remember } = this.state
         return (
             <div>
@@ -86,7 +88,7 @@ class SignInPage extends React.Component {
                         <img src={"http://lifestudio-test.ru/assets/img/signin.png"} className='img' alt="sign-in" />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
+                    <Grid item xs={12} sm={6} className='center'>
 
                         <Formik
                             initialValues={{
@@ -110,70 +112,41 @@ class SignInPage extends React.Component {
                                     <div className='title'>
                                         <Avatar className='loginIcon'><LockOutlinedIcon /></Avatar>
                                         <Typography component="h1" variant="h5">Вход</Typography>
-                                    </ div>
+                                    </div>
 
-                                    <Grid container spacing={2}>
+                                    <Grid container spacing={3}>
+
                                         <Grid item xs={12}>
                                             {message && (
                                                 <Alert className='error' severity="error">{message}</Alert>
                                             )}
-                                            <TextField
+
+                                            <TextInput
                                                 error={errors.phonenumber && touched.phonenumber}
-                                                variant="outlined"
-                                                fullWidth
-                                                onChange={handleChange}
                                                 id="phonenumper"
-                                                label="Номер телефона"
                                                 name="phonenumber"
+                                                label="Номер телефона"
+                                                type={'tel'}
                                                 autoComplete="phonenumber"
-                                                InputProps={{
-                                                    startAdornment: <InputAdornment position="start">+7</InputAdornment>,
-                                                }}
+                                                onChange={handleChange}
                                                 helperText={
                                                     errors.phonenumber && touched.phonenumber ? errors.phonenumber : null
                                                 }
+                                                InputProps={{
+                                                    startAdornment: '+7',
+                                                }}
+                                                className='w-100'
                                             />
                                         </Grid>
 
                                         <Grid item xs={12}>
                                             <TextInput
-                                                id="password"
-                                                label="Пароль"
-                                                type="password"
-                                                autoComplete="current-password"
-                                                onChange={handleChange}
-                                                helperText={
-                                                    errors.password && touched.password
-                                                        ? errors.password
-                                                        : null
-                                                }
-                                                InputProps={{
-                                                    endAdornment: (
-                                                        <InputAdornment position="end">
-                                                            <IconButton
-                                                                aria-label="Toggle password visibility"
-                                                                onClick={this.handleClickShowPassword}
-                                                                edge="end"
-                                                            >
-                                                                {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
-                                                            </IconButton>
-                                                        </InputAdornment>
-                                                    ),
-                                                }}
-                                                className='w-100' 
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12}>
-                                            <TextField
                                                 error={errors.password && touched.password}
-                                                fullWidth
                                                 id="password"
-                                                variant="outlined"
-                                                type={this.state.showPassword ? 'text' : 'password'}
                                                 label="Пароль"
-                                                onChange={handleChange('password')}
+                                                type={this.state.showPassword ? 'text' : 'password'}
                                                 autoComplete="current-password"
+                                                onChange={handleChange('password')}
                                                 helperText={
                                                     errors.password && touched.password
                                                         ? errors.password
@@ -181,17 +154,15 @@ class SignInPage extends React.Component {
                                                 }
                                                 InputProps={{
                                                     endAdornment: (
-                                                        <InputAdornment position="end">
-                                                            <IconButton
-                                                                aria-label="Toggle password visibility"
-                                                                onClick={this.handleClickShowPassword}
-                                                                edge="end"
-                                                            >
-                                                                {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
-                                                            </IconButton>
-                                                        </InputAdornment>
+                                                        <IconButton
+                                                            ariaLabel="Toggle password visibility"
+                                                            onClick={this.handleClickShowPassword}
+                                                        >
+                                                            {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
                                                     ),
                                                 }}
+                                                className='w-100'
                                             />
                                         </Grid>
 
@@ -203,7 +174,7 @@ class SignInPage extends React.Component {
                                     />
 
 
-                                    <Button type="submit" className='my-3 w-100'>
+                                    <Button fullWidth type="submit" className='my-3'>
                                         Вход
                                     </Button>
 

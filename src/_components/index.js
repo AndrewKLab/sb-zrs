@@ -13,10 +13,19 @@ export * from './Checkbox'
 export * from './FormControlLabel'
 export * from './Form'
 export * from './Typography'
+export * from './Avatar'
+export * from './Grid'
+export * from './Carousel'
 
 //TextInput
 export * from './TextInput/TextInput'
 
+//Card
+export * from './Card/Card'
+export * from './Card/CardMedia'
+export * from './Card/CardContent'
+export * from './Card/CardActions'
+export * from './Card/CardActionArea'
 
 //List
 export * from './List/ListItem'

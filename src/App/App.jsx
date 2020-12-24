@@ -40,7 +40,7 @@ class App extends React.Component {
             <Router history={history}>
                 <div>
                     <Header history={history} />
-                    <Container>
+                    <Container className='content'>
                         {content}
                     </Container>
                     <Footer />
