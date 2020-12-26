@@ -5,6 +5,9 @@ module.exports = {
     resolve: {
         extensions: ['.js', '.jsx', '.css']
     },
+    output: {
+       publicPath: '/'
+     },
     module: {
         rules: [
             {
@@ -54,7 +57,7 @@ module.exports = {
                 changeOrigin: true,
                 autoRewrite: true,
                 headers: {
-                    'X-ProxiedBy-Webpack': true,
+                    'X-ProxiedBy-Webpack': true
                 },
                 target: 'http://lifestudio-test.ru'
             }

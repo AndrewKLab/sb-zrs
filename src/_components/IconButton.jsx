@@ -11,6 +11,7 @@ export const IconButton = ({ children, className, onClick, ariaLabel, color }) =
             styleColor = ' color-secondary'
             break;
         default:
+            styleColor = ''
             break;
     }
     return (

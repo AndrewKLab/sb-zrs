@@ -2,7 +2,7 @@ import React from 'react';
 import { Router } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { history } from '../_helpers';
-import { userActions } from '../_actions'
+import { userActions, categoryActions } from '../_actions'
 
 
 import { Container, Header, Footer, Loading } from '../_components';
@@ -26,22 +26,21 @@ class App extends React.Component {
         } else {
             this.setState({loading: false})
         }
+        dispatch(categoryActions.getAllCategories())
 
     }
     render() {
         const { loading } = this.state;
         var content;
         if (loading) {
-            content = <Loading />
-        } else {
-            content = <MainRouter />
-        }
+            return <Loading />
+        } 
         return (
             <Router history={history}>
                 <div>
                     <Header history={history} />
                     <Container className='content'>
-                        {content}
+                        <MainRouter />
                     </Container>
                     <Footer />
                 </div>

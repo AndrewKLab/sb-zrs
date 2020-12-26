@@ -106,7 +106,7 @@ class SignInPage extends React.Component {
                             }
                             }
                         >
-                            {({ errors, handleChange, touched }) => (
+                            {({ errors, values, handleChange, setFieldValue, touched }) => (
                                 <Form className='form'>
 
                                     <div className='title'>
@@ -123,12 +123,14 @@ class SignInPage extends React.Component {
 
                                             <TextInput
                                                 error={errors.phonenumber && touched.phonenumber}
+                                                value={values.value}
                                                 id="phonenumper"
                                                 name="phonenumber"
                                                 label="Номер телефона"
                                                 type={'tel'}
                                                 autoComplete="phonenumber"
                                                 onChange={handleChange}
+                                                onSelect={val => setFieldValue("value", val)}
                                                 helperText={
                                                     errors.phonenumber && touched.phonenumber ? errors.phonenumber : null
                                                 }
@@ -142,11 +144,13 @@ class SignInPage extends React.Component {
                                         <Grid item xs={12}>
                                             <TextInput
                                                 error={errors.password && touched.password}
+                                                value={values.value}
                                                 id="password"
                                                 label="Пароль"
                                                 type={this.state.showPassword ? 'text' : 'password'}
                                                 autoComplete="current-password"
-                                                onChange={handleChange('password')}
+                                                onChange={handleChange}
+                                                onSelect={val => setFieldValue("value", val)}
                                                 helperText={
                                                     errors.password && touched.password
                                                         ? errors.password

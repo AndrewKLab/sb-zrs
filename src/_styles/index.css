@@ -1911,7 +1911,7 @@ div.text-input-group label {
 }
 
 .text-input-fieldset-hovered {
-    border-color: rgba(var(--text-dark));
+    border-color: rgba(var(--text-dark)) !important;
 }
 
 .text-input-fieldset-focused {
@@ -1919,7 +1919,7 @@ div.text-input-group label {
 }
 
 .text-input-fieldset-focused-color {
-    border-color: rgba(var(--primary-main-color));
+    border-color: rgba(var(--primary-main-color))!important;
     border-width: 2px;
 }
 

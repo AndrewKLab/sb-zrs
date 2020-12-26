@@ -4,7 +4,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 export const Loading = () => {
   return (
     <div className='loading'>
-    <CircularProgress />
-</div >
+      <CircularProgress />
+    </div >
   );
 };

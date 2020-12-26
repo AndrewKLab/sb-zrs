@@ -10,6 +10,7 @@ import { HomePage } from '../HomePage';
 import { SignInPage } from '../SignInPage';
 import { SignUpPage } from '../SignUpPage';
 import { CategoriesPage } from '../CategoriesPage';
+import { CoursesPage, CoursePage } from '../CoursesPage';
 import { ProfilePage } from '../ProfilePage';
 import getTheme from '../_styles/theme/base'
 
@@ -19,9 +20,8 @@ const theme = getTheme(currentTheme);
 class MainRouter extends React.Component {
     constructor(props) {
         super(props);
-        const { dispatch, classes } = this.props;
+        const { dispatch } = this.props;
         history.listen((location, action) => {
-            // clear alert on location change
             dispatch(alertActions.clear());
         });
     }
@@ -29,9 +29,11 @@ class MainRouter extends React.Component {
     render() {
         return (
             <div>
-                <Route path="/sign-in" component={SignInPage} />
-                <Route path="/sign-up" component={SignUpPage} />
-                <Route path="/courses" component={CategoriesPage} />
+                <Route exact path="/sign-in" component={SignInPage} />
+                <Route exact path="/sign-up" component={SignUpPage} />
+                <Route exact path="/courses" component={CategoriesPage} />
+                <Route exact path="/courses/:category_name" component={CoursesPage} />
+                <Route exact path="/courses/:category_name/:course" component={CoursePage} />
                 <PrivateRoute exact path="/profile" component={ProfilePage} />
                 <PrivateRoute exact path="/" component={HomePage} />
             </div>

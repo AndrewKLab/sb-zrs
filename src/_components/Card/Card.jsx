@@ -9,5 +9,3 @@ export const Card = ({children, className}) => {
         </div>
     )
 }
-
-

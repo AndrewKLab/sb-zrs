@@ -1,11 +1,11 @@
 import config from 'config';
 
-export const categoryService = {
-    getAllCategories
+export const courseService = {
+    getAllCoursesByCategoryName
 };
 
-function getAllCategories() {
-    return fetch(`${config.apiUrl}/course/read.php`, config.headers).then(handleResponse);
+function getAllCoursesByCategoryName(category_name) {
+    return fetch(`${config.apiUrl}/course/read_all_courses_by_category_name.php?category_name=${category_name}`, config.headers).then(handleResponse);
 }
 
 
