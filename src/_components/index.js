@@ -16,6 +16,7 @@ export * from './Typography'
 export * from './Avatar'
 export * from './Grid'
 export * from './Carousel'
+export * from './Paper'
 
 //TextInput
 export * from './TextInput/TextInput'

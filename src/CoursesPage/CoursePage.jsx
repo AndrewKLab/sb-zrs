@@ -22,16 +22,31 @@ class CoursePage extends React.Component {
 
     render() {
         const { categories, loading } = this.props;
-
+        var courses; 
         if (loading == true || loading == undefined) {
             return <Loading />
         } else {
-            const courses = categories[this.props.match.params.category_name];
-            console.log(JSON.stringify(courses))
+            courses = categories[this.props.match.params.category_name][this.props.match.params.course];
         }
+        
         return (
             <div className='pb-3'>
-123
+                <Paper variant="outlined" square>
+                                <div >
+                                <img src={courses.img} alt={courses.course_name} height="350" />
+                                    <div >
+                                        <Typography variant="h4">{courses.course_name}</Typography>
+                                    </div>
+                                </div>
+                                <div >
+                                    <div>
+                                        <div ><Typography variant="h6">Количество уроков:</Typography><Typography variant="h6">123</Typography></div>
+           
+
+                                    </div>
+                                    <div ></div>
+                                </div>
+                            </Paper>
             </div>
         );
     }
