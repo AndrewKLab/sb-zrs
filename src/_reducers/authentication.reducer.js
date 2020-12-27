@@ -44,10 +44,12 @@ export function authentication(state = initialState, action) {
     //VALIDATE-USER
     case userConstants.VALIDATE_REQUEST:
       return {
+        loading: true,
         user: action.user
       };
     case userConstants.VALIDATE_SUCCESS:
       return {
+        loading: false,
         jwt: action.user.jwt,
         user: action.user.user,
       };

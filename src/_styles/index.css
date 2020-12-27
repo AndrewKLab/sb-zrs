@@ -389,6 +389,16 @@ h6, .h6 {
     font-size: 1rem;
 }
 
+/* position */
+
+.p-relative {
+    position: relative;
+}
+
+.p-absolute {
+    position: absolute;
+}
+
 /* width */
 
 .w-25 {
@@ -397,6 +407,10 @@ h6, .h6 {
 
 .w-50 {
     width: 50% !important;
+}
+
+.w-70 {
+    width: 70% !important;
 }
 
 .w-75 {
@@ -831,11 +845,11 @@ h6, .h6 {
     color: rgba(var(--text-dark)) !important;
 }
 
-.color-primary{
+.color-primary {
     color: rgba(var(--primary-main-color)) !important;
 }
 
-.color-secondary{
+.color-secondary {
     color: rgba(var(--secondary-main-color)) !important;
 }
 
@@ -1005,6 +1019,18 @@ footer {
     .container {
         max-width: var(--breakpoint-xl);
     }
+}
+
+/* Paper */
+
+.paper {
+    color: rgba(var(--text-dark));
+    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    background-color: #fff;
+}
+
+.paper-outlined {
+    border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 /* Dropdown */
@@ -2373,6 +2399,34 @@ div.text-input-group label {
     margin-bottom: 5px;
     text-align: center;
     background-color: rgba(var(--primary-main-color));
+}
+
+/* COURSE_PAGE */
+.wrap-area {
+    display: flex;
+    justify-content: end;
+    flex-direction: column;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 1.25rem;
+    position: absolute;
+    color: #fff;
+}
+
+.course-info-area{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    margin: 16px;
+    width: 30%; 
+}
+
+.course-info-text{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
 }
 
 /* TO-DELETE */

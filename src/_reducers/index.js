@@ -6,6 +6,7 @@ import { alert } from './alert.reducer';
 import { style } from './styles.reducer';
 import { categories } from './category.reducer';
 import { course } from './course.reducer';
+import { lesson } from './lesson.reducer';
 
 const rootReducer = combineReducers({
   authentication,
@@ -13,7 +14,8 @@ const rootReducer = combineReducers({
   alert,
   style,
   categories,
-  course
+  course,
+  lesson
 });
 
 export default rootReducer;

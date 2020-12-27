@@ -18,10 +18,13 @@ import {
 
 
 class CoursesPage extends React.Component {
+    componentDidMount() {
+        const { dispatch } = this.props;
+        dispatch(courseActions.getAllCoursesByCategoryName(this.props.match.params.category_name))
+    }
 
     render() {
-        const { categories, loading } = this.props;
-        var courses = categories[this.props.match.params.category_name];
+        const { courses, loading } = this.props;
         var title;
         switch (this.props.match.params.category_name) {
             case 'main':
@@ -51,34 +54,34 @@ class CoursesPage extends React.Component {
                     justify={"space-around"}
                     alignItems={"flex-start"}
                     spacing={1}>
-                    {courses.map((course, index) => (
+                    {Object.values(courses).map((course, index) => (
                         <Grid item xs key={index}>
-                                <Card>
-                                    <Link to={`/courses/${this.props.match.params.category_name}/${course.id}`} >
-                                        <CardActionArea>
-                                            <CardMedia
-                                                component="img"
-                                                alt={course.name}
-                                                height="140"
-                                                image="http://lifestudio-test.ru/assets/img/350x250.png"
-                                                title="Contemplative Reptile"
+                            <Card>
+                                <Link to={`/courses/${this.props.match.params.category_name}/${course.id}`} >
+                                    <CardActionArea>
+                                        <CardMedia
+                                            component="img"
+                                            alt={course.name}
+                                            height="140"
+                                            image="http://lifestudio-test.ru/assets/img/350x250.png"
+                                            title="Contemplative Reptile"
+                                        />
+                                        <CardContent>
+                                            <Typography variant="h6" component="h6">
+                                                {course.name}
+                                            </Typography>
+                                            <ClampLines
+                                                text={course.description}
+                                                id="really-unique-id"
+                                                lines={3}
+                                                ellipsis="..."
+                                                buttons={false}
+                                                innerElement="p"
                                             />
-                                            <CardContent>
-                                                <Typography variant="h6" component="h6">
-                                                    {course.name}
-                                                </Typography>
-                                                <ClampLines
-                                                    text={course.description}
-                                                    id="really-unique-id"
-                                                    lines={3}
-                                                    ellipsis="..."
-                                                    buttons={false}
-                                                    innerElement="p"
-                                                />
-                                            </CardContent>
-                                        </CardActionArea>
-                                    </Link>
-                                </Card>
+                                        </CardContent>
+                                    </CardActionArea>
+                                </Link>
+                            </Card>
                         </Grid>
 
                     )
@@ -90,10 +93,10 @@ class CoursesPage extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { categories } = state;
-    const { loading } = categories;
+    const { course } = state;
+    const { loading, courses } = course;
     return {
-        categories,
+        courses,
         loading
     };
 }

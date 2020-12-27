@@ -26,8 +26,6 @@ class App extends React.Component {
         } else {
             this.setState({loading: false})
         }
-        dispatch(categoryActions.getAllCategories())
-
     }
     render() {
         const { loading } = this.state;

@@ -9,7 +9,6 @@ import { Nav, NavbarActions } from './'
 class Navbar extends Component {
     render() {
         const { history, user } = this.props;
-
         return (
             <div>
                 <Container>
@@ -18,7 +17,9 @@ class Navbar extends Component {
                             <a href='/'><h3 className='text-light m-0'>ШБ ЗРС</h3></a>
                             <ul>
                                 <Nav link={'/'}>Главная</Nav>
-                                {user.status === 'admin' && <Nav link={'/administrator'}>Администратор</Nav>}
+                                {user === undefined ? (null) : (
+                                    user.status === 'admin' && <Nav link={'/administrator'}>Администратор</Nav>
+                                )}
                                 <Nav link={'/courses'}>Курсы</Nav>
                                 <Nav link={'/contacts'}>Контакты</Nav>
                             </ul>

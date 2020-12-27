@@ -51,7 +51,8 @@ function SamplePrevArrow(props) {
 export class Carousel extends Component {
 
     render() {
-        const { courses } = this.props;
+        const { courses, categoty_name } = this.props;
+
         var settings = {
             dots: false,
             infinite: true,
@@ -91,47 +92,47 @@ export class Carousel extends Component {
 
 
         return (
-            <Slider {...settings}>{courses.map((course, index) => (
-                <div key={index}>
-                    <Card>
-                        <Link to={`/courses/${this.props.course}/${course.id}`}>
-                            <CardActionArea>
-                                <CardMedia
-                                    component="img"
-                                    alt={course.name}
-                                    height="140"
-                                    image="http://lifestudio-test.ru/assets/img/350x250.png"
-                                    title="Contemplative Reptile"
-                                />
-                                <CardContent>
-                                    <Typography gutterBottom variant="h5" component="h2">
-                                        {course.name}
-                                    </Typography>
-                                    <ClampLines
-                                        text={course.description}
-                                        id="really-unique-id"
-                                        lines={3}
-                                        ellipsis="..."
-                                        buttons={false}
-                                        innerElement="p"
+            <Slider {...settings}>
+                {Object.values(courses).map((course, index) => 
+                    <div key={index}>
+                        <Card>
+                            <Link to={`/courses/${categoty_name}`}>
+                                <CardActionArea>
+                                    <CardMedia
+                                        component="img"
+                                        alt={course.name}
+                                        height="140"
+                                        image="http://lifestudio-test.ru/assets/img/350x250.png"
+                                        title="Contemplative Reptile"
                                     />
-                                </CardContent>
-                            </CardActionArea>
-                        </Link>
+                                    <CardContent>
+                                        <Typography gutterBottom variant="h5" component="h2">
+                                            {course.name}
+                                        </Typography>
+                                        <ClampLines
+                                            text={course.description}
+                                            id="really-unique-id"
+                                            lines={3}
+                                            ellipsis="..."
+                                            buttons={false}
+                                            innerElement="p"
+                                        />
+                                    </CardContent>
+                                </CardActionArea>
+                            </Link>
 
-                        <CardActions className='grid-justify-xs-flex-end'>
-                            <IconButton aria-label="add to favorites" color="primary">
-                                <FavoriteBorder />
-                            </IconButton>
-                            <IconButton aria-label="share" color="primary">
-                                <ShareIcon />
-                            </IconButton>
-                        </CardActions>
-                    </Card>
-                </div>
-
-            )
-            )}</Slider>
+                            <CardActions className='grid-justify-xs-flex-end'>
+                                <IconButton aria-label="add to favorites" color="primary">
+                                    <FavoriteBorder />
+                                </IconButton>
+                                <IconButton aria-label="share" color="primary">
+                                    <ShareIcon />
+                                </IconButton>
+                            </CardActions>
+                        </Card>
+                    </div>
+                )
+                }</Slider>
         );
     }
 }

@@ -2,8 +2,8 @@ import React from 'react'
 
 export const Paper = ({children, className, elevation, variant, square}) => {
     let styleClass = className == undefined ?  '' : ' '+className;
-    let styleElevation = elevation == undefined ?  '' : ' elevation-'+elevation;
-    let styleVariant = variant == undefined ?  '' : ' variant-'+variant;
+    let styleElevation = elevation == undefined ?  '' : ' paper-'+elevation;
+    let styleVariant = variant == undefined ?  '' : ' paper-'+variant;
     let styleSquare = square == undefined ?  '' : ' paper-square';
 
     return (

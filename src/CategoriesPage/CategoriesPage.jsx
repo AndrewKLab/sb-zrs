@@ -7,41 +7,48 @@ import {
     Button,
     Carousel
 } from '../_components';
-import {ToAllButton} from './'
+import { ToAllButton } from './'
 
 
 class CategoriesPage extends React.Component {
-
+    componentDidMount() {
+        const { dispatch } = this.props;
+        dispatch(categoryActions.getAllCategories())
+    }
     render() {
         const { loading, main, special, social, national } = this.props;
-        if (loading == true || loading == undefined) {
+        
+        if ((loading == true || loading == undefined) &&
+            (main == undefined, special == undefined, social == undefined, national == undefined)) {
             return <Loading />
         }
-       
+
+
+
         return (
             <div className='pb-3'>
                 <div>
                     <h2> Основные курсы </h2>
-                    <Carousel element="carousel-class-to-inject" courses={main} course={main[0].category_name} />
-                    <ToAllButton course={main[0].category_name}>Все основные курсы</ToAllButton>
+                    <Carousel element="carousel-class-to-inject" courses={main} categoty_name={'main'} />
+                    <ToAllButton categoty_name={'main'}>Все основные курсы</ToAllButton>
                 </div>
 
                 <div >
                     <h2  > Специальные курсы </h2>
-                     <Carousel element="carousel-class-to-inject" courses={special} course={special[0].category_name} /> 
-                    <ToAllButton course={special[0].category_name}>Все специальные курсы</ToAllButton>
+                    <Carousel element="carousel-class-to-inject" courses={special} categoty_name={'special'} />
+                    <ToAllButton categoty_name={'special'}>Все специальные курсы</ToAllButton>
                 </div>
 
                 <div>
                     <h2  > Социальные курсы </h2>
-                    <Carousel element="carousel-class-to-inject" courses={social} course={social[0].category_name} /> 
-                    <ToAllButton course={social[0].category_name}>Все социальные курсы</ToAllButton>
+                    <Carousel element="carousel-class-to-inject" courses={social} categoty_name={'social'} />
+                    <ToAllButton categoty_name={'social'}>Все социальные курсы</ToAllButton>
                 </div>
 
                 <div>
                     <h2  > Национальные курсы </h2>
-                    <Carousel element="carousel-class-to-inject" courses={national} course={national[0].category_name} />
-                    <ToAllButton course={national[0].category_name}>Все национальные курсы</ToAllButton>
+                    <Carousel element="carousel-class-to-inject" courses={national} categoty_name={'national'} />
+                    <ToAllButton categoty_name={'national'}>Все национальные курсы</ToAllButton>
                 </div>
             </div>
         );
