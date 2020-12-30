@@ -2,12 +2,7 @@ import React from 'react'
 
 export const ListItemFirstAction = (props) => {
     const {className, children} = props;
-    let styleClass;
-    if(className) {
-        styleClass = ' '+className
-    } else {
-        styleClass = ''
-    }
+    let styleClass = className == undefined ?  '' : ' '+className;
     return (
         <div className={'list-item-firt-action'+styleClass}>
             {children}

@@ -41,6 +41,47 @@ export function authentication(state = initialState, action) {
     default:
       return state
 
+    //UPDATE-USER
+    case userConstants.USER_UPDATE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        jwt: action.jwt,
+        user: {
+          ...state.user,
+          firstname: action.firstname,
+          lastname: action.lastname,
+          phonenumber: action.phonenumber,
+          country: action.country,
+          sity: action.sity,
+          status: action.status,
+          access: action.access,
+          roles: action.roles,
+          avatar: action.avatar,
+          teather_id: action.teather_id
+        }
+      };
+    case userConstants.USER_UPDATE_SUCCESS:
+      return {
+        loading: false,
+        jwt: action.user.jwt,
+        user: {
+          ...state.user,
+          firstname: action.user.firstname,
+          lastname: action.user.lastname,
+          phonenumber: action.user.phonenumber,
+          country: action.user.country,
+          sity: action.user.sity,
+          status: action.user.status,
+          access: action.user.access,
+          roles: action.user.roles,
+          avatar: action.user.avatar,
+          teather_id: action.user.teather_id
+        }
+      };
+    case userConstants.USER_UPDATE_FAILURE:
+      return {};
+
     //VALIDATE-USER
     case userConstants.VALIDATE_REQUEST:
       return {

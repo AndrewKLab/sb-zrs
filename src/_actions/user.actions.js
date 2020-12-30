@@ -7,8 +7,9 @@ export const userActions = {
     signin,
     signup,
     logout,
+    updateUser,
     validateToken,
-    getAll
+    getAllTeathers
 };
 
 function signin(phonenumber, password) {
@@ -65,7 +66,7 @@ function logout() {
     return { type: userConstants.LOGOUT };
 }
 
-function validateToken(jwt){
+function validateToken(jwt) {
     return dispatch => {
         dispatch(request({ jwt }));
 
@@ -90,18 +91,53 @@ function validateToken(jwt){
     function failure(error) { return { type: userConstants.VALIDATE_FAILURE, error } }
 }
 
-function getAll() {
+function updateUser(jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar) {
+    return dispatch => {
+        dispatch(request({ jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar }));
+
+        userService.updateUser(jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar)
+            .then(
+                data => {
+                    localStorage.setItem("user", data.jwt);
+                    const user = {
+                        jwt: data.jwt,
+                        firstname,
+                        lastname,
+                        phonenumber,
+                        country,
+                        sity,
+                        status,
+                        access,
+                        roles,
+                        teather_id,
+                        avatar
+                    }
+                    dispatch(success(user));
+                },
+                error => {
+                    dispatch(failure(error));
+                    dispatch(alertActions.error(error));
+                }
+            );
+    };
+
+    function request() { return { type: userConstants.USER_UPDATE_REQUEST, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar } }
+    function success(user) { return { type: userConstants.USER_UPDATE_SUCCESS, user } }
+    function failure(error) { return { type: userConstants.USER_UPDATE_FAILURE, error } }
+}
+
+function getAllTeathers() {
     return dispatch => {
         dispatch(request());
 
-        userService.getAll()
+        userService.getAllTeathers()
             .then(
-                users => dispatch(success(users)),
+                teathers => dispatch(success(teathers)),
                 error => dispatch(failure(error))
             );
     };
 
-    function request() { return { type: userConstants.GETALL_REQUEST } }
-    function success(users) { return { type: userConstants.GETALL_SUCCESS, users } }
-    function failure(error) { return { type: userConstants.GETALL_FAILURE, error } }
+    function request() { return { type: userConstants.GETALL_TEATHERS_REQUEST } }
+    function success(teathers) { return { type: userConstants.GETALL_TEATHERS_SUCCESS, teathers } }
+    function failure(error) { return { type: userConstants.GETALL_TEATHERS_FAILURE, error } }
 }

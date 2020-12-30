@@ -5,7 +5,7 @@ export const categoryService = {
 };
 
 function getAllCategories() {
-    return fetch(`${config.apiUrl}/course/read.php`, config.headers).then(handleResponse);
+    return fetch(`${config.apiUrl}/course/read.php`, config.GET).then(handleResponse);
 }
 
 

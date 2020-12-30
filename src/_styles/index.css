@@ -2,9 +2,9 @@
     --primary-light-color: 77, 171, 245;
     --primary-main-color: 33, 150, 243;
     --primary-dark-color: 23, 105, 105;
-    --secondary-ligt-color: #68b36b;
-    --secondary-main-color: #43a047;
-    --secondary-dark-color: #2e7031;
+    --secondary-ligt-color: 104, 179, 107;
+    --secondary-main-color: 67, 160, 71;
+    --secondary-dark-color: 46, 112, 49;
     --alert-danger-color: 244, 67, 54;
     --alert-danger-text-color: 97, 26, 21;
     --alert-danger-background-color: 253, 236, 234;
@@ -989,11 +989,17 @@ footer {
     .container {
         max-width: 100%;
     }
+    .video-container{
+        height: 50px !important;
+    }
 }
 
 @media (min-width: 375px) {
     .container {
         max-width: 100%;
+    }
+    .video-container{
+        height: 315px !important;
     }
 }
 
@@ -1001,11 +1007,17 @@ footer {
     .container {
         max-width: var(--breakpoint-sm);
     }
+    .video-container{
+        height: 318px !important;
+    }
 }
 
 @media (min-width: 992px) {
     .container {
         max-width: var(--breakpoint-md);
+    }
+    .video-container{
+        height: 406px !important;
     }
 }
 
@@ -1013,11 +1025,17 @@ footer {
     .container {
         max-width: var(--breakpoint-lg);
     }
+    .video-container{
+        height: 494px !important;
+    }
 }
 
 @media (min-width: 1920px) {
     .container {
         max-width: var(--breakpoint-xl);
+    }
+    .video-container{
+        height: 570px !important;
     }
 }
 
@@ -1026,13 +1044,22 @@ footer {
 .paper {
     color: rgba(var(--text-dark));
     transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-    background-color: #fff;
+    background-color: rgba(var(--text-light));
 }
 
 .paper-outlined {
-    border: 1px solid rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(var(--text-dark), 0.12);
 }
 
+.paper-regular{
+    border-radius: 4px;
+    border: 1px solid rgba(var(--text-dark), 0.12);
+}
+
+.paper-square{
+    border-radius: 0;
+    border: 1px solid rgba(var(--text-dark), 0.12);
+}
 /* Dropdown */
 
 /* Dropdown Button */
@@ -2113,6 +2140,11 @@ div.text-input-group label {
     text-indent: 10000px;
 }
 
+.avatar-large{
+    width: 120px;
+    height: 120px;
+}
+
 /* IconButton */
 
 .icon-button {
@@ -2305,7 +2337,62 @@ div.text-input-group label {
     }
 }
 
+/* Dialog */
+
+.dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.dialog {
+    border-radius: 5px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(var(--text-light));
+    color: rgba(var(--text-dark))
+}
+
+.dialog-title {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 16px 24px;
+}
+
+.dialog-content {
+    flex: 1 1 auto;
+    padding: 8px 24px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.dialog-content-dividers {
+    padding: 16px 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.dialog-actions {
+    flex: 0 0 auto;
+    display: flex;
+    padding: 8px;
+    align-items: center;
+    justify-content: flex-end;
+}
+
 /* List */
+
+.list {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    list-style: none;
+}
 
 .list-item {
     display: flex;
@@ -2313,6 +2400,49 @@ div.text-input-group label {
     justify-content: space-between;
     padding: 15px;
     color: rgba(var(--text-dark));
+}
+
+.list-item-button {
+    color: inherit;
+    border: 0;
+    cursor: pointer;
+    margin: 0;
+    outline: 0;
+    position: relative;
+    border-radius: 0;
+    -moz-appearance: none;
+    text-decoration: none;
+    -moz-user-select: none;
+    background-color: transparent;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all .2s;
+}
+
+.list-item-button:hover {
+    background-color: rgba(var(--text-dark), 0.1) !important;
+}
+
+.list-item-ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.list-item-ripple .rippleContainer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.list-item-ripple .rippleContainer span {
+    transform: scale(0);
+    border-radius: 100%;
+    position: absolute;
+    opacity: 0.75;
+    background-color: rgba(var(--text-dark), 0.23);
+    animation: ripple 850ms;
 }
 
 .list-item-firt-action {
@@ -2329,7 +2459,7 @@ div.text-input-group label {
 
 .list-item-text {
     padding-left: 20px;
-    justify-content: center;
+    align-items: flex-start;
     display: flex;
     flex-direction: column;
 }
@@ -2402,6 +2532,7 @@ div.text-input-group label {
 }
 
 /* COURSE_PAGE */
+
 .wrap-area {
     display: flex;
     justify-content: end;
@@ -2415,20 +2546,84 @@ div.text-input-group label {
     color: #fff;
 }
 
-.course-info-area{
+.course-info-area {
     display: flex;
     justify-content: space-between;
     flex-direction: column;
     margin: 16px;
-    width: 30%; 
+    width: 30%;
 }
 
-.course-info-text{
+.course-info-text {
     display: flex;
     justify-content: space-between;
     flex-direction: row;
 }
 
+.course-info-button {
+    display: flex;
+    justify-content: end;
+}
+
+.done-area-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.done-area-title-icon {
+    fill: rgba(var(--secondary-main-color)) !important;
+}
+
+.teathers-list {
+    width: 100%;
+    padding: 0;
+    overflow: auto;
+    position: relative;
+    max-height: 140px;
+    background-color: rgba(var(--background-color));
+}
+
+/* step */
+.step-circle {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 32px;
+    max-width: 32px;
+    min-height: 32px;
+    max-height: 32px;
+    border-radius: 50%;
+    font-size: 16px;
+    color: #fff;
+    background: rgb(158, 158, 158);
+}
+
+.step-circle-inprocess {
+    background: rgba(var(--primary-main-color)) !important;
+}
+
+.stepCircleDone {
+    background: rgba(var(--secondary-main-color)) !important;
+}
+
+.step-text {
+    color: rgba(var(--text-dark));
+}
+
+.step-line {
+    margin-left: 32px;
+    min-width: 1px;
+    max-width: 1px;
+    min-height: 25px;
+    max-height: 25px;
+    background: rgb(158, 158, 158);
+}
+
+.video-container{
+    width: 100%;
+    height: 570px;
+}
 /* TO-DELETE */
 
 .box {

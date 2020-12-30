@@ -61,8 +61,8 @@ class HomePage extends React.Component {
                 <p>Компоненты:</p>
                 <h5>Button</h5>
                 <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                    <Button variant='contained' onPress={() => console.log(123)}>Click Me</Button>
-                    <Button variant='outlined'>Click Me</Button>
+                    <Button variant='contained' onPress={() => console.log('home')}>Click Me</Button>
+                    <Button variant='outlined' onPress={() => console.log('home')}>Click Me</Button>
                 </div>
                 <h5>Switch</h5>
                 <Switch isToggled={this.state.switch} onToggle={() => this.handleToggleChange()} />

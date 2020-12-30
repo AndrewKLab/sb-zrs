@@ -1,13 +1,11 @@
 import React from 'react'
 
-export const ListItemIcon = (props) => {
-    const {className, children} = props;
+export const List = ({children, className}) => {
     let styleClass = className == undefined ?  '' : ' '+className;
+
     return (
-        <div className={'list-item-icon'+styleClass}>
+        <div className={'list'+styleClass}>
             {children}
         </div>
     )
 }
-
-

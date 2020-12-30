@@ -6,6 +6,7 @@ export class CardActionArea extends React.Component {
     constructor(props) {
         super(props)
         this.bounce;
+        this.ButtonRef = React.createRef();
     }
     initializeState = () => {
         return {
@@ -16,11 +17,19 @@ export class CardActionArea extends React.Component {
     state = this.initializeState();
 
     /* Debounce Code to call the Ripple removing function */
-    callCleanUp = (cleanup, delay) => {
+    callCleanUp = () => {
         clearTimeout(this.bounce);
         this.bounce = setTimeout(() => {
-            cleanup();
-        }, delay);
+            this.cleanUp();
+        }, 2000);
+    }
+
+    componentDidMount() {
+        document.addEventListener('mouseup', this.callCleanUp);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('mouseup', this.callCleanUp);
     }
 
     showRipple = (e) => {
@@ -63,9 +72,9 @@ export class CardActionArea extends React.Component {
 
 
         return (
-            <button ref="targetElement" className={'сard-button card-action-area сard-ripple'+styleClass} onClick={onPress} tabIndex="0" type="button">
+            <button ref={this.ButtonRef} className={'сard-button card-action-area сard-ripple'+styleClass} onClick={onPress} tabIndex="0" type="button">
                 {children}
-                <div className={"rippleContainer"} onMouseDown={this.showRipple} onMouseUp={this.callCleanUp(this.cleanUp, 2000)} >
+                <div className={"rippleContainer"} onMouseDown={this.showRipple} >
                     {this.renderRippleSpan()}
                 </div>
             </button>

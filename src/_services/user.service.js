@@ -5,8 +5,9 @@ export const userService = {
     signin,
     signup,
     logout,
+    updateUser,
     validateToken,
-    getAll
+    getAllTeathers
 };
 
 
@@ -32,7 +33,7 @@ function signup(firstname, lastname, phonenumber, country, sity, password) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
             firstname,
             lastname,
             phonenumber,
@@ -43,7 +44,7 @@ function signup(firstname, lastname, phonenumber, country, sity, password) {
             access: "limited",
             roles: "user",
             avatar: "http://lifestudio-test.ru/assets/img/unnamed.png"
-         })
+        })
     };
 
     return fetch(`/api/create_user.php`, requestOptions)
@@ -58,6 +59,28 @@ function signup(firstname, lastname, phonenumber, country, sity, password) {
 function logout() {
     // remove user from local storage to log user out
     localStorage.removeItem('user');
+}
+
+function updateUser(jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            jwt,
+            firstname,
+            lastname,
+            phonenumber,
+            country,
+            sity,
+            status,
+            access,
+            roles,
+            teather_id,
+            avatar
+        })
+    };
+
+    return fetch(`/api/update_user.php`, requestOptions).then(handleResponse)
 }
 
 function validateToken(jwt) {
@@ -75,16 +98,9 @@ function validateToken(jwt) {
 }
 
 
-//unuse
-function getAll() {
-    const requestOptions = {
-        method: 'GET',
-        headers: authHeader()
-    };
-
-    return fetch(`${config.apiUrl}/users`, requestOptions).then(handleResponse);
+function getAllTeathers() {
+    return fetch(`${config.apiUrl}/read_all_teathers.php`, config.GET).then(handleResponse);
 }
-//
 
 function handleResponse(response) {
     return response.text().then(text => {

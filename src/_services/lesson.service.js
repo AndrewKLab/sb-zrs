@@ -5,7 +5,7 @@ export const lessonService = {
 };
 
 function getAllLessonsByCourse(course_id, user_id, teather_id) {
-    return fetch(`${config.apiUrl}/lesson/read_by_course.php?courses_id=${course_id}&user_id=${user_id}&teather_id=${teather_id}`, config.headers).then(handleResponse);
+    return fetch(`${config.apiUrl}/lesson/read_by_course.php?courses_id=${course_id}&user_id=${user_id}&teather_id=${teather_id}`, config.GET).then(handleResponse);
 }
 
 

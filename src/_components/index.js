@@ -18,6 +18,12 @@ export * from './Grid'
 export * from './Carousel'
 export * from './Paper'
 
+//Dialog
+export * from './Dialog/Dialog'
+export * from './Dialog/DialogTitle'
+export * from './Dialog/DialogContent'
+export * from './Dialog/DialogActions'
+
 //TextInput
 export * from './TextInput/TextInput'
 
@@ -29,6 +35,7 @@ export * from './Card/CardActions'
 export * from './Card/CardActionArea'
 
 //List
+export * from './List/List'
 export * from './List/ListItem'
 export * from './List/ListItemFirstAction'
 export * from './List/ListItemIcon'

@@ -68,12 +68,20 @@ module.exports = {
         // global app config object
         config: JSON.stringify({
             apiUrl: 'https://lifestudio-test.ru/api',
-            headers: {
+            GET: {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json, text/plain, */*',
                     'Accept-Encoding': 'gzip, deflate',
-                    'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3'
+                    'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
+                }
+            },
+            POST: {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Accept-Encoding': 'gzip, deflate',
+                    'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
                 }
             }
         })

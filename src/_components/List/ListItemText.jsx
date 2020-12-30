@@ -3,12 +3,7 @@ import { ListItemTitle, ListItemSubtitle } from '../'
 
 export const ListItemText = (props) => {
     const { className, children, title, subtitle } = props;
-    let styleClass;
-    if (className) {
-        styleClass = ' ' + className
-    } else {
-        styleClass = ''
-    }
+    let styleClass = className == undefined ?  '' : ' '+className;
     return (
         <div className={'list-item-text' + styleClass}>  
             {title && <ListItemTitle title={title}/>}

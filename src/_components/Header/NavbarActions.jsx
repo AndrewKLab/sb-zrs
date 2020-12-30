@@ -42,7 +42,7 @@ class NavbarActions extends Component {
         document.addEventListener('mousedown', this.handleClickOutside);
     }
 
-    UNSAFE_componentWillUnmount() {
+    componentWillUnmount() {
         document.removeEventListener('mousedown', this.handleClickOutside);
     }
 

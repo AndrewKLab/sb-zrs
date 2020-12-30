@@ -4,6 +4,7 @@ export class Button extends React.Component {
     constructor(props) {
         super(props)
         this.bounce;
+        this.ButtonRef = React.createRef();
     }
     initializeState = () => {
         return {
@@ -14,12 +15,21 @@ export class Button extends React.Component {
     state = this.initializeState();
 
     /* Debounce Code to call the Ripple removing function */
-    callCleanUp = (cleanup, delay) => {
+    callCleanUp = () => {
         clearTimeout(this.bounce);
         this.bounce = setTimeout(() => {
-            cleanup();
-        }, delay);
+            this.cleanUp();
+        }, 2000);
     }
+
+    componentDidMount() {
+        document.addEventListener('mouseup', this.callCleanUp);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('mouseup', this.callCleanUp);
+    }
+
 
     showRipple = (e) => {
         const rippleContainer = e.currentTarget;
@@ -56,7 +66,7 @@ export class Button extends React.Component {
     }
 
     render() {
-        const { type, children = null, className, variant, onPress = null, fullWidth } = this.props;
+        const { type, children = null, className, variant, onPress, fullWidth } = this.props;
         let buttonType;
         let styleClass;
         let styleVariant;
@@ -90,14 +100,14 @@ export class Button extends React.Component {
         }
 
         if (className) {
-            styleClass =  className
+            styleClass = className
         } else {
             styleClass = ''
         }
         return (
-            <button type={buttonType} ref="targetElement" className={'button ripple' + styleVariant + styleClass + fullWidthStyle} onClick={onPress}>
+            <button type={buttonType} ref={this.ButtonRef} className={'button ripple' + styleVariant + styleClass + fullWidthStyle} onClick={onPress}>
                 {children}
-                <div className="rippleContainer" onMouseDown={this.showRipple} onMouseUp={this.callCleanUp(this.cleanUp, 2000)} >
+                <div className="rippleContainer" onMouseDown={this.showRipple} >
                     {this.renderRippleSpan()}
                 </div>
             </button>

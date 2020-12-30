@@ -22,13 +22,10 @@ class App extends React.Component {
         const { jwt, dispatch } = this.props;
         if (jwt) {
             dispatch(userActions.validateToken(jwt));
-            this.setState({loading: false})
-        } else {
-            this.setState({loading: false})
         }
     }
     render() {
-        const { loading } = this.state;
+        const { loading } = this.props;
         var content;
         if (loading) {
             return <Loading />
@@ -49,8 +46,9 @@ class App extends React.Component {
 
 function mapStateToProps(state) {
     const { alert, authentication } = state;
-    const { jwt } = state.authentication
+    const { jwt, loading } = authentication
     return {
+        loading,
         alert,
         jwt
     };

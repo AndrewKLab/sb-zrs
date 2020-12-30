@@ -96,7 +96,7 @@ export class Carousel extends Component {
                 {Object.values(courses).map((course, index) => 
                     <div key={index}>
                         <Card>
-                            <Link to={`/courses/${categoty_name}`}>
+                            <Link to={`/courses/${categoty_name}/${course.id}`}>
                                 <CardActionArea>
                                     <CardMedia
                                         component="img"
