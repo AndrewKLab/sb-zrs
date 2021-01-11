@@ -5,17 +5,7 @@ import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 
 export const FormControlLabel = ({ children, control, label, onChange, className }) => {
-    let styleClass;
-    let chekedIcon;
-    let checkboxName;
-
-    if (className) {
-        styleClass = className
-    } else {
-        styleClass = ''
-    }
-
-
+    let styleClass = className == undefined ?  '' : ' '+className;
     return (
             <div className={"form-contol-label" + styleClass}>
                 {control}

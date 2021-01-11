@@ -8,6 +8,8 @@ import 'moment/locale/ru';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import YouTube from 'react-youtube';
 
+import { Question } from './';
+
 import {
     Avatar,
     Loading,
@@ -24,6 +26,7 @@ import {
     DialogContent,
     DialogActions,
     List,
+    Divider,
     ListItem,
     ListItemFirstAction,
     ListItemIcon,
@@ -59,6 +62,59 @@ class LessonPage extends React.Component {
         }
     }
 
+    renderNextButton(user, course_id, lessons, finishedLessonsLenght, lesson_id, status, number, finish_time) {
+        if (status === "finished") {
+            if (number === lessons.length && finishedLessonsLenght !== lessons.length) {
+                return (
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {}}>
+                        Предыдущий непройденый урок
+                    </Button>
+                )
+            } else if (finishedLessonsLenght === lessons.length) {
+                if (course_status === "inprocess") {
+                    return (
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => {}}>
+                            Завершить курс
+                        </Button>
+                    )
+                } else {
+                    return (
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => {}}>
+                            Назад к курсу
+                        </Button>
+                    )
+                }
+            } else {
+                return (
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {}}>
+                        Следующий урок
+                    </Button>
+                )
+            }
+        } else {
+            return (
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => this.finishLesson(lesson_id, passed_id, courses_id, user_id, finish_time, user.teather_id)}>
+                    Пройти урок
+                </Button>
+            )
+        }
+    }
+
     render() {
         const { data, loading, user } = this.props;
         const { category_name, course, lesson } = this.props.match.params;
@@ -69,7 +125,11 @@ class LessonPage extends React.Component {
         } else {
             lessons = data.lessons;
         }
-        const { teather_status, teather_name, teather_avatar } = data;
+
+        var finisfedLessonsLenght = 0;
+        lessons.forEach(item => item.status == 'finished' ? finisfedLessonsLenght++ : finisfedLessonsLenght)
+
+        const { course_id, teather_status, teather_name, teather_avatar } = data;
         return (
             <div className='py-3'>
                 <Grid container spacing={1}>
@@ -85,7 +145,44 @@ class LessonPage extends React.Component {
                                             <Typography>{lesson_item.description}</Typography>
                                             <Typography variant="h4" component='h4' className={'mt-3'} >Текст урока:</Typography>
                                             <Typography>{lesson_item.text}</Typography>
-                                            <hr />
+                                            <Divider />
+                                            {lesson_item.status !== 'finished' ? (
+                                                <div>
+                                                    {lesson_item.questions.length !== 0 ? (<Typography component="h4" variant="h4" className='mb-2' >Тест:</Typography>) : (null)}
+                                                    {lesson_item.questions.map((question, index) => (
+                                                        <Question question={question} key={index} />
+                                                    ))}
+                                                    {/* {lesson_item.questions.length !== 0 ? (<Divider />):(null)} */}
+                                                </div>
+                                            ) : (
+                                                    <div>
+                                                        <div className='done-area-title'>
+                                                            <Typography variant="h5" component="h5">Курс пройден</Typography>
+                                                            <CheckCircleOutlineIcon className='done-area-title-icon' fontSize="large" />
+                                                        </div>
+                                                        <Typography variant="body" component="body">Оценка: {lesson_item.assessment}</Typography>
+                                                        <Typography variant="body" component="body">Дата и время прохождения: {Moment(lesson_item.finish_time).locale('ru').format('Do MMMM YYYY, hh:mm:ss')}</Typography>
+                                                    </div>
+                                                )}
+                                            <div className={'d-flex grid-justify-xs-space-between'}>
+                                                <Button
+                                                    color="primary"
+                                                    disabled={Number(lesson_item.number) === 1}
+                                                    onClick={() => this.handleBack(category_name, course, Number(lesson_item.number) - 1)}>
+                                                    Предыдущий урок
+                                                </Button>
+                                                {this.renderNextButton(
+                                                    user,
+                                                    course_id,
+                                                    lessons,
+                                                    finisfedLessonsLenght,
+                                                    lesson_item.id,
+                                                    lesson_item.status,
+                                                    lesson_item.number,
+                                                    lesson_item.passed_id,
+                                                    lesson_item.finish_time, 
+                                                    )}
+                                            </div>
                                         </div>
                                     </div>
                                 }

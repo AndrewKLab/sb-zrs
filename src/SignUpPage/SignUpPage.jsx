@@ -131,6 +131,7 @@ class SignUpPage extends React.Component {
                                             id="firstname"
                                             label="Имя*"
                                             autoFocus
+                                            variant={'outlined'}
                                             helperText={
                                                 errors.firstname && touched.firstname
                                                     ? errors.firstname
@@ -148,6 +149,7 @@ class SignUpPage extends React.Component {
                                             label="Фамилия*"
                                             name="lastname"
                                             autoComplete="lname"
+                                            variant={'outlined'}
                                             helperText={
                                                 errors.lastname && touched.lastname
                                                     ? errors.lastname

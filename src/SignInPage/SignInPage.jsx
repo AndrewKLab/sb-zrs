@@ -129,6 +129,7 @@ class SignInPage extends React.Component {
                                                 label="Номер телефона"
                                                 type={'tel'}
                                                 autoComplete="phonenumber"
+                                                variant={'outlined'}
                                                 onChange={handleChange}
                                                 onSelect={val => setFieldValue("value", val)}
                                                 helperText={
@@ -149,6 +150,7 @@ class SignInPage extends React.Component {
                                                 label="Пароль"
                                                 type={this.state.showPassword ? 'text' : 'password'}
                                                 autoComplete="current-password"
+                                                variant={'outlined'}
                                                 onChange={handleChange}
                                                 onSelect={val => setFieldValue("value", val)}
                                                 helperText={

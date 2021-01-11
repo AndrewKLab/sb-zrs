@@ -4,6 +4,8 @@ export * from './Header/Nav';
 export * from './Footer/Footer';
 export * from './Container';
 export * from './Switch';
+export * from './Radio';
+export * from './RadioGroup';
 export * from './IconButton'
 export * from './Button'
 export * from './Alert'

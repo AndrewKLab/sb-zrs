@@ -66,11 +66,24 @@ export class Button extends React.Component {
     }
 
     render() {
-        const { type, children = null, className, variant, onPress, fullWidth } = this.props;
+        const { type, children = null, className, variant, onPress, fullWidth, disabled } = this.props;
         let buttonType;
         let styleClass;
         let styleVariant;
+        let styleDisabled;
         let fullWidthStyle = fullWidth === true ? ' w-100' : '';
+
+        switch (disabled) {
+            case true:
+                styleDisabled = ' button-disabled'
+                break;
+            case false:
+                styleDisabled = ''
+                break;
+            default:
+                styleDisabled = ''
+                break;
+        }
 
         switch (variant) {
             case 'contained':
@@ -105,7 +118,7 @@ export class Button extends React.Component {
             styleClass = ''
         }
         return (
-            <button type={buttonType} ref={this.ButtonRef} className={'button ripple' + styleVariant + styleClass + fullWidthStyle} onClick={onPress}>
+            <button type={buttonType} ref={this.ButtonRef} className={'button ripple' + styleVariant + styleClass + fullWidthStyle+styleDisabled} disabled={disabled} onClick={onPress}>
                 {children}
                 <div className="rippleContainer" onMouseDown={this.showRipple} >
                     {this.renderRippleSpan()}
