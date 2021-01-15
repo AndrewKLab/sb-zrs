@@ -62,6 +62,38 @@ export function lesson(state = [], action) {
 
       };
 
+    case lessonConstants.CREATE_PASSED_LESSON:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          lessons: [
+            ...state.data.lessons,
+          ]
+        }
+
+      };
+
+    case lessonConstants.UPDATE_PASSED_LESSON:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          lessons:
+            state.data.lessons.map(item => item.passed_id === action.passed_id ?
+              {
+                ...item,
+                assessment: action.assessment,
+                status: 'finished',
+                finish_time: action.finish_time
+              } : item),
+
+        }
+
+      };
+
+
+
     default:
       return state
   }
