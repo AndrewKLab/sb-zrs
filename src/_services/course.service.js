@@ -4,7 +4,8 @@ export const courseService = {
     getAllCoursesByCategoryName,
     createCoursePassed,
     updateCoursePassed,
-    deleteCoursePassed
+    deleteCoursePassed,
+    getAllPassedCourseByUser
 };
 
 function getAllCoursesByCategoryName(category_name) {
@@ -39,6 +40,10 @@ function updateCoursePassed(passed_course_id, status, assessment, start_time, fi
 
 function deleteCoursePassed(passed_course_id) {
     return fetch(`${config.apiUrl}/courses_passed/delete.php?id=${passed_course_id}`, config.POST).then(handleResponse);
+}
+
+function getAllPassedCourseByUser(user_id) {
+    return fetch(`${config.apiUrl}/courses_passed/read_all_courses_passed_by_user.php?user_id=${user_id}`, config.GET).then(handleResponse);
 }
 
 

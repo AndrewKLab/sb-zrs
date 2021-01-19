@@ -19,6 +19,7 @@ export * from './Avatar'
 export * from './Grid'
 export * from './Carousel'
 export * from './Paper'
+export * from './Accordion'
 
 //Dialog
 export * from './Dialog/Dialog'

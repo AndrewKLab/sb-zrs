@@ -36,7 +36,7 @@ class LessonPage extends React.Component {
     }
 
     render() {
-        const { dispatch, history, data, loading, user } = this.props;
+        const { dispatch, history, data, loading, jwt, user } = this.props;
         const { category_name, course, lesson } = this.props.match.params;
 
         var lessons;
@@ -46,10 +46,9 @@ class LessonPage extends React.Component {
             lessons = data.lessons;
         }
 
-        var finisfedLessonsLenght = 0;
-        lessons.forEach(item => item.status == 'finished' ? finisfedLessonsLenght++ : finisfedLessonsLenght)
-
-        const { course_id, teather_status, teather_name, teather_avatar } = data;
+        var finishedLessonsLenght = 0;
+        lessons.forEach(item => item.status == 'finished' ? finishedLessonsLenght++ : finishedLessonsLenght)
+        const { course_id, teather_status, teather_name, teather_avatar, passed_course_id, passed_course_status, assessment, start_time, finish_time } = data;
         return (
             <div className='py-3'>
                 <Grid container spacing={1}>
@@ -69,11 +68,17 @@ class LessonPage extends React.Component {
                                             <Test
                                                 dispatch={dispatch}
                                                 history={history}
+                                                jwt={jwt}
                                                 user={user}
                                                 category_name={category_name}
                                                 course={course}
+                                                passed_course_id={passed_course_id}
+                                                course_status={passed_course_status}
+                                                passed_course_assessment={assessment}
+                                                passed_course_start_time={start_time}
+                                                passed_course_finish_time={finish_time}
                                                 lessons={lessons}
-                                                finisfedLessonsLenght={finisfedLessonsLenght}
+                                                finishedLessonsLenght={finishedLessonsLenght}
                                                 lesson_id={lesson_item.id}
                                                 number={lesson_item.number}
                                                 status={lesson_item.status}
@@ -89,7 +94,7 @@ class LessonPage extends React.Component {
                         ))}
                     </Grid>
                     <Grid item xs={3}>
-                        <LessonProgressPlane lessons={lessons} category_name={category_name} course={course} />
+                        <LessonProgressPlane dispatch={dispatch} history={history} lessons={lessons} category_name={category_name} course={course} user={user} />
                         <TeatherPlane teather_status={data.teather_status} teather_name={teather_name} teather_avatar={teather_avatar} />
                     </Grid>
                 </Grid>

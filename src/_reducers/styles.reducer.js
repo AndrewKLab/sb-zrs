@@ -17,7 +17,9 @@ const initialState = {
 
           'alert-danger-background-color': '253, 236, 234',
           'alert-danger-text-color': '97, 26, 21',
-          'alert-danger-icon-color': '244, 67, 54'
+          'alert-danger-icon-color': '244, 67, 54',
+
+          'background-color-light' : '255, 255, 255'
         },
         dark: {
           'primary-light-color': '255, 205, 56',
@@ -30,7 +32,9 @@ const initialState = {
           
           'alert-danger-background-color': '244, 67, 54',
           'alert-danger-text-color': '255, 255, 255',
-          'alert-danger-icon-color': '255, 255, 255'
+          'alert-danger-icon-color': '255, 255, 255',
+
+          'background-color-light' : '100, 100, 100'
         }
       }
 };

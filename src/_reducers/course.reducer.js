@@ -16,6 +16,20 @@ export function course(state = {}, action) {
       return {
         error: action.error
       };
+    //GET_ALL_PASSED_COURSE_BY_USER_REQUEST
+    case courseConstants.GET_ALL_PASSED_COURSE_BY_USER_REQUEST:
+      return {
+        loading: true
+      };
+    case courseConstants.GET_ALL_PASSED_COURSE_BY_USER_SUCCESS:
+      return {
+        loading: false,
+        courses: action.courses,
+      };
+    case courseConstants.GET_ALL_PASSED_COURSE_BY_USER_FAILURE:
+      return {
+        error: action.error
+      };
 
     default:
       return state

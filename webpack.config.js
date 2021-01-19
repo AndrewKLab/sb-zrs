@@ -1,12 +1,15 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var path = require('path');
 
 module.exports = {
     mode: 'development',
     resolve: {
         extensions: ['.js', '.jsx', '.css']
     },
+    entry: './src/index.jsx',
     output: {
-       publicPath: '/'
+       filename: 'main.js',
+       path: path.resolve(__dirname, 'dist'),
      },
     module: {
         rules: [

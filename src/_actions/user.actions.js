@@ -95,7 +95,7 @@ function updateUser(jwt, firstname, lastname, phonenumber, country, sity, status
     return dispatch => {
         dispatch(request({ jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar }));
 
-        userService.updateUser(jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar)
+        return userService.updateUser(jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar)
             .then(
                 data => {
                     localStorage.setItem("user", data.jwt);

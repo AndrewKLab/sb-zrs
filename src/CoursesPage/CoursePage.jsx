@@ -175,21 +175,10 @@ class CoursePage extends React.Component {
                     assessment = null,
                     start_time,
                     finish_time = null))
-                    history.push(`/courses/${category_name}/${course_id}/${lessons[0].id}`)
-                // CoursesService.UpdateCoursePassed(passed_course_id, start_time)
-                //     .then(
-                //         response => {
-                //             LessonsService.DeleteAllByCoursePassed(course_id, user_id)
-                //             LessonsService.readFirstLesson(course_id).then(
-                //                 response => {
-                //                     this.props.history.push(`/courses/${category_name}/${course_id}/${response.data.id}`)
-                //                 }
-                //             )
-                //         },
-                //         error => {
-                //             console.log(error.response.data.message)
-                //         }
-                //     )
+                    .then(
+                        dispatch(lessonActions.deleteAllPassedLessonsByCourse(course_id, user_id))
+                        .then(() => history.push(`/courses/${category_name}/${course_id}/${lessons[0].id}`))
+                    )
                 break;
 
             default:

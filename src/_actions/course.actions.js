@@ -5,7 +5,8 @@ export const courseActions = {
     getAllCoursesByCategoryName,
     createCoursePassed,
     updateCoursePassed,
-    deleteCoursePassed
+    deleteCoursePassed,
+    getAllPassedCourseByUser
 };
 
 function getAllCoursesByCategoryName(category_name) {
@@ -36,7 +37,7 @@ function createCoursePassed(course_id, user_id) {
 
 function updateCoursePassed(passed_course_id, status, assessment, start_time, finish_time) {
     return dispatch => {
-        courseService.updateCoursePassed(passed_course_id, status, assessment, start_time, finish_time)
+        return courseService.updateCoursePassed(passed_course_id, status, assessment, start_time, finish_time)
             .then(
                 dispatch(update(passed_course_id, status, assessment, start_time, finish_time))
             );
@@ -53,3 +54,20 @@ function deleteCoursePassed(passed_course_id) {
     };
     function clear(passed_course_id) { return { type: courseConstants.DELETE_PASSED_COURSE, passed_course_id } }
 }
+
+function getAllPassedCourseByUser(user_id) {
+    return dispatch => {
+        dispatch(request(user_id));
+
+        return courseService.getAllPassedCourseByUser(user_id)
+            .then(
+                courses => dispatch(success(courses)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request(user_id) { return { type: courseConstants.GET_ALL_PASSED_COURSE_BY_USER_REQUEST, user_id} }
+    function success(courses) { return { type: courseConstants.GET_ALL_PASSED_COURSE_BY_USER_SUCCESS, courses } }
+    function failure(error) { return { type: courseConstants.GET_ALL_PASSED_COURSE_BY_USER_FAILURE, error } }
+}
+

@@ -2,8 +2,10 @@
   "name": "sb_zrs",
   "version": "1.0.0",
   "license": "MIT",
+  "private": true,
   "scripts": {
-    "start": "webpack-dev-server --open"
+    "start": "webpack-dev-server --open",
+    "build": "webpack"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.2",
@@ -14,6 +16,7 @@
     "cx": "^20.12.3",
     "formik": "^2.2.6",
     "history": "^4.6.3",
+    "lodash": "^4.17.20",
     "moment": "^2.29.1",
     "react": "^16.0.0",
     "react-animation": "^1.2.2",

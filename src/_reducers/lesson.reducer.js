@@ -39,11 +39,11 @@ export function lesson(state = [], action) {
         ...state,
         data: {
           ...state.data,
-          passed_course_id: action.data.id,
-          passed_course_status: action.data.status,
-          assessment: action.data.assessment,
-          start_time: action.data.start_time,
-          finish_time: action.data.finish_time,
+          passed_course_id: action.id,
+          passed_course_status: action.status,
+          assessment: action.assessment,
+          start_time: action.start_time,
+          finish_time: action.finish_time,
         }
 
       };
@@ -62,14 +62,20 @@ export function lesson(state = [], action) {
 
       };
 
-    case lessonConstants.CREATE_PASSED_LESSON:
+    case lessonConstants.CREATE_PASSED_LESSON_SUCCESS:
       return {
         ...state,
         data: {
           ...state.data,
-          lessons: [
-            ...state.data.lessons,
-          ]
+          lessons: state.data.lessons.map(item => item.id === action.data.lesson_id ?
+              {
+                ...item,
+                passed_id: action.data.id,
+                status: action.data.status,
+                assessment: null,
+                start_time: action.data.start_time,
+                finish_time: null,
+              } : item),
         }
 
       };
@@ -87,6 +93,26 @@ export function lesson(state = [], action) {
                 status: 'finished',
                 finish_time: action.finish_time
               } : item),
+
+        }
+
+      };
+
+    case lessonConstants.DELETE_ALL_PASSED_LESSONS_BY_COURSE:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          lessons:
+            state.data.lessons.map(item => ({
+              ...item,
+              passed_id: null,
+              assessment: null,
+              status: null,
+              start_time: null,
+              finish_time: null
+            })
+            ),
 
         }
 

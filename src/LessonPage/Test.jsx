@@ -4,31 +4,39 @@ import {
     Typography,
     Button
 } from '../_components';
-import { lessonActions } from '../_actions'
+import { lessonActions, userActions, courseActions } from '../_actions'
 import { LessonFinishedPlane, Answer, LessonControlButton } from './';
 import { useForm } from "react-hook-form"
 import Moment from 'moment';
 import 'moment/locale/ru';
 
-export const Test = ({ dispatch, history, user, category_name, course, lessons, finishedLessonsLenght, lesson_id, number, status, lesson_passed_id, assessment, finish_time, questions }) => {
+export const Test = ({ dispatch, history, jwt, user, category_name, course, passed_course_id, course_status, passed_course_assessment, passed_course_start_time, passed_course_finish_time, lessons, finishedLessonsLenght, lesson_id, number, status, lesson_passed_id, assessment, finish_time, questions }) => {
     const [selected, setSelected] = useState('');
     const { register, handleSubmit, errors } = useForm();
     const onSubmit = (data) => {
         if (status === "finished") {
-            if (number === lessons.length && finishedLessonsLenght !== lessons.length) {
+            if (Number(number) === lessons.length && Number(finishedLessonsLenght) !== lessons.length) {
                 console.log('Предыдущий непройденый урок')
                 // Предыдущий непройденый урок
+                backToUnFinisfedLesson()
             } else if (finishedLessonsLenght === lessons.length) {
                 if (course_status === "inprocess") {
-                    console.log('Завершить курс')
-                    // Завершить курс
+                    var result = lessons.reduce((acc, item) => {
+                        acc[item.id] = item.assessment;
+                        return Object.values(acc);
+                    }, {});
+                    var sum = 0;
+                    for (var i = 0; i < result.length; i++) {
+                        sum = sum + parseInt(result[i])
+                    }
+                    var assessment = sum / result.length;
+                    finishCourse(assessment)
                 } else {
-                    console.log('Назад к курсу')
                     // Назад к курсу
+                    backToCourse()
                 }
             } else {
-                console.log('Следующий урок')
-                goToNextLesson()  
+                goToNextLesson()
             }
         } else {
             var result = questions.reduce((acc, item) => {
@@ -53,20 +61,64 @@ export const Test = ({ dispatch, history, user, category_name, course, lessons, 
                         assessment++
                     }
                 }
-
             }
             finishLesson(lesson_passed_id, assessment, Moment().format())
-            console.log('Пройти урок')
-
-
         }
 
     };
 
+    // Завершить курс
+    const finishCourse = (assessment) => {
+        const status = "УЧЕНИК"
+        if (user.status === "ИСКАТЕЛЬ") {
+            dispatch(userActions.updateUser(jwt, user.firstname, user.lastname, user.phonenumber, user.country, user.sity, status, user.access, user.roles, user.teather_id, user.avatar))
+                .then(() => dispatch(courseActions.updateCoursePassed(
+                    passed_course_id,
+                    'finished',
+                    assessment,
+                    passed_course_start_time,
+                    Moment().format()))
+                ).then(() => history.push(`/courses/${category_name}/${course}`))
+        } else {
+            dispatch(courseActions.updateCoursePassed(
+                passed_course_id,
+                'finished',
+                assessment,
+                passed_course_start_time,
+                Moment().format())
+            ).then(() => history.push(`/courses/${category_name}/${course}`))
+        }
+    }
+
+    //Назад к курсу
+    const backToCourse = () => {
+        history.push(`/courses/${category_name}/${course}`);
+    }
+
+    //Назад предыдущему непройденому уроку
+    const backToUnFinisfedLesson = () => {
+        for (var i = 0; i < lessons.length; i++) {
+            if (lessons[i].status === 'inprocess' || lessons[i].status === null) {
+                history.push(`/courses/${category_name}/${course}/${lessons[i].id}`)
+                break;
+            }
+        }
+    }
+
     //Следующий урок
     const goToNextLesson = () => {
-        window.scrollTo(0, 0);
-        history.push(`/courses/${category_name}/${course}/${lessons[Number(number)].id}`)
+        if (user != undefined) {
+            dispatch(lessonActions.createLessonPassed(course, lessons[Number(number)].id, user.id))
+                .then(() => {
+                    dispatch(lessonActions.getAllLessonsByCourse(course, user.id, user.teather_id))
+                        .then(() => {
+                            window.scrollTo(0, 0);
+                            history.push(`/courses/${category_name}/${course}/${lessons[Number(number)].id}`)
+                        }
+                        )
+                })
+
+        }
     }
 
     // Пройти урок
@@ -74,8 +126,9 @@ export const Test = ({ dispatch, history, user, category_name, course, lessons, 
         dispatch(lessonActions.updateLessonPassed(lesson_passed_id, assessment, finish_time))
     }
 
-    const handleBack = ({ category_name, course, number }) => {
-        console.log(123)
+    const handleBack = () => {
+        window.scrollTo(0, 0);
+        history.push(`/courses/${category_name}/${course}/${lessons[Number(number-2)].id}`)
     }
 
     return (
@@ -99,12 +152,13 @@ export const Test = ({ dispatch, history, user, category_name, course, lessons, 
                 <Button
                     color="primary"
                     disabled={Number(number) === 1}
-                    onPress={() => handleBack(category_name, course, Number(number) - 1)}>
+                    onPress={() => handleBack()}>
                     Предыдущий урок
                 </Button>
                 <LessonControlButton
                     user={user}
                     course={course}
+                    course_status={course_status}
                     lessons={lessons}
                     finishedLessonsLenght={finishedLessonsLenght}
                     lesson_id={lesson_id}
@@ -117,5 +171,3 @@ export const Test = ({ dispatch, history, user, category_name, course, lessons, 
         </Form>
     )
 }
-
-

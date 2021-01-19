@@ -1,31 +1,107 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { userActions } from '../_actions';
+import { userActions, courseActions } from '../_actions';
+
+import { Avatar, Accordion, Paper, Loading, Typography, Grid, ListItem, ListItemFirstAction } from '../_components'
+import { ProgressCircle } from '../LessonPage'
 
 class ProfilePage extends React.Component {
 
+    componentDidMount() {
+        const { dispatch, user } = this.props;
+        if (user != undefined) {
+            dispatch(courseActions.getAllPassedCourseByUser(user.id))
+        }
+    }
 
     render() {
-        const { user, classes } = this.props;
+        const { history, user, courses } = this.props;
+        if (user == undefined) {
+            return <Loading />
+        }
         return (
-            <div>
-                <div style={{margin: 5}} className={classes.paperRoot+ " " + classes.paperRounded+ " " +classes.paperOutlined}>
-                    profile
+            <div className={'py-3'}>
+                <Paper className={'profile p-3'}>
+                    <Avatar className={'profile-avatar'} src={user.avatar} alt={user.firstname + ' ' + user.lastname} />
+                    <div className='p-3'>
+                        <Typography variant="h4" component="h4">{user.firstname + ' ' + user.lastname}</Typography>
+                        <Typography variant="h6" component="h6"><strong>Статус:</strong> {user.status}</Typography>
+                    </div>
+                </Paper>
+                <div className='mt-3'>
+                    <Typography variant="body" component="body"> <strong>Номер телефона:</strong> +7{user.phonenumber}</Typography>
+                    <Typography variant="body" component="body"> <strong>Страна:</strong> {user.country}</Typography>
+                    <Typography variant="body" component="body"> <strong>Город:</strong> {user.sity}</Typography>
                 </div>
+                {courses !== undefined ? (
+                    <Grid container spacing={2}>
+                        {courses.inprocess !== undefined ? (
+                            <Grid item xs={12} sm={courses.finished !== undefined ? 6 : 0}>
+                                <Paper>
+                                    <Typography className='m-2' variant="h4" component="h4">Курсы в процессе прохождения:</Typography>
+                                    {courses.inprocess.map((course, index) => (
+                                        <Accordion key={index} labеl={course.course_name}>
+                                            <div>
+                                                {course.lessons !== null ? (
+                                                    course.lessons.map((lesson, index) => (
+                                                        <div key={index} onClick={() => { history.push(`/courses/${course.category_name}/${course.course_id}/${lesson.id}`) }}>
+                                                            <ListItem button >
+                                                                <ListItemFirstAction>
+                                                                    <ProgressCircle status={lesson.status} number={lesson.number} />
+                                                                    <Typography className={'pl-3 step-text'}>{lesson.name}</Typography>
+                                                                </ListItemFirstAction>
+                                                            </ListItem>
+                                                            {course.lessons.length !== Number(lesson.number) ? (<div className={'step-line'}></div>) : (null)}
+                                                        </div>
+                                                    ))
+                                                ) : (course.course_name)}
+                                            </div>
+                                        </Accordion>
+                                    ))}
+                                </Paper>
+                            </Grid>
+                        ) : (null)}
+                        {courses.finished !== undefined ? (
+                            <Grid item xs={12} sm={courses.inprocess !== undefined ? 6 : 0}>
+                                <Paper>
+                                    <Typography className='m-2' variant="h4" component="h4">Пройденные курсы:</Typography>
+                                    {courses.finished.map((course, index) => (
+                                        <Accordion key={index} labеl={course.course_name}>
+                                            <div>
+                                                {course.lessons.map((lesson, index) => (
+                                                    <div key={index} onClick={() => { history.push(`/courses/${course.category_name}/${course.course_id}/${lesson.id}`) }}>
+                                                        <ListItem button >
+                                                            <ListItemFirstAction>
+                                                                <ProgressCircle status={lesson.status} number={lesson.number} />
+                                                                <Typography className={'pl-3 step-text'}>{lesson.name}</Typography>
+                                                            </ListItemFirstAction>
+                                                        </ListItem>
+                                                        {course.lessons.length !== Number(lesson.number) ? (<div className={'step-line'}></div>) : (null)}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </Accordion>
+                                    ))}
+                                </Paper>
+                            </Grid>
+                        ) : (null)}
+
+                    </Grid>
+                ) : (null)}
             </div>
         );
     }
 }
 
 function mapStateToProps(state) {
-    const { authentication, style } = state;
+    const { authentication, course } = state;
     const { user } = authentication;
-    const { classes } = style;
+    const { loading, courses } = course;
     return {
         user,
-        classes
+        loading,
+        courses
     };
 }
 

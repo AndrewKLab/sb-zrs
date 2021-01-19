@@ -3,7 +3,8 @@ import config from 'config';
 export const lessonService = {
     getAllLessonsByCourse,
     createLessonPassed,
-    updateLessonPassed
+    updateLessonPassed,
+    deleteAllPassedLessonsByCourse
 };
 
 function getAllLessonsByCourse(course_id, user_id, teather_id) {
@@ -29,6 +30,10 @@ function updateLessonPassed(passed_id, assessment, finish_time) {
                 assessment
             })
         }).then(handleResponse);
+}
+
+function deleteAllPassedLessonsByCourse(course_id, user_id) {
+    return fetch(`${config.apiUrl}/lessons_passed/delete_all_by_course_passed.php?course_id=${course_id}&user_id=${user_id}`, config.POST).then(handleResponse);
 }
 
 function handleResponse(response) {

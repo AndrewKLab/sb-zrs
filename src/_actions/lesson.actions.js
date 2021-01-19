@@ -4,7 +4,8 @@ import { lessonService } from '../_services';
 export const lessonActions = {
     getAllLessonsByCourse,
     createLessonPassed,
-    updateLessonPassed
+    updateLessonPassed,
+    deleteAllPassedLessonsByCourse
 };
 
 
@@ -48,4 +49,14 @@ function updateLessonPassed(passed_id, assessment, finish_time) {
             );
     };
     function update() { return { type: lessonConstants.UPDATE_PASSED_LESSON, passed_id, assessment, finish_time } }
+}
+
+function deleteAllPassedLessonsByCourse(course_id, user_id){
+    return dispatch => {
+        return lessonService.deleteAllPassedLessonsByCourse(course_id, user_id)
+            .then(
+                dispatch(clear())
+            );
+    };
+    function clear() { return { type: lessonConstants.DELETE_ALL_PASSED_LESSONS_BY_COURSE } }
 }
