@@ -7,7 +7,8 @@ export const userService = {
     logout,
     updateUser,
     validateToken,
-    getAllTeathers
+    getAllTeathers,
+    getAllStudentsByUser
 };
 
 
@@ -100,6 +101,10 @@ function validateToken(jwt) {
 
 function getAllTeathers() {
     return fetch(`${config.apiUrl}/read_all_teathers.php`, config.GET).then(handleResponse);
+}
+
+function getAllStudentsByUser(teather_id) {
+    return fetch(`${config.apiUrl}/read_all_students_by_teather.php?teather_id=${teather_id}`, config.GET).then(handleResponse);
 }
 
 function handleResponse(response) {

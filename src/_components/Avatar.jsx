@@ -2,13 +2,7 @@
 import React from "react";
 
 export const Avatar = ({ children, alt, src, className }) => {
-    let styleClass;
-
-    if (className) {
-        styleClass = ' '+className
-    } else {
-        styleClass = ''
-    }
+    let styleClass = className !== '' ? ' '+className : '';
 
     return (
             <div className={'avatar' + styleClass}>

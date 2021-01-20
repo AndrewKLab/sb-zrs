@@ -13,7 +13,8 @@ import { CategoriesPage } from '../CategoriesPage';
 import { CoursesPage, CoursePage } from '../CoursesPage';
 import { LessonPage } from '../LessonPage';
 import { ProfilePage } from '../ProfilePage';
-import getTheme from '../_styles/theme/base'
+import { TeatherPanelPage } from '../TeatherPanelPage';
+import getTheme from '../_styles/theme/base';
 
 const currentTheme = localStorage.getItem('appTheme') || 'light'
 const theme = getTheme(currentTheme);
@@ -36,6 +37,7 @@ class MainRouter extends React.Component {
                 <Route exact path="/courses/:category_name" component={CoursesPage} />
                 <Route exact path="/courses/:category_name/:course" component={CoursePage} />
                 <Route exact path="/courses/:category_name/:course/:lesson" component={LessonPage} />
+                <PrivateRoute exact path="/teather-panel" component={TeatherPanelPage} />
                 <PrivateRoute exact path="/profile" component={ProfilePage} />
                 <PrivateRoute exact path="/" component={HomePage} />
             </div>

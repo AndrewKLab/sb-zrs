@@ -9,7 +9,8 @@ export const userActions = {
     logout,
     updateUser,
     validateToken,
-    getAllTeathers
+    getAllTeathers,
+    getAllStudentsByUser
 };
 
 function signin(phonenumber, password) {
@@ -140,4 +141,20 @@ function getAllTeathers() {
     function request() { return { type: userConstants.GETALL_TEATHERS_REQUEST } }
     function success(teathers) { return { type: userConstants.GETALL_TEATHERS_SUCCESS, teathers } }
     function failure(error) { return { type: userConstants.GETALL_TEATHERS_FAILURE, error } }
+}
+
+function getAllStudentsByUser(teather_id) {
+    return dispatch => {
+        dispatch(request());
+
+        return userService.getAllStudentsByUser(teather_id)
+            .then(
+                students => dispatch(success(students)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request() { return { type: userConstants.GETALL_STUDENTS_REQUEST } }
+    function success(students) { return { type: userConstants.GETALL_STUDENTS_SUCCESS, students } }
+    function failure(error) { return { type: userConstants.GETALL_STUDENTS_FAILURE, error } }
 }

@@ -18,7 +18,10 @@ class Navbar extends Component {
                             <ul>
                                 <Nav link={'/'}>Главная</Nav>
                                 {user === undefined ? (null) : (
-                                    user.status === 'admin' && <Nav link={'/administrator'}>Администратор</Nav>
+                                    user.roles === 'ROLE_ADMIN' && <Nav link={'/administrator'}>Администратор</Nav>
+                                )}
+                                {user === undefined ? (null) : (
+                                    user.roles === 'ROLE_TEATHER' && <Nav link={'/teather-panel'}>Панель учителя</Nav>
                                 )}
                                 <Nav link={'/courses'}>Курсы</Nav>
                                 <Nav link={'/contacts'}>Контакты</Nav>

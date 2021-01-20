@@ -47,3 +47,7 @@ export * from './List/ListItemSubtitle'
 export * from './List/ListItemText'
 export * from './List/ListItemTitle'
 
+//Menu
+export * from './Menu/Menu'
+export * from './Menu/MenuItem'
+
