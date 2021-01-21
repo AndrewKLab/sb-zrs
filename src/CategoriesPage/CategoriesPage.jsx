@@ -11,9 +11,19 @@ import { ToAllButton } from './'
 
 
 class CategoriesPage extends React.Component {
-    componentDidMount() {
-        const { dispatch } = this.props;
-        dispatch(categoryActions.getAllCategories())
+    componentDidMount() {       
+        const { dispatch, history, user } = this.props;
+        if (user !== undefined) {
+            console.log(user)
+            if (user.access === 'limited') {
+                history.push(`/courses/main`)
+            }
+            else {
+                dispatch(categoryActions.getAllCategories())
+            }
+        } else {
+            history.push(`/courses/main`)
+        }
     }
     render() {
         const { loading, main, special, social, national } = this.props;

@@ -1,58 +1,97 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 
-export class Button extends React.Component {
-    constructor(props) {
-        super(props)
-        this.bounce;
-        this.ButtonRef = React.createRef();
-    }
-    initializeState = () => {
-        return {
-            spanStyles: {},
-            count: 0
-        }
-    }
-    state = this.initializeState();
+export const Button = ({ type, children = null, className, variant, onPress, fullWidth, disabled }) => {
+    let styleClass = className !== undefined ? ' ' + className : '';
+    let timeout;
+    let buttonType;
+    let styleVariant;
+    let styleDisabled;
+    let fullWidthStyle = fullWidth === true ? ' w-100' : '';
 
-    /* Debounce Code to call the Ripple removing function */
-    callCleanUp = () => {
-        clearTimeout(this.bounce);
-        this.bounce = setTimeout(() => {
-            this.cleanUp();
-        }, 2000);
+    switch (disabled) {
+        case true:
+            styleDisabled = ' button-disabled'
+            break;
+        case false:
+            styleDisabled = ''
+            break;
+        default:
+            styleDisabled = ''
+            break;
     }
 
-    componentDidMount() {
-        document.addEventListener('mouseup', this.callCleanUp);
+    switch (variant) {
+        case 'contained':
+            styleVariant = ' button-contained '
+            break;
+        case 'outlined':
+            styleVariant = ' button-outlined '
+            break;
+        default:
+            styleVariant = ' button-contained '
+            break;
     }
 
-    componentWillUnmount() {
-        document.removeEventListener('mouseup', this.callCleanUp);
+    switch (type) {
+        case 'button':
+            buttonType = 'button'
+            break;
+        case 'reset':
+            buttonType = 'reset'
+            break;
+        case 'submit':
+            buttonType = 'submit'
+            break;
+        default:
+            buttonType = 'button'
+            break;
     }
 
+    const [didMount, setDidMount] = useState(false);
+    const [spanStyles, setSpanStyles] = useState({});
+    const [rcount, setCount] = useState(0);
+    const ButtonRef = useRef();
 
-    showRipple = (e) => {
-        const rippleContainer = e.currentTarget;
+    useEffect(() => {
+        document.addEventListener("mouseup", callCleanUp);
+        setDidMount(true);
+        return () => {
+            // Unbind the event listener on clean up
+            document.removeEventListener("mouseup", callCleanUp);
+            setDidMount(false)
+        };
+    }, []);
+
+    if (!didMount) {
+        return null;
+    }
+
+    const callCleanUp = () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            cleanUp();
+        }, 2000)
+    }
+
+    const showRipplePlane = (event) => {
+        const rippleContainer = event.currentTarget;
         const size = rippleContainer.offsetWidth;
         const pos = rippleContainer.getBoundingClientRect();
-        const x = e.pageX - pos.x - (size / 2);
-        const y = e.pageY - pos.y - (size / 2);
-
-        const spanStyles = { top: y + 'px', left: x + 'px', height: size + 'px', width: size + 'px' };
-        const count = this.state.count + 1;
-        this.setState({
-            spanStyles: { ...this.state.spanStyles, [count]: spanStyles },
-            count: count
-        });
+        const x = event.pageX - pos.x - (size / 2);
+        const y = event.pageY - pos.y - (size / 2);
+        const sspanStyles = { top: y + 'px', left: x + 'px', height: size + 'px', width: size + 'px' };
+        const count = rcount + 1;
+        setSpanStyles({ ...spanStyles, [count]: sspanStyles })
+        setCount(count)
     }
 
-    cleanUp = () => {
-        const initialState = this.initializeState();
-        this.setState({ ...initialState });
+    const cleanUp = () => {
+        setSpanStyles({})
+        setCount(0)
     }
 
-    renderRippleSpan = () => {
-        const { showRipple = false, spanStyles = {} } = this.state;
+
+    const renderRippleSpan = () => {
         const spanArray = Object.keys(spanStyles);
         if (spanArray && spanArray.length > 0) {
             return (
@@ -65,65 +104,13 @@ export class Button extends React.Component {
         }
     }
 
-    render() {
-        const { type, children = null, className, variant, onPress, fullWidth, disabled } = this.props;
-        let buttonType;
-        let styleClass;
-        let styleVariant;
-        let styleDisabled;
-        let fullWidthStyle = fullWidth === true ? ' w-100' : '';
 
-        switch (disabled) {
-            case true:
-                styleDisabled = ' button-disabled'
-                break;
-            case false:
-                styleDisabled = ''
-                break;
-            default:
-                styleDisabled = ''
-                break;
-        }
-
-        switch (variant) {
-            case 'contained':
-                styleVariant = ' button-contained '
-                break;
-            case 'outlined':
-                styleVariant = ' button-outlined '
-                break;
-            default:
-                styleVariant = ' button-contained '
-                break;
-        }
-
-        switch (type) {
-            case 'button':
-                buttonType = 'button'
-                break;
-            case 'reset':
-                buttonType = 'reset'
-                break;
-            case 'submit':
-                buttonType = 'submit'
-                break;
-            default:
-                buttonType = 'button'
-                break;
-        }
-
-        if (className) {
-            styleClass = className
-        } else {
-            styleClass = ''
-        }
-        return (
-            <button type={buttonType} ref={this.ButtonRef} className={'button ripple' + styleVariant + styleClass + fullWidthStyle+styleDisabled} disabled={disabled} onClick={onPress}>
+    return (
+            <button type={buttonType} ref={ButtonRef} className={'button ripple' + styleVariant + styleClass + fullWidthStyle+styleDisabled} disabled={disabled} onClick={onPress}>
                 {children}
-                <div className="rippleContainer" onMouseDown={this.showRipple} >
-                    {this.renderRippleSpan()}
+                <div className="rippleContainer" onMouseDown={showRipplePlane} >
+                    {renderRippleSpan()}
                 </div>
             </button>
-        );
-    }
-}
+    );
+};

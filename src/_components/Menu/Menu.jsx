@@ -4,7 +4,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { IconButton } from '../'
 
 export const Menu = ({ children, control, className }) => {
-    let styleClass = className !== '' ? ' ' + className : '';
+    let styleClass = className !== undefined ? ' ' + className : '';
     const [open, setOpen] = useState(false);
     const node = useRef();
 
@@ -17,10 +17,6 @@ export const Menu = ({ children, control, className }) => {
         setOpen(false);
     };
 
-    const handleChange = (selectedValue) => {
-        onChange(selectedValue);
-        setOpen(false);
-    };
 
     useEffect(() => {
         // Bind the event listener
@@ -36,9 +32,12 @@ export const Menu = ({ children, control, className }) => {
             <IconButton onClick={(e) => setOpen(!open)} >
                 <MoreHorizIcon />
             </IconButton>
-            <div className={'menu-panel'} style={{ display: `${open === true ? 'block' : 'none'}` }}>
+            {open === true ? 
+            <div className={'menu-panel'} onClick={(e) => setOpen(!open)}>
                 {children}
             </div>
+            : null
+            }
         </div>
     );
 };

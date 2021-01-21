@@ -8,6 +8,7 @@ export const userActions = {
     signup,
     logout,
     updateUser,
+    updateUserById,
     validateToken,
     getAllTeathers,
     getAllStudentsByUser
@@ -125,6 +126,41 @@ function updateUser(jwt, firstname, lastname, phonenumber, country, sity, status
     function request() { return { type: userConstants.USER_UPDATE_REQUEST, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar } }
     function success(user) { return { type: userConstants.USER_UPDATE_SUCCESS, user } }
     function failure(error) { return { type: userConstants.USER_UPDATE_FAILURE, error } }
+}
+
+
+function updateUserById(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar) {
+    return dispatch => {
+        dispatch(request({ user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar }));
+
+        return userService.updateUserById(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar)
+            .then(
+                data => {
+                    const user = {
+                        user_id,
+                        firstname,
+                        lastname,
+                        phonenumber,
+                        country,
+                        sity,
+                        status,
+                        access,
+                        roles,
+                        teather_id,
+                        avatar
+                    }
+                    dispatch(success(user));
+                },
+                error => {
+                    dispatch(failure(error));
+                    dispatch(alertActions.error(error));
+                }
+            );
+    };
+
+    function request() { return { type: userConstants.USER_UPDATE_BY_ID_REQUEST, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar } }
+    function success(user) { return { type: userConstants.USER_UPDATE_BY_ID_SUCCESS, user } }
+    function failure(error) { return { type: userConstants.USER_UPDATE_BY_ID_FAILURE, error } }
 }
 
 function getAllTeathers() {

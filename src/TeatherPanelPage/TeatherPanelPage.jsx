@@ -4,6 +4,11 @@ import { userActions } from '../_actions';
 import {
     Avatar,
     Accordion,
+    Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
     Divider,
     Loading,
     Typography,
@@ -18,12 +23,25 @@ import {
     ListItemText,
     ListItemTitle,
     Menu,
-    MenuItem
+    MenuItem,
+    Form,
+    FormControlLabel,
+    Radio
 } from '../_components';
 import { ProgressCircle } from '../LessonPage'
 
 
+
 class TeatherPanelPage extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false,
+            selectedOption: ''
+        }
+        this.onValueChange = this.onValueChange.bind(this);
+        this.formSubmit = this.formSubmit.bind(this);
+    }
 
     componentDidMount() {
         const { dispatch, history, user } = this.props;
@@ -36,16 +54,109 @@ class TeatherPanelPage extends React.Component {
         }
     }
 
+    handleClickOpen(id, firstname, lastname, phonenumber, country, sity, access, roles, teather_id, avatar) {
+        this.setState({
+            open: true,
+            user_id: id,
+            firstname: firstname,
+            lastname: lastname,
+            phonenumber: phonenumber,
+            country: country,
+            sity: sity,
+            access: access,
+            roles: roles,
+            teather_id: teather_id,
+            avatar: avatar
+        })
+    }
+
+    handleClose() {
+        this.setState({ open: false })
+    }
+
+    onValueChange(event) {
+        this.setState({ selectedOption: event });
+    }
+
+    formSubmit(event) {
+        const { dispatch, jwt } = this.props;
+        const {user_id, firstname, lastname, phonenumber, country, sity, access, roles, teather_id, avatar } = this.state;
+        event.preventDefault();
+        console.log(this.state.selectedOption);
+        dispatch(userActions.updateUserById(user_id, jwt, firstname, lastname, phonenumber, country, sity, this.state.selectedOption, access, roles, teather_id, avatar))
+        this.setState({ selectedOption: '' });
+        this.handleClose()
+    }
+
+    renderChangeUserStatusDialog() {
+        const { open, firstname, lastname } = this.state;
+        return (
+            <Dialog onClose={() => this.handleClose()} open={open}>
+                <Form onSubmit={this.formSubmit}>
+                    <DialogTitle>
+                        <Typography variant='h5' component='h5'>Изменить статус ученика: {firstname + ' ' + lastname}</Typography>
+                    </DialogTitle>
+                    <DialogContent dividers className={'d-flex grid-direction-xs-column'}>
+                        <FormControlLabel
+                            className='w-max'
+                            control={
+                                <Radio
+                                    name={'status'}
+                                    value={'ИСКАТЕЛЬ'}
+                                    selected={this.state.selectedOption === "ИСКАТЕЛЬ" ? "ИСКАТЕЛЬ" : ""}
+                                    onChange={this.onValueChange}
+                                />
+                            }
+                            label={'ИСКАТЕЛЬ'}
+                        />
+                        <FormControlLabel
+                            className='w-max'
+                            control={
+                                <Radio
+                                    name={'status'}
+                                    value={'УЧЕНИК'}
+                                    selected={this.state.selectedOption === "УЧЕНИК" ? "УЧЕНИК" : ""}
+                                    onChange={this.onValueChange}
+                                />
+                            }
+                            label={'УЧЕНИК'}
+                        />
+                        <FormControlLabel
+                            className='w-max'
+                            control={
+                                <Radio
+                                    name={'status'}
+                                    value={'ПРОМОУТЕР'}
+                                    selected={this.state.selectedOption === "ПРОМОУТЕР" ? "ПРОМОУТЕР" : ""}
+                                    onChange={this.onValueChange}
+                                />
+                            }
+                            label={'ПРОМОУТЕР'}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button type="submit" className={'mr-3'} variant='outlined' color="primary">
+                            Подтвердить
+                    </Button>
+                        <Button onPress={() => this.handleClose()} variant='outlined' color="primary">
+                            Закрыть
+                    </Button>
+                    </DialogActions>
+                </Form>
+            </Dialog>
+        )
+    }
+
     render() {
-        const { loading, students } = this.props;
+        const { loading, users_array } = this.props;
         if (loading === undefined || loading === true) {
             return <Loading />
         }
         return (
             <div className={'py-3'}>
                 <List>
-                    {students.map((student, index) => (
-                        <div>
+                    {users_array.map((student, index) => (
+                        <div key={index}>
                             <ListItem>
                                 <ListItemFirstAction>
                                     <ListItemIcon>
@@ -62,8 +173,21 @@ class TeatherPanelPage extends React.Component {
                                 </ListItemFirstAction>
                                 <ListItemSecondAction>
                                     <Menu>
-                                        <MenuItem>Изменить статус ученика</MenuItem>
+                                        <MenuItem onPress={() => this.handleClickOpen(
+                                            student.id,
+                                            student.firstname,
+                                            student.lastname,
+                                            student.phonenumber,
+                                            student.country,
+                                            student.sity,
+                                            student.access,
+                                            student.roles,
+                                            student.teather_id,
+                                            student.avatar
+                                        )}>Изменить статус ученика</MenuItem>
+                                        <MenuItem onPress={() => {console.log('открыть доступ ко всем курсам')}}>Открыть доступ ко всем курсам</MenuItem>
                                     </Menu>
+                                    {this.state.open === true ? this.renderChangeUserStatusDialog() : null}
                                 </ListItemSecondAction>
                             </ListItem>
 
@@ -134,11 +258,12 @@ class TeatherPanelPage extends React.Component {
 
 function mapStateToProps(state) {
     const { authentication, users } = state;
-    const { user } = authentication;
-    const { loading, students } = users;
+    const { user, jwt } = authentication;
+    const { loading, users_array } = users;
     return {
+        jwt,
         loading,
-        students,
+        users_array,
         user
     };
 }

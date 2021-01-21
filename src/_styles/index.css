@@ -2316,8 +2316,60 @@ div.text-input-group label {
     background-color: rgb(var(--text-light));
     position: absolute;
     width: max-content;
-    padding: 8px;
-    box-shadow: 0px 5px 5px -3px rgba(0,0,0,0.2),0px 8px 10px 1px rgba(0,0,0,0.14),0px 3px 14px 2px rgba(0,0,0,0.12);
+    padding: 8px 0px;
+    box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+    flex-direction: column;
+    display: flex;
+    align-items: flex-start;
+}
+
+.menu-item{
+    width: 100%;
+    text-align: left;
+}
+
+.menu-item-button {
+    padding: 12px;
+    color: inherit;
+    border: 0;
+    cursor: pointer;
+    margin: 0;
+    outline: 0;
+    position: relative;
+    border-radius: 0;
+    -moz-appearance: none;
+    text-decoration: none;
+    -moz-user-select: none;
+    background-color: transparent;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all .2s;
+}
+
+.menu-item-button:hover {
+    background-color: rgba(var(--text-dark), 0.1) !important;
+}
+
+.menu-item-ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-item-ripple .rippleContainer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.menu-item-ripple .rippleContainer span {
+    transform: scale(0);
+    border-radius: 100%;
+    position: absolute;
+    opacity: 0.75;
+    background-color: rgba(var(--text-dark), 0.23);
+    animation: ripple 850ms;
 }
 
 /* Switch */

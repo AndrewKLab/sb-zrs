@@ -6,6 +6,7 @@ export const userService = {
     signup,
     logout,
     updateUser,
+    updateUserById,
     validateToken,
     getAllTeathers,
     getAllStudentsByUser
@@ -82,6 +83,29 @@ function updateUser(jwt, firstname, lastname, phonenumber, country, sity, status
     };
 
     return fetch(`/api/update_user.php`, requestOptions).then(handleResponse)
+}
+
+function updateUserById(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            jwt,
+            firstname,
+            lastname,
+            phonenumber,
+            country,
+            sity,
+            status,
+            access,
+            roles,
+            teather_id,
+            avatar
+        
+        })
+};
+
+return fetch(`/api/update_user_by_id.php?user_id=${user_id}`, requestOptions).then(handleResponse)
 }
 
 function validateToken(jwt) {

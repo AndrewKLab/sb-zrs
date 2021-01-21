@@ -105,7 +105,7 @@ class HomePage extends React.Component {
                             <li >После Регистрации статус присваивается АДМИНОМ</li>
                             <li >Приоритет имеют: (A) Пасторы; (B) одобренные общиной руководители отделов или пресвитеры; (C) руководители филиалов Школы Библии в Церковных и (D) Поддерживающих организациях</li>
                             <li className={"done"}>Видит всех своих ПРОМОУТЕРОВ и их деятельность, а также УЧЕНИКОВ и их прогресс</li>
-                            <li >Может присваивать статус УЧЕНИКА и ПРОМОУТЕРА</li>
+                            <li className={"done"}>Может присваивать статус УЧЕНИКА и ПРОМОУТЕРА</li>
                             <li >Имеет доступ к Чату</li>
                             <li >Обладает функциями ПРОМОУТЕРА</li>
                             <li >Имеет доступ к СПЕЦИАЛЬНЫМ КУРСАМ, может открывать ссылки на них ПРОМОУТЕРАМ или УЧЕНИКАМ</li>
@@ -203,8 +203,9 @@ class HomePage extends React.Component {
                 <p>Компоненты:</p>
                 <h5>Button</h5>
                 <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                    <Button variant='contained' onPress={() => console.log('home')}>Click Me</Button>
-                    <Button variant='outlined' onPress={() => console.log('home')}>Click Me</Button>
+                    <Button variant='contained' color="primary" onPress={() => console.log('home')}>Click Me</Button>
+                    <Button variant='outlined' color="primary" onPress={() => console.log('home')}>Click Me</Button>
+                    <Button onPress={() => console.log('home')} variant='outlined' color="primary">asdasd</Button>
                 </div>
                 <h5>Switch</h5>
                 <Switch isToggled={this.state.switch} onToggle={() => this.handleToggleChange()} />
