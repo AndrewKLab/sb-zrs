@@ -31,15 +31,15 @@ class MainRouter extends React.Component {
     render() {
         return (
             <div>
+                <PrivateRoute exact path="/" component={HomePage} />
+                <PrivateRoute exact path="/profile" component={ProfilePage} />
+                <PrivateRoute exact path="/teather-panel" component={TeatherPanelPage} />
+                <Route exact path="/courses/:category_name/:course/:lesson" component={LessonPage} />
+                <Route exact path="/courses/:category_name/:course" component={CoursePage} />
+                <Route exact path="/courses/:category_name" component={CoursesPage} />
+                <Route exact path="/courses" component={CategoriesPage} />
                 <Route exact path="/sign-in" component={SignInPage} />
                 <Route exact path="/sign-up" component={SignUpPage} />
-                <Route exact path="/courses" component={CategoriesPage} />
-                <Route exact path="/courses/:category_name" component={CoursesPage} />
-                <Route exact path="/courses/:category_name/:course" component={CoursePage} />
-                <Route exact path="/courses/:category_name/:course/:lesson" component={LessonPage} />
-                <PrivateRoute exact path="/teather-panel" component={TeatherPanelPage} />
-                <PrivateRoute exact path="/profile" component={ProfilePage} />
-                <PrivateRoute exact path="/" component={HomePage} />
             </div>
         );
     }

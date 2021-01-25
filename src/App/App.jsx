@@ -21,12 +21,13 @@ class App extends React.Component {
     componentDidMount() {
         const { jwt, dispatch } = this.props;
         if (jwt) {
-            dispatch(userActions.validateToken(jwt));
+            dispatch(userActions.validateToken(jwt)).then(
+                this.setState({loading: false})
+            );
         }
     }
     render() {
-        const { loading } = this.props;
-        var content;
+        const { loading } = this.state;
         if (loading) {
             return <Loading />
         } 

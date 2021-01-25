@@ -7,10 +7,11 @@ module.exports = {
         extensions: ['.js', '.jsx', '.css']
     },
     entry: './src/index.jsx',
-    output: {
-       filename: 'main.js',
-       path: path.resolve(__dirname, 'dist'),
-     },
+    output:{
+        path: path.resolve(__dirname, './public'),     // путь к каталогу выходных файлов - папка public
+        publicPath: '/',
+        filename: "bundle.js"       // название создаваемого файла
+    },
     module: {
         rules: [
             {
@@ -65,7 +66,8 @@ module.exports = {
                 target: 'http://lifestudio-test.ru'
             }
         },
-        historyApiFallback: true
+        historyApiFallback: true,
+        open: true
     },
     externals: {
         // global app config object

@@ -38,14 +38,9 @@ class CoursePage extends React.Component {
     }
     componentDidMount() {
         const { dispatch, history, user } = this.props;
-
-        if (user != undefined ) {
             dispatch(userActions.getAllTeathers())
             dispatch(lessonActions.getAllLessonsByCourse(
                 this.props.match.params.course, user.id, user.teather_id))
-        } else {
-            history.push(`/sign-in`)
-        }
 
     }
 

@@ -27,7 +27,7 @@ class CoursesPage extends React.Component {
         const { courses, loading } = this.props;
         var title;
         switch (this.props.match.params.category_name) {
-            case 'main':
+            case 'basic':
                 title = 'Основные курсы'
                 break;
             case 'special':

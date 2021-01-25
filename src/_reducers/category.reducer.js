@@ -10,7 +10,7 @@ export function categories(state = {}, action) {
     case categoryConstants.GETALL_SUCCESS:
       return {
         loading: false,
-        main: action.categories.main,
+        basic: action.categories.basic,
         social: action.categories.social,
         special: action.categories.special,
         national: action.categories.national

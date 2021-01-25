@@ -37,6 +37,7 @@ class TeatherPanelPage extends React.Component {
         super(props);
         this.state = {
             open: false,
+            openAccessDialog: false,
             selectedOption: ''
         }
         this.onValueChange = this.onValueChange.bind(this);
@@ -70,8 +71,30 @@ class TeatherPanelPage extends React.Component {
         })
     }
 
+    handleClickOpenAccessDialog(id, firstname, lastname, phonenumber, country, sity, roles, status, access, teather_id, avatar) {
+        this.setState({
+            openAccessDialog: true,
+            user_id: id,
+            firstname: firstname,
+            lastname: lastname,
+            phonenumber: phonenumber,
+            country: country,
+            sity: sity,
+            roles: roles,
+            status: status,
+            access: access,
+            teather_id: teather_id,
+            avatar: avatar
+        })
+    }
+
+
     handleClose() {
         this.setState({ open: false })
+    }
+
+    handleCloseAccessDialog() {
+        this.setState({ openAccessDialog: false })
     }
 
     onValueChange(event) {
@@ -80,12 +103,40 @@ class TeatherPanelPage extends React.Component {
 
     formSubmit(event) {
         const { dispatch, jwt } = this.props;
-        const {user_id, firstname, lastname, phonenumber, country, sity, access, roles, teather_id, avatar } = this.state;
+        const { user_id, firstname, lastname, phonenumber, country, sity, access, roles, teather_id, avatar } = this.state;
         event.preventDefault();
-        console.log(this.state.selectedOption);
         dispatch(userActions.updateUserById(user_id, jwt, firstname, lastname, phonenumber, country, sity, this.state.selectedOption, access, roles, teather_id, avatar))
         this.setState({ selectedOption: '' });
         this.handleClose()
+    }
+
+    changeUserAcces() {
+        const { dispatch, jwt } = this.props;
+        const { user_id, firstname, lastname, phonenumber, country, sity, access, roles, status, teather_id, avatar } = this.state;
+        dispatch(userActions.updateUserById(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access === 'limited' ? 'full' : 'limited', roles, teather_id, avatar))
+        this.handleCloseAccessDialog()
+    }
+
+    renderChangeUserAccessDialog() {
+        const { openAccessDialog, firstname, lastname, access } = this.state;
+        return (
+            <Dialog onClose={() => this.handleCloseAccessDialog()} open={openAccessDialog}>
+                <DialogTitle>
+                    <Typography variant='h5' component='h5'>{access === 'limited' ? "Открыть ": "Закрыть "}доступ?</Typography>
+                </DialogTitle>
+                <DialogContent dividers className={'d-flex grid-direction-xs-column'}>
+                    <Typography component={'body'} variant={'body'}>{access === 'limited' ? "Открыть ": "Закрыть "} доступ ко всем категориям курсов для ученика: {firstname + ' ' + lastname}?</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onPress={() => this.changeUserAcces()} className={'mr-3'} variant='outlined' color="primary">
+                        Да
+                    </Button>
+                    <Button onPress={() => this.handleCloseAccessDialog()} variant='outlined' color="primary">
+                        Закрыть
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        )
     }
 
     renderChangeUserStatusDialog() {
@@ -154,7 +205,13 @@ class TeatherPanelPage extends React.Component {
         }
         return (
             <div className={'py-3'}>
-                <List>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                    <Typography component='h4' variant='h4'>Создать свой курс:</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <Typography component='h4' variant='h4'>Ваши ученики:</Typography>
+                    <List>
                     {users_array.map((student, index) => (
                         <div key={index}>
                             <ListItem>
@@ -185,9 +242,25 @@ class TeatherPanelPage extends React.Component {
                                             student.teather_id,
                                             student.avatar
                                         )}>Изменить статус ученика</MenuItem>
-                                        <MenuItem onPress={() => {console.log('открыть доступ ко всем курсам')}}>Открыть доступ ко всем курсам</MenuItem>
+                                        {student.status === 'УЧЕНИК' || student.status === 'ПРОМОУТЕР' ?
+                                            <MenuItem onPress={() => this.handleClickOpenAccessDialog(
+                                                student.id,
+                                                student.firstname,
+                                                student.lastname,
+                                                student.phonenumber,
+                                                student.country,
+                                                student.sity,
+                                                student.roles,
+                                                student.status,
+                                                student.access,
+                                                student.teather_id,
+                                                student.avatar
+                                            )}>Изменить доступ к курсам</MenuItem> : null
+                                        }
+
                                     </Menu>
                                     {this.state.open === true ? this.renderChangeUserStatusDialog() : null}
+                                    {this.state.openAccessDialog === true ? this.renderChangeUserAccessDialog() : null}
                                 </ListItemSecondAction>
                             </ListItem>
 
@@ -250,6 +323,9 @@ class TeatherPanelPage extends React.Component {
                         </div>
                     ))}
                 </List>
+                    </Grid>
+                </Grid>
+               
             </div>
 
         );

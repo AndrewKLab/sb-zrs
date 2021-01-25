@@ -16,20 +16,20 @@ class CategoriesPage extends React.Component {
         if (user !== undefined) {
             console.log(user)
             if (user.access === 'limited') {
-                history.push(`/courses/main`)
+                history.push(`/courses/basic`)
             }
             else {
                 dispatch(categoryActions.getAllCategories())
             }
         } else {
-            history.push(`/courses/main`)
+            history.push(`/courses/basic`)
         }
     }
     render() {
-        const { loading, main, special, social, national } = this.props;
+        const { loading, basic, special, social, national } = this.props;
         
         if ((loading == true || loading == undefined) &&
-            (main == undefined, special == undefined, social == undefined, national == undefined)) {
+            (basic == undefined, special == undefined, social == undefined, national == undefined)) {
             return <Loading />
         }
 
@@ -39,8 +39,8 @@ class CategoriesPage extends React.Component {
             <div className='pb-3'>
                 <div>
                     <h2> Основные курсы </h2>
-                    <Carousel element="carousel-class-to-inject" courses={main} categoty_name={'main'} />
-                    <ToAllButton categoty_name={'main'}>Все основные курсы</ToAllButton>
+                    <Carousel element="carousel-class-to-inject" courses={basic} categoty_name={'basic'} />
+                    <ToAllButton categoty_name={'basic'}>Все основные курсы</ToAllButton>
                 </div>
 
                 <div >
@@ -68,10 +68,10 @@ class CategoriesPage extends React.Component {
 function mapStateToProps(state) {
     const { authentication, categories } = state;
     const { user } = authentication;
-    const { main, social, special, national, loading } = categories
+    const { basic, social, special, national, loading } = categories
     return {
         user,
-        main,
+        basic,
         social,
         special,
         national,

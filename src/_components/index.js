@@ -20,6 +20,7 @@ export * from './Grid'
 export * from './Carousel'
 export * from './Paper'
 export * from './Accordion'
+export * from './Dropdown'
 
 //Dialog
 export * from './Dialog/Dialog'

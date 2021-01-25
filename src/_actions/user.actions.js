@@ -72,7 +72,7 @@ function validateToken(jwt) {
     return dispatch => {
         dispatch(request({ jwt }));
 
-        userService.validateToken(jwt)
+        return userService.validateToken(jwt)
             .then(
                 response => {
                     const user = {

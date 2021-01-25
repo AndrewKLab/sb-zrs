@@ -4,3 +4,4 @@ export * from './styles.actions';
 export * from './category.actions';
 export * from './course.actions';
 export * from './lesson.actions';
+export * from './search.actions';

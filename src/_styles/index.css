@@ -392,6 +392,10 @@ h6, .h6 {
     font-size: 1rem;
 }
 
+.text-align-left{
+    text-align: left;
+}
+
 /* position */
 
 .p-relative {
@@ -2152,6 +2156,15 @@ div.text-input-group label {
 }
 
 /* Search Input */
+
+#search{
+    right: 16px;
+    top: 20px;
+    color: rgb(var(--text-dark));
+    padding: 12px;
+    text-align: left ;
+    min-width: 400px;
+}
 
 .search-input-root {
     display: flex;

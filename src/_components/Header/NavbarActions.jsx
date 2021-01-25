@@ -16,12 +16,16 @@ import {
     ListItemSecondAction,
     ListItemIcon,
     ListItemText,
+    ListItemTitle,
+    ListItemSubtitle,
     Button,
     Divider,
-    Avatar
+    Avatar,
+    Typography,
+    Dropdown
 } from "../"
 
-import { stylesActions, userActions } from "../../_actions";
+import { stylesActions, userActions, searchActions } from "../../_actions";
 
 
 class NavbarActions extends Component {
@@ -29,11 +33,13 @@ class NavbarActions extends Component {
     constructor(props) {
         super(props);
         this.wrapperRef = React.createRef();
+        this.searchRef = React.createRef()
         this.handleClickOutside = this.handleClickOutside.bind(this);
         this.anchorEl = createRef(null);
         this.state = {
             theme: this.props.currentTheme === 'light' ? false : true,
             isOpen: false,
+            openSearch: false
         };
     }
 
@@ -94,14 +100,7 @@ class NavbarActions extends Component {
     handleClickOutside(event) {
         if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
             if (!event.target.matches('.dropbtn')) {
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                var i;
-                for (i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
+                document.getElementById("myDropdown").classList.remove("show")
             }
         }
     }
@@ -111,16 +110,88 @@ class NavbarActions extends Component {
         this.props.history.push('/sign-in');
     }
 
+    //Search
+    handleChange(event) {
+        const { dispatch } = this.props;
+        if (event.target.value === "") {
+            this.handleClose()
+        } else {
+            this.handleOpen()
+        }
 
+        dispatch(searchActions.search(event.target.value))
+    }
+
+    handleOpen() {
+        document.getElementById("search").classList.add("show");
+    }
+
+    handleClose() {
+        document.getElementById("search").classList.remove("show");
+    }
 
     render() {
-        const { user } = this.props;
+        const { user, search } = this.props;
         return (
             <div className='navbar-actions'>
                 <form role="search" className="search-input-root m-3">
                     <div><SearchIcon /></div>
-                    <input type="search" className='search-input' placeholder="Поиск..." />
+                    <input type="search" className='search-input' placeholder="Поиск..." onChange={(event) => this.handleChange(event)} />
                 </form>
+                <Dropdown id={"search"} reff={this.searchRef}>
+                    {search.search && search.search.courses !== undefined || search.search && search.search.lessons !== undefined ? (
+                        <div>
+                            {search.search.courses !== null ? (
+                                <div>
+                                    <Typography variant='h5' component='h5'>Курсы:</Typography>
+                                    <Divider />
+                                    {search.search.courses.map((item, index) => (
+                                        <Link to={`/courses/${item.category_name}/${item.id}`} key={index}>
+                                            <ListItem button  onPress={() => this.handleClose()} className='text-align-left p-3'>
+                                                <ListItemFirstAction>
+                                                    <ListItemText>
+                                                        <ListItemTitle>
+                                                            {item.name}
+                                                        </ListItemTitle>
+                                                        <ListItemSubtitle>
+                                                            {item.description.length > 70 ? item.description.substr(0, 80 - 1) + '...' : item.description}
+                                                        </ListItemSubtitle>
+                                                    </ListItemText>
+                                                </ListItemFirstAction>
+                                            </ListItem>
+                                        </Link>
+                                    ))}
+                                </div>
+                            ) : null}
+                            {search.search.lessons !== null ? (
+                                <div>
+                                    <Typography variant='h5' component='h5'>Уроки:</Typography>
+                                    <Divider />
+
+                                    {search.search.lessons.map((item, index) => (
+                                        <Link to={`/courses/${item.category_name}/${item.courses_id}/${item.id}`} key={index}>
+                                            <ListItem button  onPress={() => this.handleClose()} className='text-align-left p-3'>
+                                                <ListItemFirstAction>
+                                                    <ListItemText>
+                                                        <ListItemTitle>
+                                                            {item.name}
+                                                        </ListItemTitle>
+                                                        <ListItemSubtitle>
+                                                            {item.description.length > 70 ? item.description.substr(0, 80 - 1) + '...' : item.description}
+                                                        </ListItemSubtitle>
+                                                    </ListItemText>
+                                                </ListItemFirstAction>
+                                            </ListItem>
+                                        </Link>
+                                    ))}
+
+                                </div>
+                            ) : null}
+                        </div>
+                    ) : (
+                            <Typography>{search.search}</Typography>
+                        )}
+                </Dropdown>
 
                 <IconButton className='text-light'>
                     <NotificationsIcon />
@@ -191,7 +262,7 @@ class NavbarActions extends Component {
                         <Divider />
                         {user ? (
                             <ListItem>
-                                <Button className='w-100' variant='outlined' onPress={() => {this.logOut(); this.handleCloseDropdown()}}>Выход</Button>
+                                <Button className='w-100' variant='outlined' onPress={() => { this.logOut(); this.handleCloseDropdown() }}>Выход</Button>
                             </ListItem>
 
                         ) : (
@@ -213,17 +284,19 @@ class NavbarActions extends Component {
 
                     </div>
                 </div>
-            </div>
+            </div >
         );
     }
 }
 function mapStateToProps(state) {
     const { currentTheme, themes } = state.style;
     const { user } = state.authentication
+    const { search } = state
     return {
         currentTheme,
         themes,
-        user
+        user,
+        search
     };
 }
 const connectedNavbar = connect(mapStateToProps)(NavbarActions);
