@@ -124,10 +124,14 @@ class NavbarActions extends Component {
 
     handleOpen() {
         document.getElementById("search").classList.add("show");
+        document.body.style.position="fixed"
+        document.body.style.overflowY="scroll"
     }
 
     handleClose() {
         document.getElementById("search").classList.remove("show");
+        document.body.style.position="static"
+        document.body.style.overflowY="auto"
     }
 
     render() {

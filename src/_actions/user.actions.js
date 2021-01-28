@@ -167,7 +167,7 @@ function getAllTeathers() {
     return dispatch => {
         dispatch(request());
 
-        userService.getAllTeathers()
+        return userService.getAllTeathers()
             .then(
                 teathers => dispatch(success(teathers)),
                 error => dispatch(failure(error))

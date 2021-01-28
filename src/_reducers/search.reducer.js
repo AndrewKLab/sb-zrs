@@ -12,7 +12,7 @@ export function search(state = {}, action) {
       };
     case searchConstants.SEARCH_FAILURE:
       return {
-            search: action.keywords
+            search: action.error
       };
     default:
       return state

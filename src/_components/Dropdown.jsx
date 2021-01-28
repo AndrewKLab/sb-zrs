@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react'
 
-export const Dropdown = ({ children, className, id, reff }) => {
+export const Dropdown = ({ children, className, id }) => {
     let styleClass = className !== undefined ? ' ' + className : '';
     const ref = useRef();
 
@@ -14,8 +14,9 @@ export const Dropdown = ({ children, className, id, reff }) => {
 
     const handleClickOutside = (event) => {
         if (ref && !ref.current.contains(event.target)) {
-            console.log(!event.target.matches('.dropbtn'))
-            document.getElementById("search").classList.remove("show")
+            document.getElementById(id).classList.remove("show");
+            document.body.style.position="static"
+            document.body.style.overflowY="auto"
         }
     }
 

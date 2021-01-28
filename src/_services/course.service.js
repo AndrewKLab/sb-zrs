@@ -1,15 +1,43 @@
 import config from 'config';
 
 export const courseService = {
+    createCourse,
     getAllCoursesByCategoryName,
+    getAllCoursesByAutor,
     createCoursePassed,
     updateCoursePassed,
     deleteCoursePassed,
     getAllPassedCourseByUser
 };
 
+function createCourse(jwt, name, autor_id, category_name, img, description) {
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Encoding': 'gzip, deflate',
+            'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
+        },
+        body: JSON.stringify({
+            jwt,
+            name,
+            autor_id,
+            category_name,
+            img,
+            description
+        })
+    };
+
+    return fetch(`${config.apiUrl}/course/create.php`, requestOptions).then(handleResponse);
+}
+
+
 function getAllCoursesByCategoryName(category_name) {
     return fetch(`${config.apiUrl}/course/read_all_courses_by_category_name.php?category_name=${category_name}`, config.GET).then(handleResponse);
+}
+
+function getAllCoursesByAutor(autor_id) {
+    return fetch(`${config.apiUrl}/course/read_all_courses_by_autor.php?user_id=${autor_id}`, config.GET).then(handleResponse);
 }
 
 //passed_courses
@@ -33,8 +61,8 @@ function updateCoursePassed(passed_course_id, status, assessment, start_time, fi
                 start_time,
                 finish_time,
             })
-     })
-     .then(handleResponse);
+        })
+        .then(handleResponse);
 }
 
 

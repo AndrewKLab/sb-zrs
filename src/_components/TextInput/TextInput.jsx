@@ -1,12 +1,26 @@
 import React, { useRef, useState, useEffect } from "react";
 
-export const TextInput = ({ helperText, variant, id, name, autoComplete, label, onChange, className, type, InputProps, fullWidth, reff }) => {
+export const TextInput = ({ helperText, variant, id, name, autoComplete, label, onChange, className, type, InputProps, fullWidth, reff, select, children, multiline, rows }) => {
     const ref = useRef();
     let curRef = reff !== undefined ? reff : ref
     let styleClass = className == undefined ? '' : ' ' + className;
     var styleAlert;
     let styleVariant = variant === undefined ? 'default' : variant;
     let variants;
+    let selectType = select === undefined ? false : true;
+    let textareaType = multiline === undefined ? false : true;
+    let inputType;
+
+    if(selectType){
+        inputType = 'select'
+    }else if(textareaType){
+        inputType = 'textarea'
+    } else if (selectType === undefined && textareaType === undefined){
+        inputType = 'default'
+    } else {
+        inputType = 'default'
+    }
+
     switch (styleVariant) {
         case 'default':
             variants = 'line'
@@ -23,7 +37,8 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
             break;
     }
 
-    const [styleFocused, setStyleFocused] = useState(InputProps !== undefined ? InputProps.startAdornment !== undefined ? ' text-input-' + variants + '-focused' : '' : '');
+    const [styleFocused, setStyleFocused] = useState('');
+    const [styleLegendFocused, setStyleLegendFocused] = useState(InputProps !== undefined ? InputProps.startAdornment !== undefined ? ' text-input-label-plane-focused' : '' : '');
     const [styleLabelFocused, setStyleLabelFocused] = useState(InputProps !== undefined ? InputProps.startAdornment !== undefined ? ' text-input-label-focused' : '' : '');
     const [styleFocusedColor, setStyleFocusedColor] = useState('');
     const [styleHovered, setStyleHovered] = useState('');
@@ -33,25 +48,27 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
 
     const onFocus = () => {
         setStyleFocused(' text-input-' + variants + '-focused');
+        setStyleLegendFocused(' text-input-label-plane-focused')
         setStyleLabelFocused(' text-input-label-focused');
         setStyleFocusedColor(' text-input-' + variants + '-focused-color');
         setStyleLabelFocusedColor(' text-input-label-focused-color');
     }
 
     const change = (event) => {
-        if (event.target.value !== '') {
+        if (reff !== undefined ? event.target.value !== '' : ref && ref.current && ref.current.value !== '') {
             setStyleFocused(' text-input-' + variants + '-focused');
             setStyleLabelFocused(' text-input-label-focused');
+            setStyleLegendFocused(' text-input-label-plane-focused')
             setStyleFocusedColor('');
             setStyleLabelFocusedColor('');
         }
     }
 
     useEffect(() => {
-        window.addEventListener('change', change);
+        ref && ref.current && ref.current.addEventListener('change', change);
 
         return () => {
-            window.removeEventListener('change', change);
+            ref && ref.current && ref.current.removeEventListener('change', change);
         };
     }, [change]);
 
@@ -59,16 +76,18 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
 
 
     const onBlur = (event) => {
-        setStyleFocused(
+        setStyleFocused('');
+        setStyleLegendFocused(
             (InputProps !== undefined ? InputProps.startAdornment !== undefined : false) ||
-                event.target.value !== ''
-                ? ' text-input-' + variants + '-focused' : '');
+                event.target.value !== '' ?
+                ' text-input-label-plane-focused' : '');
         setStyleLabelFocused(
             (InputProps !== undefined ? InputProps.startAdornment !== undefined : false) ||
                 event.target.value !== '' ?
                 ' text-input-label-focused' : '');
         setStyleFocusedColor('');
         setStyleLabelFocusedColor('');
+
     }
 
     const onMouseEnter = () => {
@@ -85,39 +104,143 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
         styleAlert = ''
     }
 
-    return <div className={'text-input-group' + styleClass + fullWidthStyle}>
-        <label className={"text-input-" + styleVariant} >
-            <div className={'text-input'}
-                onMouseEnter={onMouseEnter}
-                onMouseLeave={onMouseLeave}>
-                {InputProps == undefined ? (null) : (
-                    InputProps.startAdornment &&
-                    <div
-                        className='text-input-start-adornment'
-                    >
-                        {InputProps.startAdornment}
-                    </div>)}
-
-                <input
-                    ref={curRef}
-                    id={id}
-                    name={name}
-                    autoComplete={autoComplete}
-                    type={type}
-                    onChange={onChange}
-                    onFocus={onFocus}
-                    onBlur={onBlur}
-                />
-                <span className={"text-input-label" + styleAlert + styleLabelFocused + styleLabelFocusedColor}>{label}</span>
-                <div className={'text-input-' + variants + '' + styleHovered + styleFocused + styleFocusedColor + styleAlert}></div>
-                {InputProps == undefined ? (null) : (
-                    InputProps.endAdornment && <div
-                        className='text-input-end-adornment'
-                    >
-                        {InputProps.endAdornment}
-                    </div>)}
-            </div>
-            {helperText && <span className={"text-input-helper" + styleAlert}>{helperText}</span>}
-        </label>
-    </div>;
+    switch (inputType) {
+        case 'default':
+            return (
+                <div className={'text-input-group' + styleClass + fullWidthStyle}>
+                    <label className={"text-input-" + styleVariant} >
+                        <div className={'text-input'}
+                            onMouseEnter={onMouseEnter}
+                            onMouseLeave={onMouseLeave}>
+                            {InputProps == undefined ? (null) : (
+                                InputProps.startAdornment &&
+                                <div
+                                    className='text-input-start-adornment'
+                                >
+                                    {InputProps.startAdornment}
+                                </div>)}
+    
+                            <input
+                                ref={curRef}
+                                id={id}
+                                name={name}
+                                autoComplete={autoComplete}
+                                type={type}
+                                onChange={onChange}
+                                onFocus={onFocus}
+                                onBlur={onBlur}
+                            />
+                            <label className={"text-input-label" + styleAlert + styleLabelFocused + styleLabelFocusedColor}>{label}</label>
+                            {variants === 'fieldset' &&
+                                <fieldset className={"text-input-filed" + styleHovered + styleFocused + styleFocusedColor + styleAlert} aria-hidden="true">
+                                    <legend className={"text-input-label-plane " + styleLegendFocused} ><span>{label}</span></legend>
+                                </fieldset>
+                            }
+    
+                            <div className={'text-input-' + variants + '' + styleFocused + styleFocusedColor + styleAlert}></div>
+                            {InputProps == undefined ? (null) : (
+                                InputProps.endAdornment && <div
+                                    className='text-input-end-adornment'
+                                >
+                                    {InputProps.endAdornment}
+                                </div>)}
+                        </div>
+                        {helperText && <span className={"text-input-helper" + styleAlert}>{helperText}</span>}
+                    </label>
+                </div>
+            )
+        case 'textarea':
+            return (
+                <div className={'text-input-group' + styleClass + fullWidthStyle}>
+                    <label className={"text-input-" + styleVariant} >
+                        <div className={'text-input'}
+                            onMouseEnter={onMouseEnter}
+                            onMouseLeave={onMouseLeave}>
+                            {InputProps == undefined ? (null) : (
+                                InputProps.startAdornment &&
+                                <div
+                                    className='text-input-start-adornment'
+                                >
+                                    {InputProps.startAdornment}
+                                </div>)}
+    
+                            <textarea
+                                ref={curRef}
+                                id={id}
+                                name={name}
+                                rows={rows}
+                                autoComplete={autoComplete}
+                                type={type}
+                                onChange={onChange}
+                                onFocus={onFocus}
+                                onBlur={onBlur}
+                            ></textarea>
+                            <label className={"text-input-label" + styleAlert + styleLabelFocused + styleLabelFocusedColor}>{label}</label>
+                            {variants === 'fieldset' &&
+                                <fieldset className={"text-input-filed" + styleHovered + styleFocused + styleFocusedColor + styleAlert} aria-hidden="true">
+                                    <legend className={"text-input-label-plane " + styleLegendFocused} ><span>{label}</span></legend>
+                                </fieldset>
+                            }
+    
+                            <div className={'text-input-' + variants + '' + styleFocused + styleFocusedColor + styleAlert}></div>
+                            {InputProps == undefined ? (null) : (
+                                InputProps.endAdornment && <div
+                                    className='text-input-end-adornment'
+                                >
+                                    {InputProps.endAdornment}
+                                </div>)}
+                        </div>
+                        {helperText && <span className={"text-input-helper" + styleAlert}>{helperText}</span>}
+                    </label>
+                </div>
+            )
+        case 'select':
+            return (
+                <div className={'text-input-group' + styleClass + fullWidthStyle}>
+                    <label className={"text-input-" + styleVariant} >
+                        <div className={'text-input'}
+                            onMouseEnter={onMouseEnter}
+                            onMouseLeave={onMouseLeave}>
+                            {InputProps == undefined ? (null) : (
+                                InputProps.startAdornment &&
+                                <div
+                                    className='text-input-start-adornment'
+                                >
+                                    {InputProps.startAdornment}
+                                </div>)}
+    
+                            <select
+                                ref={curRef}
+                                id={id}
+                                name={name}
+                                autoComplete={autoComplete}
+                                type={type}
+                                onChange={onChange}
+                                onFocus={onFocus}
+                                onBlur={onBlur}
+                            >
+                                {children}
+                            </select>
+                            <label className={"text-input-label text-input-label-focused" + styleLabelFocusedColor}>{label}</label>
+                            {variants === 'fieldset' &&
+                                <fieldset className={"text-input-filed" + styleHovered + styleFocused + styleFocusedColor + styleAlert} aria-hidden="true">
+                                    <legend className={"text-input-label-plane text-input-label-plane-focused" + styleLegendFocused} ><span>{label}</span></legend>
+                                </fieldset>
+                            }
+    
+                            <div className={'text-input-' + variants + '' + styleFocused + styleFocusedColor + styleAlert}></div>
+                            {InputProps == undefined ? (null) : (
+                                InputProps.endAdornment && <div
+                                    className='text-input-end-adornment'
+                                >
+                                    {InputProps.endAdornment}
+                                </div>)}
+                        </div>
+                        {helperText && <span className={"text-input-helper" + styleAlert}>{helperText}</span>}
+                    </label>
+                </div>
+            )
+        default:
+            return null;
+    }
 }

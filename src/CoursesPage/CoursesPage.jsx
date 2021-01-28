@@ -6,8 +6,6 @@ import ClampLines from 'react-clamp-lines';
 
 import {
     Loading,
-    Button,
-    Carousel,
     Typography,
     Grid,
     Card,
@@ -18,13 +16,22 @@ import {
 
 
 class CoursesPage extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            loading: true
+        }
+    }
     componentDidMount() {
         const { dispatch } = this.props;
-        dispatch(courseActions.getAllCoursesByCategoryName(this.props.match.params.category_name))
+        dispatch(courseActions.getAllCoursesByCategoryName(this.props.match.params.category_name)).then(
+            () => this.setState({ loading: false })
+        )
     }
 
     render() {
-        const { courses, loading } = this.props;
+        const { courses } = this.props;
+        const { loading } = this.state;
         var title;
         switch (this.props.match.params.category_name) {
             case 'basic':
@@ -42,7 +49,7 @@ class CoursesPage extends React.Component {
             default: ''
                 break;
         }
-        if (loading == true || loading == undefined) {
+        if (loading) {
             return <Loading />
         }
         return (
@@ -94,10 +101,9 @@ class CoursesPage extends React.Component {
 
 function mapStateToProps(state) {
     const { course } = state;
-    const { loading, courses } = course;
+    const { courses } = course;
     return {
-        courses,
-        loading
+        courses
     };
 }
 

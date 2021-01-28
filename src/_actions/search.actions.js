@@ -15,5 +15,5 @@ function search(keywords) {
     };
 
     function success(data) { return { type: searchConstants.SEARCH_SUCCESS, data } }
-    function failure(keywords) { return { type: searchConstants.SEARCH_FAILURE, keywords } }
+    function failure(error) { return { type: searchConstants.SEARCH_FAILURE, error } }
 }

@@ -38,9 +38,15 @@ class CoursePage extends React.Component {
     }
     componentDidMount() {
         const { dispatch, history, user } = this.props;
-            dispatch(userActions.getAllTeathers())
-            dispatch(lessonActions.getAllLessonsByCourse(
-                this.props.match.params.course, user.id, user.teather_id))
+        if (user !== undefined) {
+            dispatch(userActions.getAllTeathers()).then(
+                () => dispatch(lessonActions.getAllLessonsByCourse(
+                    this.props.match.params.course, user.id, user.teather_id))
+            )
+        } else {
+            history.push('/sign-in')
+        }
+
 
     }
 
@@ -140,7 +146,7 @@ class CoursePage extends React.Component {
     }
 
     sendRequest(id) {
-        const {dispatch, user, jwt } = this.props
+        const { dispatch, user, jwt } = this.props
         dispatch(userActions.updateUser(jwt, user.firstname, user.lastname, user.phonenumber, user.country, user.sity, user.status, user.access, user.roles, id, user.avatar))
         this.handleClose();
     }
@@ -174,7 +180,7 @@ class CoursePage extends React.Component {
                     finish_time = null))
                     .then(
                         dispatch(lessonActions.deleteAllPassedLessonsByCourse(course_id, user_id))
-                        .then(() => history.push(`/courses/${category_name}/${course_id}/${lessons[0].id}`))
+                            .then(() => history.push(`/courses/${category_name}/${course_id}/${lessons[0].id}`))
                     )
                 break;
 

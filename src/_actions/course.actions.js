@@ -2,18 +2,20 @@ import { courseConstants } from '../_constants';
 import { courseService } from '../_services';
 
 export const courseActions = {
+    createCourse,
     getAllCoursesByCategoryName,
+    getAllCoursesByAutor,
     createCoursePassed,
     updateCoursePassed,
     deleteCoursePassed,
     getAllPassedCourseByUser
 };
 
-function getAllCoursesByCategoryName(category_name) {
+function createCourse(jwt, name, autor_id, category_name, img, description) {
     return dispatch => {
-        dispatch(request(category_name));
+        dispatch(request(jwt, name, autor_id, category_name, img, description));
 
-        courseService.getAllCoursesByCategoryName(category_name)
+        return courseService.createCourse(jwt, name, autor_id, category_name, img, description)
             .then(
                 courses => dispatch(success(courses)),
                 error => dispatch(failure(error))
@@ -23,6 +25,38 @@ function getAllCoursesByCategoryName(category_name) {
     function request() { return { type: courseConstants.GETALL_BY_CATEGORY_REQUEST } }
     function success(courses) { return { type: courseConstants.GETALL_BY_CATEGORY_SUCCESS, courses } }
     function failure(error) { return { type: courseConstants.GETALL_BY_CATEGORY_FAILURE, error } }
+}
+
+function getAllCoursesByCategoryName(category_name) {
+    return dispatch => {
+        dispatch(request(category_name));
+
+        return courseService.getAllCoursesByCategoryName(category_name)
+            .then(
+                courses => dispatch(success(courses)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request() { return { type: courseConstants.GETALL_BY_CATEGORY_REQUEST } }
+    function success(courses) { return { type: courseConstants.GETALL_BY_CATEGORY_SUCCESS, courses } }
+    function failure(error) { return { type: courseConstants.GETALL_BY_CATEGORY_FAILURE, error } }
+}
+
+function getAllCoursesByAutor(autor_id){
+    return dispatch => {
+        dispatch(request(autor_id));
+
+        return courseService.getAllCoursesByAutor(autor_id)
+            .then(
+                courses => dispatch(success(courses)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request() { return { type: courseConstants.GETALL_BY_AUTOR_REQUEST } }
+    function success(courses) { return { type: courseConstants.GETALL_BY_AUTOR_SUCCESS, courses } }
+    function failure(error) { return { type: courseConstants.GETALL_BY_AUTOR_FAILURE, error } }
 }
 
 function createCoursePassed(course_id, user_id) {

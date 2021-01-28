@@ -19,18 +19,21 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        const { jwt, dispatch } = this.props;
+        const { jwt, dispatch, loading } = this.props;
         if (jwt) {
             dispatch(userActions.validateToken(jwt)).then(
-                this.setState({loading: false})
+                () => this.setState({ loading: false }),
             );
+        }
+        else {
+            this.setState({ loading: false })
         }
     }
     render() {
         const { loading } = this.state;
-        if (loading) {
+        if (loading === true) {
             return <Loading />
-        } 
+        }
         return (
             <Router history={history}>
                 <div>

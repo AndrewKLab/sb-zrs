@@ -30,6 +30,7 @@ export * from './Dialog/DialogActions'
 
 //TextInput
 export * from './TextInput/TextInput'
+export * from './TextInput/SelectItem'
 
 //Card
 export * from './Card/Card'
