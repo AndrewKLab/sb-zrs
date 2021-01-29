@@ -11,6 +11,15 @@ export const courseService = {
 };
 
 function createCourse(jwt, name, autor_id, category_name, img, description) {
+    const formData  = new FormData();
+  
+    formData.append('jwt', jwt);
+    formData.append('name', name);
+    formData.append('autor_id', autor_id);
+    formData.append('category_name', category_name);
+    formData.append('img', img );
+    formData.append('description', description);
+
     const requestOptions = {
         method: 'POST',
         headers: {
@@ -18,14 +27,7 @@ function createCourse(jwt, name, autor_id, category_name, img, description) {
             'Accept-Encoding': 'gzip, deflate',
             'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
         },
-        body: JSON.stringify({
-            jwt,
-            name,
-            autor_id,
-            category_name,
-            img,
-            description
-        })
+        body: formData
     };
 
     return fetch(`${config.apiUrl}/course/create.php`, requestOptions).then(handleResponse);

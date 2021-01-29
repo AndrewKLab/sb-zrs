@@ -10,9 +10,9 @@ export function course(state = {}, action) {
     case courseConstants.CREATE_COURSE_SUCCESS:
       return {
         loading: false,
-        courses: action.courses,
+        message: action.courses,
       };
-    case courseConstants.CREATE_COURSE_SUCCESS:
+    case courseConstants.CREATE_COURSE_FAILURE:
       return {
         error: action.error
       };

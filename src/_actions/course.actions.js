@@ -13,6 +13,7 @@ export const courseActions = {
 
 function createCourse(jwt, name, autor_id, category_name, img, description) {
     return dispatch => {
+        console.log(img)
         dispatch(request(jwt, name, autor_id, category_name, img, description));
 
         return courseService.createCourse(jwt, name, autor_id, category_name, img, description)
@@ -22,9 +23,9 @@ function createCourse(jwt, name, autor_id, category_name, img, description) {
             );
     };
 
-    function request() { return { type: courseConstants.GETALL_BY_CATEGORY_REQUEST } }
-    function success(courses) { return { type: courseConstants.GETALL_BY_CATEGORY_SUCCESS, courses } }
-    function failure(error) { return { type: courseConstants.GETALL_BY_CATEGORY_FAILURE, error } }
+    function request() { return { type: courseConstants.CREATE_COURSE_REQUEST, jwt, name, autor_id, category_name, img, description } }
+    function success(courses) { return { type: courseConstants.CREATE_COURSE_SUCCESS, courses } }
+    function failure(error) { return { type: courseConstants.CREATE_COURSE_FAILURE, error } }
 }
 
 function getAllCoursesByCategoryName(category_name) {

@@ -22,6 +22,9 @@ let SignupSchema = yup.object().shape({
     course_descrigtion: yup
         .string()
         .required("Это поле является обязательным для заполнения."),
+    image: yup
+        .mixed()
+        .required("Это поле является обязательным для заполнения."),
 });
 
 
@@ -41,7 +44,7 @@ class CreateCoursePage extends React.Component {
     }
 
     render() {
-        const { history } = this.props;
+        const { history, error, message } = this.props;
         const { loading } = this.state;
 
         if (loading) {
@@ -52,7 +55,7 @@ class CreateCoursePage extends React.Component {
                 <Paper className={'create-course-body p-2'}>
                     <Formik
                         initialValues={{
-                            image:{},
+                            image: '',
                             course_name: "",
                             course_category_name: "",
                             course_descrigtion: "",
@@ -60,26 +63,26 @@ class CreateCoursePage extends React.Component {
                         validationSchema={SignupSchema}
                         onSubmit={(values) => {
                             const { course_name, course_category_name, image, course_descrigtion } = values;
-                            this.setState({ submitted: true });
-                            const { dispatch, user, jwt } = this.props;
-                            dispatch(courseActions.createCourse(jwt, course_name, user.id, course_category_name === '' ? 'basic' : course_category_name, image, course_descrigtion))
+                            const { dispatch, user, jwt, message } = this.props;
+                            if (message === undefined) {
+                                dispatch(courseActions.createCourse(jwt, course_name, user.id, course_category_name === '' ? 'basic' : course_category_name, image, course_descrigtion))
+                            } else {
+                                console.log('изменить курс')
+                            }
+
                         }
                         }
                     >
                         {({ errors, values, handleChange, setFieldValue, touched }) => (
                             <Form>
-
-                                {this.props.message && (
-                                    <Alert className='error' severity="error">{message}</Alert>
-                                )}
-                                <div>
+                                <div className='mb-3'>
                                     <Dropzone
-                                        className='drag-and-drop'
+                                        className={`drag-and-drop ${errors.image && touched.image && 'drag-and-drop-error'}`}
                                         accept="image/*"
                                         onDrop={(acceptedFiles) => {
                                             // do nothing if no files
                                             if (acceptedFiles.length === 0) { return; }
-                                            
+
                                             // on drop we add to the existing files
                                             setFieldValue("image", acceptedFiles[0]);
                                         }}>
@@ -104,6 +107,8 @@ class CreateCoursePage extends React.Component {
                                             return <Thumb file={values.image} />;
                                         }}
                                     </Dropzone>
+
+                                    {errors.image && touched.image && <span className="text-input-helper text-input-danger">{errors.image}</span>}
                                 </div>
 
                                 <TextInput
@@ -136,7 +141,7 @@ class CreateCoursePage extends React.Component {
 
                                     InputProps={{
                                         endAdornment: (
-                                                <ExpandMoreIcon/>
+                                            <ExpandMoreIcon />
                                         ),
                                     }}
                                     className='w-100 mb-3'
@@ -163,10 +168,16 @@ class CreateCoursePage extends React.Component {
                                             ? errors.course_descrigtion
                                             : null
                                     }
-                                    className='w-100'
+                                    className='w-100 mb-3'
                                 />
-                                <div className='d-flex grid-justify-xs-flex-end'>
-                                    <Button type="submit" className='my-3'>Создать курс</Button>
+                                <div className={`d-flex grid-justify-xs-${error !== undefined || message !== undefined ? 'space-between' : 'flex-end'}`}>
+                                    {error && (
+                                        <Alert className='error' severity="error">{error}</Alert>
+                                    )}
+                                    {message && (
+                                        <Alert severity="success">{message.message}</Alert>
+                                    )}
+                                    <Button type="submit" className='m-3'>{message === undefined ? 'Создать курс' : 'Изменить курс'}</Button>
                                 </div>
                             </Form>
                         )}
@@ -175,7 +186,7 @@ class CreateCoursePage extends React.Component {
                 </Paper>
                 <Paper className={'create-course-helper p-2'}>
                     <Typography variant='h5' component='h5'>Уроки в курсе:</Typography>
-                    <Button onPress={() => { console.log('Добавить урок') }}>Добавить урок</Button>
+                    <Button disabled={message === undefined} onPress={() => { console.log('Добавить урок') }}>Добавить урок</Button>
                 </Paper>
             </div>
         );
@@ -183,11 +194,11 @@ class CreateCoursePage extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { message } = state.alert;
     const { authentication, course } = state;
     const { user, jwt } = authentication;
-    const { loading, courses } = course;
+    const { loading, courses, error, message } = course;
     return {
+        error,
         message,
         user,
         jwt,
