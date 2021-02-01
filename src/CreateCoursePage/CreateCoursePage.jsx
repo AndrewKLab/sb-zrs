@@ -12,7 +12,20 @@ import { Formik, Form } from "formik";
 import * as yup from "yup";
 import "yup-phone";
 
-import { Alert, Loading, Paper, Typography, Button, TextInput, SelectItem, IconButton } from '../_components'
+import {
+    Alert,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Loading,
+    Paper,
+    Typography,
+    Button,
+    TextInput,
+    SelectItem,
+    IconButton
+} from '../_components'
 
 let SignupSchema = yup.object().shape({
     course_name: yup
@@ -33,6 +46,7 @@ class CreateCoursePage extends React.Component {
         super(props);
         this.state = {
             loading: true,
+            openCreate: false
         }
     }
 
@@ -41,6 +55,50 @@ class CreateCoursePage extends React.Component {
         if (user != undefined) {
             this.setState({ loading: false })
         }
+    }
+
+    handleOpen() {
+        this.setState({ openCreate: true })
+    }
+
+
+    handleClose() {
+        this.setState({ openCreate: false })
+    }
+
+    submit(values) {
+        const { course_name, course_category_name, image, course_descrigtion } = values;
+        const { dispatch, user, jwt, message } = this.props;
+        if (message === undefined) {
+            dispatch(courseActions.createCourse(jwt, course_name, user.id, course_category_name === '' ? 'basic' : course_category_name, image, course_descrigtion)).then(
+                () => this.handleClose()
+            )
+        } else {
+            console.log('изменить курс')
+            this.handleClose()
+        }
+    }
+
+    renderConfermCreateDialog(values) {
+        const { openCreate } = this.state;
+        return (
+            <Dialog onClose={() => this.handleClose()} open={openCreate}>
+                <DialogTitle>
+                    <Typography variant='h5' component='h5'>Создать курс?</Typography>
+                </DialogTitle>
+                <DialogContent dividers className={'d-flex grid-direction-xs-column'}>
+                    <Typography variant='body' component='body'>{`Создать курс с именем "${values.course_name}"?`}</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onPress={()=> this.submit(values)} className={'mr-3'} variant='outlined' color="primary">
+                        Да
+                        </Button>
+                    <Button onPress={() => this.handleClose()} variant='outlined' color="primary">
+                        Закрыть
+                        </Button>
+                </DialogActions>
+            </Dialog>
+        )
     }
 
     render() {
@@ -62,14 +120,7 @@ class CreateCoursePage extends React.Component {
                         }}
                         validationSchema={SignupSchema}
                         onSubmit={(values) => {
-                            const { course_name, course_category_name, image, course_descrigtion } = values;
-                            const { dispatch, user, jwt, message } = this.props;
-                            if (message === undefined) {
-                                dispatch(courseActions.createCourse(jwt, course_name, user.id, course_category_name === '' ? 'basic' : course_category_name, image, course_descrigtion))
-                            } else {
-                                console.log('изменить курс')
-                            }
-
+                            this.handleOpen();
                         }
                         }
                     >
@@ -177,8 +228,9 @@ class CreateCoursePage extends React.Component {
                                     {message && (
                                         <Alert severity="success">{message.message}</Alert>
                                     )}
-                                    <Button type="submit" className='m-3'>{message === undefined ? 'Создать курс' : 'Изменить курс'}</Button>
+                                    <Button type='submit' className='m-3'>{message === undefined ? 'Создать курс' : 'Изменить курс'}</Button>
                                 </div>
+                                {this.renderConfermCreateDialog(values)}
                             </Form>
                         )}
                     </Formik>

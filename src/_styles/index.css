@@ -2768,6 +2768,7 @@ div.text-input-group label {
     bottom: 0;
     right: 0;
     background: rgba(0, 0, 0, 0.25);
+    z-index: 1;
 }
 
 .dialog {
@@ -3019,6 +3020,14 @@ div.text-input-group label {
 
 .done-area-title-icon {
     fill: rgba(var(--secondary-main-color)) !important;
+}
+
+.warning-area-title-icon {
+    fill: rgba(var(--alert-warning-color)) !important;
+}
+
+.danger-area-title-icon {
+    fill: rgba(var(--alert-danger-color)) !important;
 }
 
 .teathers-list {

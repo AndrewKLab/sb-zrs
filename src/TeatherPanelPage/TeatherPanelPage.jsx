@@ -30,6 +30,11 @@ import {
 } from '../_components';
 import { ProgressCircle } from '../LessonPage'
 
+import EventAvailableOutlinedIcon from '@material-ui/icons/EventAvailableOutlined';
+import EventBusyOutlinedIcon from '@material-ui/icons/EventBusyOutlined';
+import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
+import { IconButton } from '@material-ui/core';
+
 
 
 class TeatherPanelPage extends React.Component {
@@ -39,7 +44,8 @@ class TeatherPanelPage extends React.Component {
             loading: true,
             open: false,
             openAccessDialog: false,
-            selectedOption: ''
+            selectedOption: '',
+            openDeleteDialog: false
         }
         this.onValueChange = this.onValueChange.bind(this);
         this.formSubmit = this.formSubmit.bind(this);
@@ -93,6 +99,9 @@ class TeatherPanelPage extends React.Component {
         })
     }
 
+    handleClickOpenAccessDialog() {
+        this.setState({ openDeleteDialog: true})
+    }
 
     handleClose() {
         this.setState({ open: false })
@@ -100,6 +109,10 @@ class TeatherPanelPage extends React.Component {
 
     handleCloseAccessDialog() {
         this.setState({ openAccessDialog: false })
+    }
+
+    handleCloseDeleteDialog() {
+        this.setState({ openDeleteDialog: false })
     }
 
     onValueChange(event) {
@@ -203,7 +216,26 @@ class TeatherPanelPage extends React.Component {
         )
     }
 
+    deleteCourseDialog() {
+        const { openDeleteDialog } = this.state;
+        <Dialog onClose={() => this.handleCloseAccessDialog()} open={openDeleteDialog}>
+            <DialogTitle>
+                <Typography variant='h5' component='h5'>{`Удалить курс?`}</Typography>
+            </DialogTitle>
+
+            <DialogActions>
+                <Button onPress={() => this.changeUserAcces()} className={'mr-3'} variant='outlined' color="primary">
+                    Да
+            </Button>
+                <Button onPress={() => this.handleCloseAccessDialog()} variant='outlined' color="primary">
+                    Закрыть
+            </Button>
+            </DialogActions>
+        </Dialog>
+    }
+
     render() {
+        
         const { history, users_array, courses, error } = this.props;
         const { loading } = this.state;
         if (loading) {
@@ -215,7 +247,7 @@ class TeatherPanelPage extends React.Component {
                     <Grid item xs={12} sm={6}>
                         <Typography component='h4' variant='h4'>Ваши курсы:</Typography>
                         <div className='d-flex grid-justify-xs-flex-end w-100'>
-                            <Button onPress={() => {history.push(`/teather-panel/create-course`)}} variant='outlined' color="primary">Создать курс</Button>
+                            <Button onPress={() => { history.push(`/teather-panel/create-course`) }} variant='outlined' color="primary">Создать курс</Button>
                         </div>
                         {error === undefined ? (
                             <div>
@@ -236,10 +268,25 @@ class TeatherPanelPage extends React.Component {
                                                             </ListItemText>
                                                         </ListItemFirstAction>
                                                         <ListItemSecondAction>
+                                                            {
+                                                                item.published === "0" ?
+                                                                    <div title='Неопубликованный курс'>
+                                                                        <EventBusyOutlinedIcon className='mr-3 warning-area-title-icon' />
+                                                                    </div>
+                                                                    :
+                                                                    <div title='Опубликованный курс'>
+                                                                        <EventAvailableOutlinedIcon className='mr-3 done-area-title-icon' />
+                                                                    </div>
+                                                            }
+                                                            <div title='Удалить курс' className='mr-3'>
+                                                                <IconButton onClick={() => console.log(32332323)}>
+                                                                    <DeleteForeverOutlinedIcon className='danger-area-title-icon' />
+                                                                </IconButton>
+                                                            </div>
                                                             <Button onPress={() => { }} variant='outlined' color="primary">Изменить курс</Button>
                                                         </ListItemSecondAction>
                                                     </ListItem>
-                                                     <Divider />
+                                                    <Divider />
                                                 </div>
                                             ))}
                                         </List>
@@ -262,6 +309,16 @@ class TeatherPanelPage extends React.Component {
                                                             </ListItemText>
                                                         </ListItemFirstAction>
                                                         <ListItemSecondAction>
+                                                            {
+                                                                item.published === "0" ?
+                                                                    <div title='Неопубликованный курс'>
+                                                                        <EventBusyOutlinedIcon className='mr-3 warning-area-title-icon' />
+                                                                    </div>
+                                                                    :
+                                                                    <div title='Опубликованный курс'>
+                                                                        <EventAvailableOutlinedIcon className='mr-3 done-area-title-icon' />
+                                                                    </div>
+                                                            }
                                                             <Button onPress={() => { }} variant='outlined' color="primary">Изменить курс</Button>
                                                         </ListItemSecondAction>
                                                     </ListItem>
@@ -289,6 +346,16 @@ class TeatherPanelPage extends React.Component {
                                                             </ListItemText>
                                                         </ListItemFirstAction>
                                                         <ListItemSecondAction>
+                                                            {
+                                                                item.published === "0" ?
+                                                                    <div title='Неопубликованный курс'>
+                                                                        <EventBusyOutlinedIcon className='mr-3 warning-area-title-icon' />
+                                                                    </div>
+                                                                    :
+                                                                    <div title='Опубликованный курс'>
+                                                                        <EventAvailableOutlinedIcon className='mr-3 done-area-title-icon' />
+                                                                    </div>
+                                                            }
                                                             <Button onPress={() => { }} variant='outlined' color="primary">Изменить курс</Button>
                                                         </ListItemSecondAction>
                                                     </ListItem>
@@ -316,6 +383,16 @@ class TeatherPanelPage extends React.Component {
                                                             </ListItemText>
                                                         </ListItemFirstAction>
                                                         <ListItemSecondAction>
+                                                            {
+                                                                item.published === "0" ?
+                                                                    <div title='Неопубликованный курс'>
+                                                                        <EventBusyOutlinedIcon className='mr-3 warning-area-title-icon' />
+                                                                    </div>
+                                                                    :
+                                                                    <div title='Опубликованный курс'>
+                                                                        <EventAvailableOutlinedIcon className='mr-3 done-area-title-icon' />
+                                                                    </div>
+                                                            }
                                                             <Button onPress={() => { }} variant='outlined' color="primary">Изменить курс</Button>
                                                         </ListItemSecondAction>
                                                     </ListItem>
