@@ -1,9 +1,9 @@
 import React from 'react'
 
-export const SelectItem = ({className, children, value}) => {
+export const SelectItem = ({className, children, value, selectded}) => {
     let styleClass = className == undefined ?  '' : ' '+className;
     return (
-        <option value={value} className={'text-input-option'+styleClass}>
+        <option value={value} selected={selectded} className={'text-input-option'+styleClass}>
             {children}
         </option>
     )

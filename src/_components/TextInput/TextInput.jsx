@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 
-export const TextInput = ({ helperText, variant, id, name, autoComplete, label, onChange, className, type, InputProps, fullWidth, reff, select, children, multiline, rows }) => {
+export const TextInput = ({ helperText, variant, id, name, autoComplete, label, onChange, className, type, InputProps, fullWidth, reff, select, children, multiline, rows, value }) => {
     const ref = useRef();
     let curRef = reff !== undefined ? reff : ref
     let styleClass = className == undefined ? '' : ' ' + className;
@@ -11,11 +11,11 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
     let textareaType = multiline === undefined ? false : true;
     let inputType;
 
-    if(selectType){
+    if (selectType) {
         inputType = 'select'
-    }else if(textareaType){
+    } else if (textareaType) {
         inputType = 'textarea'
-    } else if (selectType === undefined && textareaType === undefined){
+    } else if (selectType === undefined && textareaType === undefined) {
         inputType = 'default'
     } else {
         inputType = 'default'
@@ -38,8 +38,8 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
     }
 
     const [styleFocused, setStyleFocused] = useState('');
-    const [styleLegendFocused, setStyleLegendFocused] = useState(InputProps !== undefined ? InputProps.startAdornment !== undefined ? ' text-input-label-plane-focused' : '' : '');
-    const [styleLabelFocused, setStyleLabelFocused] = useState(InputProps !== undefined ? InputProps.startAdornment !== undefined ? ' text-input-label-focused' : '' : '');
+    const [styleLegendFocused, setStyleLegendFocused] = useState(InputProps !== undefined ? InputProps.startAdornment !== undefined ? value !== undefined || value === '' ? ' text-input-label-plane-focused' : '' : value !== undefined || value === '' ? ' text-input-label-plane-focused' : '' : value !== undefined || value === '' ? ' text-input-label-plane-focused' : '');
+    const [styleLabelFocused, setStyleLabelFocused] = useState(InputProps !== undefined ? InputProps.startAdornment !== undefined ? value !== undefined || value === '' ? ' text-input-label-focused' : '' : value !== undefined || value === '' ? ' text-input-label-focused' : '' : value !== undefined || value === '' ? ' text-input-label-focused' : '');
     const [styleFocusedColor, setStyleFocusedColor] = useState('');
     const [styleHovered, setStyleHovered] = useState('');
     const [styleLabelFocusedColor, setStyleLabelFocusedColor] = useState('');
@@ -119,13 +119,14 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
                                 >
                                     {InputProps.startAdornment}
                                 </div>)}
-    
+
                             <input
                                 ref={curRef}
                                 id={id}
                                 name={name}
                                 autoComplete={autoComplete}
                                 type={type}
+                                value={value}
                                 onChange={onChange}
                                 onFocus={onFocus}
                                 onBlur={onBlur}
@@ -136,7 +137,7 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
                                     <legend className={"text-input-label-plane " + styleLegendFocused} ><span>{label}</span></legend>
                                 </fieldset>
                             }
-    
+
                             <div className={'text-input-' + variants + '' + styleFocused + styleFocusedColor + styleAlert}></div>
                             {InputProps == undefined ? (null) : (
                                 InputProps.endAdornment && <div
@@ -163,11 +164,12 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
                                 >
                                     {InputProps.startAdornment}
                                 </div>)}
-    
+
                             <textarea
                                 ref={curRef}
                                 id={id}
                                 name={name}
+                                value={value}
                                 rows={rows}
                                 autoComplete={autoComplete}
                                 type={type}
@@ -181,7 +183,7 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
                                     <legend className={"text-input-label-plane " + styleLegendFocused} ><span>{label}</span></legend>
                                 </fieldset>
                             }
-    
+
                             <div className={'text-input-' + variants + '' + styleFocused + styleFocusedColor + styleAlert}></div>
                             {InputProps == undefined ? (null) : (
                                 InputProps.endAdornment && <div
@@ -208,7 +210,7 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
                                 >
                                     {InputProps.startAdornment}
                                 </div>)}
-    
+
                             <select
                                 ref={curRef}
                                 id={id}
@@ -227,7 +229,7 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
                                     <legend className={"text-input-label-plane text-input-label-plane-focused" + styleLegendFocused} ><span>{label}</span></legend>
                                 </fieldset>
                             }
-    
+
                             <div className={'text-input-' + variants + '' + styleFocused + styleFocusedColor + styleAlert}></div>
                             {InputProps == undefined ? (null) : (
                                 InputProps.endAdornment && <div

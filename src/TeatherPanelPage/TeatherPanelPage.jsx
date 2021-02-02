@@ -26,14 +26,14 @@ import {
     MenuItem,
     Form,
     FormControlLabel,
-    Radio
+    Radio,
+    IconButton
 } from '../_components';
 import { ProgressCircle } from '../LessonPage'
 
 import EventAvailableOutlinedIcon from '@material-ui/icons/EventAvailableOutlined';
 import EventBusyOutlinedIcon from '@material-ui/icons/EventBusyOutlined';
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
-import { IconButton } from '@material-ui/core';
 
 
 
@@ -99,8 +99,8 @@ class TeatherPanelPage extends React.Component {
         })
     }
 
-    handleClickOpenAccessDialog() {
-        this.setState({ openDeleteDialog: true})
+    handleClickOpenDeleteDialog(course_name, course_id) {
+        this.setState({ openDeleteDialog: true, course_name: course_name, course_id: course_id })
     }
 
     handleClose() {
@@ -216,26 +216,27 @@ class TeatherPanelPage extends React.Component {
         )
     }
 
-    deleteCourseDialog() {
-        const { openDeleteDialog } = this.state;
-        <Dialog onClose={() => this.handleCloseAccessDialog()} open={openDeleteDialog}>
-            <DialogTitle>
-                <Typography variant='h5' component='h5'>{`Удалить курс?`}</Typography>
-            </DialogTitle>
-
-            <DialogActions>
-                <Button onPress={() => this.changeUserAcces()} className={'mr-3'} variant='outlined' color="primary">
-                    Да
-            </Button>
-                <Button onPress={() => this.handleCloseAccessDialog()} variant='outlined' color="primary">
-                    Закрыть
-            </Button>
-            </DialogActions>
-        </Dialog>
+    renderDeleteCourseDialog() {
+        const { openDeleteDialog, course_name, course_id } = this.state;
+        const { jwt, dispatch } = this.props;
+        return (
+            <Dialog onClose={() => this.handleCloseDeleteDialog()} open={openDeleteDialog}>
+                <DialogTitle>
+                    <Typography variant='h5' component='h5' className='m-0'>Удалить курс</Typography>
+                </DialogTitle>
+                <DialogContent dividers className={'d-flex grid-direction-xs-column'}>
+                    <Typography component={'body'} variant={'body'} className='m-0'>{`Вы уверенны что хотите удалить курс "${course_name}"?`}</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onPress={() => { dispatch(courseActions.deleteCourse(jwt, course_id)), this.handleCloseDeleteDialog() }} className={'mr-3'} variant='outlined' color="primary">Да</Button>
+                    <Button onPress={() => this.handleCloseDeleteDialog()} variant='outlined' color="primary">Закрыть</Button>
+                </DialogActions>
+            </Dialog>
+        )
     }
 
     render() {
-        
+
         const { history, users_array, courses, error } = this.props;
         const { loading } = this.state;
         if (loading) {
@@ -279,11 +280,14 @@ class TeatherPanelPage extends React.Component {
                                                                     </div>
                                                             }
                                                             <div title='Удалить курс' className='mr-3'>
-                                                                <IconButton onClick={() => console.log(32332323)}>
+                                                                <IconButton onClick={() => this.handleClickOpenDeleteDialog(item.name, item.id)}>
                                                                     <DeleteForeverOutlinedIcon className='danger-area-title-icon' />
                                                                 </IconButton>
                                                             </div>
-                                                            <Button onPress={() => { }} variant='outlined' color="primary">Изменить курс</Button>
+                                                            <Button onPress={() => history.push({
+                                                                pathname: '/teather-panel/create-course',
+                                                                state: { course: item }
+                                                            })} variant='outlined' color="primary">Изменить курс</Button>
                                                         </ListItemSecondAction>
                                                     </ListItem>
                                                     <Divider />
@@ -319,7 +323,15 @@ class TeatherPanelPage extends React.Component {
                                                                         <EventAvailableOutlinedIcon className='mr-3 done-area-title-icon' />
                                                                     </div>
                                                             }
-                                                            <Button onPress={() => { }} variant='outlined' color="primary">Изменить курс</Button>
+                                                            <div title='Удалить курс' className='mr-3'>
+                                                                <IconButton onClick={() => this.handleClickOpenDeleteDialog(item.name, item.id)}>
+                                                                    <DeleteForeverOutlinedIcon className='danger-area-title-icon' />
+                                                                </IconButton>
+                                                            </div>
+                                                            <Button onPress={() => history.push({
+                                                                pathname: '/teather-panel/create-course',
+                                                                state: { course: item }
+                                                            })} variant='outlined' color="primary">Изменить курс</Button>
                                                         </ListItemSecondAction>
                                                     </ListItem>
                                                     <Divider />
@@ -356,7 +368,15 @@ class TeatherPanelPage extends React.Component {
                                                                         <EventAvailableOutlinedIcon className='mr-3 done-area-title-icon' />
                                                                     </div>
                                                             }
-                                                            <Button onPress={() => { }} variant='outlined' color="primary">Изменить курс</Button>
+                                                            <div title='Удалить курс' className='mr-3'>
+                                                                <IconButton onClick={() => this.handleClickOpenDeleteDialog(item.name, item.id)}>
+                                                                    <DeleteForeverOutlinedIcon className='danger-area-title-icon' />
+                                                                </IconButton>
+                                                            </div>
+                                                            <Button onPress={() => history.push({
+                                                                pathname: '/teather-panel/create-course',
+                                                                state: { course: item }
+                                                            })} variant='outlined' color="primary">Изменить курс</Button>
                                                         </ListItemSecondAction>
                                                     </ListItem>
                                                     <Divider />
@@ -393,13 +413,22 @@ class TeatherPanelPage extends React.Component {
                                                                         <EventAvailableOutlinedIcon className='mr-3 done-area-title-icon' />
                                                                     </div>
                                                             }
-                                                            <Button onPress={() => { }} variant='outlined' color="primary">Изменить курс</Button>
+                                                            <div title='Удалить курс' className='mr-3'>
+                                                                <IconButton onClick={() => this.handleClickOpenDeleteDialog(item.name, item.id)}>
+                                                                    <DeleteForeverOutlinedIcon className='danger-area-title-icon' />
+                                                                </IconButton>
+                                                            </div>
+                                                            <Button onPress={() => history.push({
+                                                                pathname: '/teather-panel/create-course',
+                                                                state: { course: item }
+                                                            })} variant='outlined' color="primary">Изменить курс</Button>
                                                         </ListItemSecondAction>
                                                     </ListItem>
                                                     {index === courses.national.length - 1 ? (null) : <Divider />}
                                                 </div>
                                             ))}
                                         </List>
+
                                     </div>
                                 )}
 
@@ -463,6 +492,7 @@ class TeatherPanelPage extends React.Component {
                                             </Menu>
                                             {this.state.open === true ? this.renderChangeUserStatusDialog() : null}
                                             {this.state.openAccessDialog === true ? this.renderChangeUserAccessDialog() : null}
+                                            {this.state.openDeleteDialog === true ? this.renderDeleteCourseDialog() : null}
                                         </ListItemSecondAction>
                                     </ListItem>
 

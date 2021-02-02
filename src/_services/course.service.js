@@ -2,6 +2,8 @@ import config from 'config';
 
 export const courseService = {
     createCourse,
+    updateCourse,
+    deleteCourse,
     getAllCoursesByCategoryName,
     getAllCoursesByAutor,
     createCoursePassed,
@@ -31,6 +33,47 @@ function createCourse(jwt, name, autor_id, category_name, img, description) {
     };
 
     return fetch(`${config.apiUrl}/course/create.php`, requestOptions).then(handleResponse);
+}
+
+function updateCourse(jwt, course_id, name, autor_id, category_name, img, description) {
+    const formData  = new FormData();
+  
+    formData.append('jwt', jwt);
+    formData.append('name', name);
+    formData.append('autor_id', autor_id);
+    formData.append('category_name', category_name);
+    formData.append('img', img );
+    formData.append('description', description);
+
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Encoding': 'gzip, deflate',
+            'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
+        },
+        body: formData
+    };
+
+    return fetch(`${config.apiUrl}/course/update.php?course_id=${course_id}`, requestOptions).then(handleResponse);
+}
+
+function deleteCourse(jwt, course_id) {
+    const formData  = new FormData();
+  
+    formData.append('jwt', jwt);
+
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Encoding': 'gzip, deflate',
+            'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
+        },
+        body: formData
+    };
+
+    return fetch(`${config.apiUrl}/course/delete.php?course_id=${course_id}`, requestOptions).then(handleResponse);
 }
 
 

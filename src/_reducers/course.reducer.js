@@ -2,7 +2,7 @@ import { courseConstants } from '../_constants';
 
 export function course(state = {}, action) {
   switch (action.type) {
-    //GET ONE CATEGORY BY CATEGORY
+    //CREATE COURSE
     case courseConstants.CREATE_COURSE_REQUEST:
       return {
         loading: true
@@ -10,10 +10,68 @@ export function course(state = {}, action) {
     case courseConstants.CREATE_COURSE_SUCCESS:
       return {
         loading: false,
-        message: action.courses,
+        message: action.courses.message,
+        course_data: action.courses.course,
       };
     case courseConstants.CREATE_COURSE_FAILURE:
       return {
+        error: action.error
+      };
+
+    //UPDATE COURSE
+    case courseConstants.UPDATE_COURSE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        courses: state.courses
+      };
+    case courseConstants.UPDATE_COURSE_SUCCESS:
+      return {
+        loading: false,
+        message: action.courses.message,
+        course_data: {
+          id: action.course_id,
+          category_name: action.category_name,
+          description: action.description,
+          img: action.img,
+          name: action.name,
+          autor_id: action.autor_id
+        }
+      };
+    case courseConstants.UPDATE_COURSE_FAILURE:
+      return {
+        ...state,
+        courses: state.courses,
+        error: action.error
+      };
+
+    //DELETE COURSE
+    case courseConstants.DELETE_COURSE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        courses: state.courses
+      };
+    case courseConstants.DELETE_COURSE_SUCCESS:
+      var category_item = [];
+      var courses_new = {};
+      var category_valuses = Object.values(state.courses);
+      var category_keys = Object.keys(state.courses);
+      for (let i = 0; i < category_keys.length; i++) {
+        category_item = category_valuses[i].filter(n => n.id !== action.course_id);
+        if (category_item.length > 0) {
+          courses_new[category_keys[i]] = category_item;
+        }
+
+      }
+      return {
+        loading: false,
+        courses: courses_new
+      };
+    case courseConstants.DELETE_COURSE_FAILURE:
+      return {
+        ...state,
+        courses: state.courses,
         error: action.error
       };
 

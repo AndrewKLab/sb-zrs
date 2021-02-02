@@ -46,7 +46,9 @@ class CreateCoursePage extends React.Component {
         super(props);
         this.state = {
             loading: true,
-            openCreate: false
+            openCreate: false,
+            changed: false,
+            courseCreated: this.props.location.state !== undefined ? true : false
         }
     }
 
@@ -68,15 +70,10 @@ class CreateCoursePage extends React.Component {
 
     submit(values) {
         const { course_name, course_category_name, image, course_descrigtion } = values;
-        const { dispatch, user, jwt, message } = this.props;
-        if (message === undefined) {
-            dispatch(courseActions.createCourse(jwt, course_name, user.id, course_category_name === '' ? 'basic' : course_category_name, image, course_descrigtion)).then(
-                () => this.handleClose()
-            )
-        } else {
-            console.log('изменить курс')
-            this.handleClose()
-        }
+        const { dispatch, user, jwt, message, error } = this.props;
+        dispatch(courseActions.createCourse(jwt, course_name, user.id, course_category_name === '' ? 'basic' : course_category_name, image, course_descrigtion)).then(
+            () => this.handleClose(), console.log(error), this.setState({ changed: error === undefined ? false : true, courseCreated: error === undefined ? true: false })
+        )
     }
 
     renderConfermCreateDialog(values) {
@@ -90,7 +87,7 @@ class CreateCoursePage extends React.Component {
                     <Typography variant='body' component='body'>{`Создать курс с именем "${values.course_name}"?`}</Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onPress={()=> this.submit(values)} className={'mr-3'} variant='outlined' color="primary">
+                    <Button onPress={() => this.submit(values)} className={'mr-3'} variant='outlined' color="primary">
                         Да
                         </Button>
                     <Button onPress={() => this.handleClose()} variant='outlined' color="primary">
@@ -102,8 +99,8 @@ class CreateCoursePage extends React.Component {
     }
 
     render() {
-        const { history, error, message } = this.props;
-        const { loading } = this.state;
+        const { jwt, error, message, dispatch, course_data } = this.props;
+        const { loading, changed, courseCreated } = this.state;
 
         if (loading) {
             return <Loading />
@@ -112,20 +109,44 @@ class CreateCoursePage extends React.Component {
             <div className={'py-3 d-flex gap-10'}>
                 <Paper className={'create-course-body p-2'}>
                     <Formik
-                        initialValues={{
-                            image: '',
-                            course_name: "",
-                            course_category_name: "",
-                            course_descrigtion: "",
-                        }}
+                        initialValues={
+                            this.props.location.state !== undefined ?
+                                {
+                                    image: '',
+                                    course_name: this.props.location.state.course.name,
+                                    course_category_name: this.props.location.state.course.category_name,
+                                    course_descrigtion: this.props.location.state.course.description,
+                                } : {
+                                    image: '',
+                                    course_name: "",
+                                    course_category_name: "basic",
+                                    course_descrigtion: "",
+                                }}
                         validationSchema={SignupSchema}
                         onSubmit={(values) => {
-                            this.handleOpen();
+                            const { course_name, course_category_name, image, course_descrigtion } = values;
+                            console.log(courseCreated)
+                            if (courseCreated === false) {
+                                this.handleOpen()
+                            } else {
+                                dispatch(courseActions.updateCourse(
+                                    jwt,
+                                    this.props.course_data !== undefined ? (this.props.course_data.id === undefined ? this.props.location.state.course.id : this.props.course_data.id) : (this.props.location.state.course.id),
+                                    course_name,
+                                    this.props.course_data !== undefined ? (this.props.course_data.autor_id === undefined ? this.props.location.state.course.autor_id : this.props.course_data.autor_id) : (this.props.location.state.course.autor_id),
+                                    course_category_name,
+                                    image,
+                                    course_descrigtion
+                                )).then(
+                                    () => this.setState({ changed: false })
+                                )
+                            }
+
                         }
                         }
                     >
                         {({ errors, values, handleChange, setFieldValue, touched }) => (
-                            <Form>
+                            <Form onChange={() => { this.setState({ changed: true }) }}>
                                 <div className='mb-3'>
                                     <Dropzone
                                         className={`drag-and-drop ${errors.image && touched.image && 'drag-and-drop-error'}`}
@@ -135,7 +156,7 @@ class CreateCoursePage extends React.Component {
                                             if (acceptedFiles.length === 0) { return; }
 
                                             // on drop we add to the existing files
-                                            setFieldValue("image", acceptedFiles[0]);
+                                            setFieldValue("image", acceptedFiles[0])
                                         }}>
                                         {({ isDragActive, isDragReject, acceptedFiles, rejectedFiles }) => {
                                             if (isDragActive) {
@@ -164,7 +185,7 @@ class CreateCoursePage extends React.Component {
 
                                 <TextInput
                                     error={errors.course_name && touched.course_name}
-                                    value={values.value}
+                                    value={values.course_name}
                                     id="course_name"
                                     name="course_name"
                                     label="Название курса"
@@ -181,7 +202,6 @@ class CreateCoursePage extends React.Component {
 
                                 <TextInput
                                     select
-                                    value={values.value}
                                     id="course_category_name"
                                     name="course_category_name"
                                     label="Категория курса"
@@ -197,17 +217,17 @@ class CreateCoursePage extends React.Component {
                                     }}
                                     className='w-100 mb-3'
                                 >
-                                    <SelectItem value={'basic'}>Основная категория</SelectItem>
-                                    <SelectItem value={'special'}>Специальная категория</SelectItem>
-                                    <SelectItem value={'social'}>Социальная категория</SelectItem>
-                                    <SelectItem value={'national'}>Национальная категория</SelectItem>
+                                    <SelectItem selectded={values.course_category_name === 'basic'} value={'basic'}>Основная категория</SelectItem>
+                                    <SelectItem selectded={values.course_category_name === 'special'} value={'special'}>Специальная категория</SelectItem>
+                                    <SelectItem selectded={values.course_category_name === 'social'} value={'social'}>Социальная категория</SelectItem>
+                                    <SelectItem selectded={values.course_category_name === 'national'} value={'national'}>Национальная категория</SelectItem>
                                 </TextInput>
 
                                 <TextInput
                                     multiline
                                     rows={4}
                                     error={errors.course_descrigtion && touched.course_descrigtion}
-                                    value={values.value}
+                                    value={values.course_descrigtion}
                                     id="course_descrigtion"
                                     label="Описание курса"
                                     type={'text'}
@@ -226,9 +246,10 @@ class CreateCoursePage extends React.Component {
                                         <Alert className='error' severity="error">{error}</Alert>
                                     )}
                                     {message && (
-                                        <Alert severity="success">{message.message}</Alert>
+                                        <Alert severity="success">{message}</Alert>
                                     )}
-                                    <Button type='submit' className='m-3'>{message === undefined ? 'Создать курс' : 'Изменить курс'}</Button>
+                                    {touched.course_name}
+                                    <Button type='submit' disabled={changed === false} className='m-3'>{courseCreated === false ? 'Создать курс' : 'Изменить курс'}</Button>
                                 </div>
                                 {this.renderConfermCreateDialog(values)}
                             </Form>
@@ -248,14 +269,14 @@ class CreateCoursePage extends React.Component {
 function mapStateToProps(state) {
     const { authentication, course } = state;
     const { user, jwt } = authentication;
-    const { loading, courses, error, message } = course;
+    const { loading, course_data, error, message } = course;
     return {
         error,
         message,
         user,
         jwt,
         loading,
-        courses
+        course_data
     };
 }
 

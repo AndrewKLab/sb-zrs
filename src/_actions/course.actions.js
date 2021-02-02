@@ -3,6 +3,8 @@ import { courseService } from '../_services';
 
 export const courseActions = {
     createCourse,
+    updateCourse,
+    deleteCourse,
     getAllCoursesByCategoryName,
     getAllCoursesByAutor,
     createCoursePassed,
@@ -13,7 +15,6 @@ export const courseActions = {
 
 function createCourse(jwt, name, autor_id, category_name, img, description) {
     return dispatch => {
-        console.log(img)
         dispatch(request(jwt, name, autor_id, category_name, img, description));
 
         return courseService.createCourse(jwt, name, autor_id, category_name, img, description)
@@ -26,6 +27,37 @@ function createCourse(jwt, name, autor_id, category_name, img, description) {
     function request() { return { type: courseConstants.CREATE_COURSE_REQUEST, jwt, name, autor_id, category_name, img, description } }
     function success(courses) { return { type: courseConstants.CREATE_COURSE_SUCCESS, courses } }
     function failure(error) { return { type: courseConstants.CREATE_COURSE_FAILURE, error } }
+}
+
+function updateCourse(jwt, course_id, name, autor_id, category_name, img, description) {
+    return dispatch => {
+        dispatch(request(jwt, course_id, name, autor_id, category_name, img, description));
+
+        return courseService.updateCourse(jwt, course_id, name, autor_id, category_name, img, description)
+            .then(
+                courses => dispatch(success(courses)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request() { return { type: courseConstants.UPDATE_COURSE_REQUEST, jwt, course_id, name, autor_id, category_name, img, description } }
+    function success(courses) { return { type: courseConstants.UPDATE_COURSE_SUCCESS, courses, jwt, course_id, name, autor_id, category_name, img, description } }
+    function failure(error) { return { type: courseConstants.UPDATE_COURSE_FAILURE, error } }
+}
+
+function deleteCourse(jwt, course_id) {
+    return dispatch => {
+        dispatch(request(jwt, course_id));
+        return courseService.deleteCourse(jwt, course_id)
+            .then(
+                courses => dispatch(success(courses)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request() { return { type: courseConstants.DELETE_COURSE_REQUEST, jwt, course_id } }
+    function success(courses) { return { type: courseConstants.DELETE_COURSE_SUCCESS, courses, course_id } }
+    function failure(error) { return { type: courseConstants.DELETE_COURSE_FAILURE, error } }
 }
 
 function getAllCoursesByCategoryName(category_name) {
