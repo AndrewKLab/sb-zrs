@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 
-export const TextInput = ({ helperText, variant, id, name, autoComplete, label, onChange, className, type, InputProps, fullWidth, reff, select, children, multiline, rows, value }) => {
+export const TextInput = ({ helperText, variant, id, name, autoComplete, label, onChange, className, type, InputProps, fullWidth, reff, select, defaultValue, children, multiline, rows, value }) => {
     const ref = useRef();
     let curRef = reff !== undefined ? reff : ref
     let styleClass = className == undefined ? '' : ' ' + className;
@@ -38,14 +38,13 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
     }
 
     const [styleFocused, setStyleFocused] = useState('');
-    const [styleLegendFocused, setStyleLegendFocused] = useState(InputProps !== undefined ? InputProps.startAdornment !== undefined ? value !== undefined || value === '' ? ' text-input-label-plane-focused' : '' : value !== undefined || value === '' ? ' text-input-label-plane-focused' : '' : value !== undefined || value === '' ? ' text-input-label-plane-focused' : '');
-    const [styleLabelFocused, setStyleLabelFocused] = useState(InputProps !== undefined ? InputProps.startAdornment !== undefined ? value !== undefined || value === '' ? ' text-input-label-focused' : '' : value !== undefined || value === '' ? ' text-input-label-focused' : '' : value !== undefined || value === '' ? ' text-input-label-focused' : '');
+    const [styleLegendFocused, setStyleLegendFocused] = useState(InputProps !== undefined ? InputProps.startAdornment !== undefined ? ' text-input-label-plane-focused' : value !== undefined && value !== '' ? ' text-input-label-plane-focused' : '' : value !== undefined && value !== '' ? ' text-input-label-plane-focused' : '');
+    const [styleLabelFocused, setStyleLabelFocused] = useState(InputProps !== undefined ? InputProps.startAdornment !== undefined ? ' text-input-label-focused' : value !== undefined && value !== '' ? ' text-input-label-focused' : '' : value !== undefined && value !== '' ? ' text-input-label-focused' : '');
     const [styleFocusedColor, setStyleFocusedColor] = useState('');
     const [styleHovered, setStyleHovered] = useState('');
     const [styleLabelFocusedColor, setStyleLabelFocusedColor] = useState('');
 
     var fullWidthStyle = fullWidth === true ? ' w-100' : '';
-
     const onFocus = () => {
         setStyleFocused(' text-input-' + variants + '-focused');
         setStyleLegendFocused(' text-input-label-plane-focused')
@@ -65,15 +64,19 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
     }
 
     useEffect(() => {
+        if (value !== undefined && value !== '') {
+            setStyleLabelFocused(' text-input-label-focused');
+            setStyleLegendFocused(' text-input-label-plane-focused')
+        } else{
+            setStyleLabelFocused('');
+            setStyleLegendFocused('')
+        }
         ref && ref.current && ref.current.addEventListener('change', change);
 
         return () => {
             ref && ref.current && ref.current.removeEventListener('change', change);
         };
     }, [change]);
-
-
-
 
     const onBlur = (event) => {
         setStyleFocused('');
@@ -215,6 +218,7 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
                                 ref={curRef}
                                 id={id}
                                 name={name}
+                                defaultValue={defaultValue}
                                 autoComplete={autoComplete}
                                 type={type}
                                 onChange={onChange}

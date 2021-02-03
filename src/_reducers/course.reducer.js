@@ -15,7 +15,8 @@ export function course(state = {}, action) {
       };
     case courseConstants.CREATE_COURSE_FAILURE:
       return {
-        error: action.error
+        error: action.error,
+        message: undefined
       };
 
     //UPDATE COURSE
@@ -42,7 +43,8 @@ export function course(state = {}, action) {
       return {
         ...state,
         courses: state.courses,
-        error: action.error
+        error: action.error,
+        message: undefined
       };
 
     //DELETE COURSE

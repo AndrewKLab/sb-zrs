@@ -7,7 +7,7 @@ export default class Thumb extends React.Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.file) { return; }
+    if (!nextProps.file || typeof nextProps.file === 'string' ) { return; }
 
     this.setState({ loading: true }, () => {
       let reader = new FileReader();
@@ -24,11 +24,15 @@ export default class Thumb extends React.Component {
     const { file } = this.props;
     const { loading, thumb } = this.state;
     if (!file) { return null; }
+    return (
+      <img
+        src={typeof file === 'string' ? file : thumb}
+        alt={typeof file === 'string' ? '' : file.name}
+        className="drag-and-drop-layout-img"
+        height={"100%"}
+        width={'100%'}
+      />
+    );
 
-    return (<img src={thumb}
-      alt={file.name}
-      className="drag-and-drop-layout-img"
-      height={"100%"}
-      width={'100%'} />);
   }
 }
