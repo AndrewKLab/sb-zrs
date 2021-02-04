@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
+import { TweenMax } from "gsap";
 
 export const Button = ({ type, children = null, className, variant, onPress, fullWidth, disabled }) => {
     let styleClass = className !== undefined ? ' ' + className : '';
-    let timeout;
     let buttonType;
     let styleVariant;
     let styleDisabled;
@@ -47,70 +47,45 @@ export const Button = ({ type, children = null, className, variant, onPress, ful
             break;
     }
 
-    const [didMount, setDidMount] = useState(false);
-    const [spanStyles, setSpanStyles] = useState({});
-    const [rcount, setCount] = useState(0);
-    const ButtonRef = useRef();
+    const [width, setWidth] = useState(0);
+    const [height, setHeight] = useState(0);
+    const ref = useRef('ripple')
 
-    useEffect(() => {
-        document.addEventListener("mouseup", callCleanUp);
-        setDidMount(true);
-        return () => {
-            // Unbind the event listener on clean up
-            document.removeEventListener("mouseup", callCleanUp);
-            setDidMount(false)
-        };
-    }, []);
 
-    if (!didMount) {
-        return null;
+    const handleClick = (event) => {
+        const elem = ref.current,
+            x = event.nativeEvent.offsetX,
+            y = event.nativeEvent.offsetY,
+            w = event.target.offsetWidth,
+            h = event.target.offsetHeight,
+            offsetX = Math.abs((w / 2) - x),
+            offsetY = Math.abs((h / 2) - y),
+            deltaX = (w / 2) + offsetX,
+            deltaY = (h / 2) + offsetY,
+            scaleRatio = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
+
+
+        setWidth(...width, w)
+        setHeight(...height, h)
+
+        TweenMax.fromTo(elem, 0.5, {
+            x: x,
+            y: y,
+            transformOrigin: '50% 50%',
+            scale: 0,
+            opacity: 1
+        }, {
+            scale: scaleRatio,
+            opacity: 0
+        })
     }
-
-    const callCleanUp = () => {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => {
-            cleanUp();
-        }, 2000)
-    }
-
-    const showRipplePlane = (event) => {
-        const rippleContainer = event.currentTarget;
-        const size = rippleContainer.offsetWidth;
-        const pos = rippleContainer.getBoundingClientRect();
-        const x = event.pageX - pos.x - (size / 2);
-        const y = event.pageY - pos.y - (size / 2);
-        const sspanStyles = { top: y + 'px', left: x + 'px', height: size + 'px', width: size + 'px' };
-        const count = rcount + 1;
-        setSpanStyles({ ...spanStyles, [count]: sspanStyles })
-        setCount(count)
-    }
-
-    const cleanUp = () => {
-        setSpanStyles({})
-        setCount(0)
-    }
-
-
-    const renderRippleSpan = () => {
-        const spanArray = Object.keys(spanStyles);
-        if (spanArray && spanArray.length > 0) {
-            return (
-                spanArray.map((key, index) => {
-                    return <span key={'spanCount_' + index} className="" style={{ ...spanStyles[key] }}></span>
-                })
-            )
-        } else {
-            return null;
-        }
-    }
-
 
     return (
-            <button type={buttonType} ref={ButtonRef} className={'button ripple' + styleVariant + styleClass + fullWidthStyle+styleDisabled} disabled={disabled} onClick={onPress}>
+            <button type={buttonType} className={'button ripple' + styleVariant + styleClass + fullWidthStyle + styleDisabled} disabled={disabled} onClick={onPress} onMouseDown={handleClick}>
                 {children}
-                <div className="rippleContainer" onMouseDown={showRipplePlane} >
-                    {renderRippleSpan()}
-                </div>
+                <svg viewBox={`0 0 ${width} ${height}`} className="ripple-obj">
+                    <circle ref={ref} cx="1" cy="1" r="1" />
+                </svg>
             </button>
     );
 };

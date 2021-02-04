@@ -311,7 +311,9 @@ class CreateCoursePage extends React.Component {
                             ))}
                         </List>
                         ) : null}
-                    <Button disabled={!courseCreated} onPress={() => { this.setState({ addLesson: true, lesson: {} }) }}>Добавить урок</Button>
+                    <div className='center'>
+                        <Button disabled={!courseCreated} onPress={() => { this.setState({ addLesson: true, lesson: {} }) }}>Добавить урок</Button>
+                    </div>
                 </Paper>
             </div>
         );

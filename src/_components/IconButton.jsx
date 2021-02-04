@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useState, useRef } from "react";
+import { TweenMax } from "gsap";
 
 export const IconButton = ({ children, className, onClick, ariaLabel, color }) => {
+    const [width, setWidth] = useState(0);
+    const [height, setHeight] = useState(0);
+    const ref = useRef(null)
+
     let styleClass = className == undefined ? '' : ' ' + className;
     let styleColor;
     switch (color) {
@@ -14,9 +19,35 @@ export const IconButton = ({ children, className, onClick, ariaLabel, color }) =
             styleColor = ''
             break;
     }
+
+    const handleClick = (event) => {
+        const elem = ref.current,
+            w = 40,
+            h = 40,
+            scaleRatio = Math.sqrt(Math.pow((w / 2), 2))
+
+        setWidth(...width, w)
+        setHeight(...height, h)
+
+        TweenMax.fromTo(elem, 0.5, {
+            x: 20,
+            y: 20,
+            transformOrigin: '50% 50%',
+            scale: 0,
+            opacity: 1
+        }, {
+            scale: scaleRatio,
+            opacity: 0
+        })
+    }
+
+
     return (
-        <button onMouseDown={onClick} aria-label={ariaLabel} className={'icon-button' + styleClass + styleColor} tabIndex="0" aria-haspopup="true" type="button">
+        <button type="button" aria-label={ariaLabel} className={`icon-button${styleClass}${styleColor}`} onClick={onClick} onMouseDown={handleClick}>
             {children}
+            <svg viewBox={`0 0 ${width} ${height}`} className="ripple-obj">
+                <circle ref={ref} cx="1" cy="1" r="1" />
+            </svg>
         </button>
     );
 };

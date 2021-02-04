@@ -2444,14 +2444,14 @@ div.text-input-group label {
 }
 
 .icon-button:hover {
-    background-color: rgba(var(--text-dark), 0.1)
+    background-color: rgba(var(--text-dark), 0.3)
 }
 
-.icon-button:active {
+/* .icon-button:active {
     background-color: rgba(var(--primary-main-color), 0.03);
     background-size: 100%;
     transition: background 0s;
-}
+} */
 
 /* Menu */
 
@@ -3106,6 +3106,24 @@ div.text-input-group label {
 
 .drag-and-drop-layout-img {
     object-fit: cover;
+}
+
+.ripple-container {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.ripple-obj {
+    height: 100%;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 0;
+    fill: rgba(var(--text-dark), 0.3);
 }
 
 /* TO-DELETE */

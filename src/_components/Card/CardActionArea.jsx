@@ -1,85 +1,50 @@
+import React, { useState, useRef } from "react";
+import { TweenMax } from "gsap";
+
+export const CardActionArea = ({ children, className, onPress }) => {
+    let styleClass = className == undefined ? '' : ' ' + className;
+
+    const [width, setWidth] = useState(0);
+    const [height, setHeight] = useState(0);
+    const ref = useRef('ripple')
 
 
-import React from "react";
+    const handleClick = (event) => {
+        const elem = ref.current,
+            x = event.nativeEvent.offsetX,
+            y = event.nativeEvent.offsetY,
+            w = event.target.offsetWidth,
+            h = event.target.offsetHeight,
+            offsetX = Math.abs((w / 2) - x),
+            offsetY = Math.abs((h / 2) - y),
+            deltaX = (w / 2) + offsetX,
+            deltaY = (h / 2) + offsetY,
+            scaleRatio = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
 
-export class CardActionArea extends React.Component {
-    constructor(props) {
-        super(props)
-        this.bounce;
-        this.ButtonRef = React.createRef();
-    }
-    initializeState = () => {
-        return {
-            spanStyles: {},
-            count: 0
-        }
-    }
-    state = this.initializeState();
 
-    /* Debounce Code to call the Ripple removing function */
-    callCleanUp = () => {
-        clearTimeout(this.bounce);
-        this.bounce = setTimeout(() => {
-            this.cleanUp();
-        }, 2000);
-    }
+        setWidth(...width, w)
+        setHeight(...height, h)
 
-    componentDidMount() {
-        document.addEventListener('mouseup', this.callCleanUp);
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener('mouseup', this.callCleanUp);
-    }
-
-    showRipple = (e) => {
-        const rippleContainer = e.currentTarget;
-        const size = rippleContainer.offsetWidth;
-        const pos = rippleContainer.getBoundingClientRect();
-        const x = e.pageX - pos.x - (size / 2);
-        const y = e.pageY - pos.y - (size / 2);
-
-        const spanStyles = { top: y + 'px', left: x + 'px', height: size + 'px', width: size + 'px' };
-        const count = this.state.count + 1;
-        this.setState({
-            spanStyles: { ...this.state.spanStyles, [count]: spanStyles },
-            count: count
-        });
+        TweenMax.fromTo(elem, 0.5, {
+            x: x,
+            y: y,
+            transformOrigin: '50% 50%',
+            scale: 0,
+            opacity: 1
+        }, {
+            scale: scaleRatio,
+            opacity: 0
+        })
     }
 
-    cleanUp = () => {
-        const initialState = this.initializeState();
-        this.setState({ ...initialState });
-    }
-
-    renderRippleSpan = () => {
-        const { showRipple = false, spanStyles = {} } = this.state;
-        const spanArray = Object.keys(spanStyles);
-        if (spanArray && spanArray.length > 0) {
-            return (
-                spanArray.map((key, index) => {
-                    return <span key={'spanCount_' + index} className="" style={{ ...spanStyles[key] }}></span>
-                })
-            )
-        } else {
-            return null;
-        }
-    }
-
-    render() {
-        const { children, className, onPress = null } = this.props;
-        let styleClass = className == undefined ? '' : ' ' + className;
-
-
-        return (
-            <button ref={this.ButtonRef} className={'сard-button card-action-area сard-ripple'+styleClass} onClick={onPress} tabIndex="0" type="button">
-                {children}
-                <div className={"rippleContainer"} onMouseDown={this.showRipple} >
-                    {this.renderRippleSpan()}
-                </div>
-            </button>
-        );
-    }
+    return (
+        <button type="button" className={'сard-button card-action-area сard-ripple' + styleClass} onClick={onPress} onMouseDown={handleClick}  >
+            {children}
+            <svg viewBox={`0 0 ${width} ${height}`} className="ripple-obj">
+                <circle ref={ref} cx="1" cy="1" r="1" />
+            </svg>
+        </button>
+    )
 }
 
 

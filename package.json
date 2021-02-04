@@ -15,6 +15,7 @@
     "classnames": "^2.2.6",
     "cx": "^20.12.3",
     "formik": "^2.2.6",
+    "gsap": "^3.6.0",
     "history": "^4.6.3",
     "html5-file-selector": "^2.1.0",
     "lodash": "^4.17.20",

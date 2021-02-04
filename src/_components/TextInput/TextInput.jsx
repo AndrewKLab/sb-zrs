@@ -38,8 +38,24 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
     }
 
     const [styleFocused, setStyleFocused] = useState('');
-    const [styleLegendFocused, setStyleLegendFocused] = useState(InputProps !== undefined ? InputProps.startAdornment !== undefined ? ' text-input-label-plane-focused' : value !== undefined && value !== '' ? ' text-input-label-plane-focused' : '' : value !== undefined && value !== '' ? ' text-input-label-plane-focused' : '');
-    const [styleLabelFocused, setStyleLabelFocused] = useState(InputProps !== undefined ? InputProps.startAdornment !== undefined ? ' text-input-label-focused' : value !== undefined && value !== '' ? ' text-input-label-focused' : '' : value !== undefined && value !== '' ? ' text-input-label-focused' : '');
+
+    const [styleLegendFocused, setStyleLegendFocused] = useState(
+        InputProps !== undefined && InputProps.startAdornment !== undefined ?
+            ' text-input-label-plane-focused'
+            :
+            value !== undefined && value !== '' ?
+                ' text-input-label-plane-focused'
+                :
+                '');
+    const [styleLabelFocused, setStyleLabelFocused] = useState(
+        InputProps !== undefined && InputProps.startAdornment !== undefined ?
+            ' text-input-label-focused'
+            :
+            value !== undefined && value !== '' ?
+                ' text-input-label-focused'
+                :
+                ''
+    );
     const [styleFocusedColor, setStyleFocusedColor] = useState('');
     const [styleHovered, setStyleHovered] = useState('');
     const [styleLabelFocusedColor, setStyleLabelFocusedColor] = useState('');
@@ -67,9 +83,6 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
         if (value !== undefined && value !== '') {
             setStyleLabelFocused(' text-input-label-focused');
             setStyleLegendFocused(' text-input-label-plane-focused')
-        } else{
-            setStyleLabelFocused('');
-            setStyleLegendFocused('')
         }
         ref && ref.current && ref.current.addEventListener('change', change);
 
