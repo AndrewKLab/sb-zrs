@@ -122,80 +122,77 @@ class NavbarActions extends Component {
         dispatch(searchActions.search(event.target.value))
     }
 
-    handleOpen() {
-        document.getElementById("search").classList.add("show");
-        document.body.style.position="fixed"
-        document.body.style.overflowY="scroll"
-    }
 
-    handleClose() {
-        document.getElementById("search").classList.remove("show");
-        document.body.style.position="static"
-        document.body.style.overflowY="auto"
-    }
+    handleOpen() { this.setState({ openSearch: true }) }
+
+    handleClose() { this.setState({ openSearch: false }) }
 
     render() {
         const { user, search } = this.props;
+        const { openSearch } = this.state;
         return (
             <div className='navbar-actions'>
                 <form role="search" className="search-input-root m-3">
                     <div><SearchIcon /></div>
                     <input type="search" className='search-input' placeholder="Поиск..." onChange={(event) => this.handleChange(event)} />
                 </form>
-                <Dropdown id={"search"} reff={this.searchRef}>
-                    {search.search && search.search.courses !== undefined || search.search && search.search.lessons !== undefined ? (
-                        <div>
-                            {search.search.courses !== null ? (
-                                <div>
-                                    <Typography variant='h5' component='h5'>Курсы:</Typography>
-                                    <Divider />
-                                    {search.search.courses.map((item, index) => (
-                                        <Link to={`/courses/${item.category_name}/${item.id}`} key={index}>
-                                            <ListItem button  onPress={() => this.handleClose()} className='text-align-left p-3'>
-                                                <ListItemFirstAction>
-                                                    <ListItemText>
-                                                        <ListItemTitle>
-                                                            {item.name}
-                                                        </ListItemTitle>
-                                                        <ListItemSubtitle>
-                                                            {item.description.length > 70 ? item.description.substr(0, 80 - 1) + '...' : item.description}
-                                                        </ListItemSubtitle>
-                                                    </ListItemText>
-                                                </ListItemFirstAction>
-                                            </ListItem>
-                                        </Link>
-                                    ))}
-                                </div>
-                            ) : null}
-                            {search.search.lessons !== null ? (
-                                <div>
-                                    <Typography variant='h5' component='h5'>Уроки:</Typography>
-                                    <Divider />
+                {openSearch === true ?
+                    <Dropdown id={"search"} open={openSearch} onClose={() => this.handleClose()}>
+                        {search.search && search.search.courses !== undefined || search.search && search.search.lessons !== undefined ? (
+                            <div>
+                                {search.search.courses !== null ? (
+                                    <div>
+                                        <Typography variant='h5' component='h5'>Курсы:</Typography>
+                                        <Divider />
+                                        {search.search.courses.map((item, index) => (
+                                            <Link to={`/courses/${item.category_name}/${item.id}`} key={index}>
+                                                <ListItem button onPress={() => this.handleClose()} className='text-align-left p-3'>
+                                                    <ListItemFirstAction>
+                                                        <ListItemText>
+                                                            <ListItemTitle>
+                                                                {item.name}
+                                                            </ListItemTitle>
+                                                            <ListItemSubtitle>
+                                                                {item.description.length > 70 ? item.description.substr(0, 80 - 1) + '...' : item.description}
+                                                            </ListItemSubtitle>
+                                                        </ListItemText>
+                                                    </ListItemFirstAction>
+                                                </ListItem>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                ) : null}
+                                {search.search.lessons !== null ? (
+                                    <div>
+                                        <Typography variant='h5' component='h5'>Уроки:</Typography>
+                                        <Divider />
 
-                                    {search.search.lessons.map((item, index) => (
-                                        <Link to={`/courses/${item.category_name}/${item.courses_id}/${item.id}`} key={index}>
-                                            <ListItem button  onPress={() => this.handleClose()} className='text-align-left p-3'>
-                                                <ListItemFirstAction>
-                                                    <ListItemText>
-                                                        <ListItemTitle>
-                                                            {item.name}
-                                                        </ListItemTitle>
-                                                        <ListItemSubtitle>
-                                                            {item.description.length > 70 ? item.description.substr(0, 80 - 1) + '...' : item.description}
-                                                        </ListItemSubtitle>
-                                                    </ListItemText>
-                                                </ListItemFirstAction>
-                                            </ListItem>
-                                        </Link>
-                                    ))}
+                                        {search.search.lessons.map((item, index) => (
+                                            <Link to={`/courses/${item.category_name}/${item.courses_id}/${item.id}`} key={index}>
+                                                <ListItem button onPress={() => this.handleClose()} className='text-align-left p-3'>
+                                                    <ListItemFirstAction>
+                                                        <ListItemText>
+                                                            <ListItemTitle>
+                                                                {item.name}
+                                                            </ListItemTitle>
+                                                            <ListItemSubtitle>
+                                                                {item.description.length > 70 ? item.description.substr(0, 80 - 1) + '...' : item.description}
+                                                            </ListItemSubtitle>
+                                                        </ListItemText>
+                                                    </ListItemFirstAction>
+                                                </ListItem>
+                                            </Link>
+                                        ))}
 
-                                </div>
-                            ) : null}
-                        </div>
-                    ) : (
-                            <Typography>{search.search}</Typography>
-                        )}
-                </Dropdown>
+                                    </div>
+                                ) : null}
+                            </div>
+                        ) : (
+                                <Typography>{search.search}</Typography>
+                            )}
+                    </Dropdown>
+
+                    : null}
 
                 <IconButton className='text-light'>
                     <NotificationsIcon />

@@ -2,12 +2,43 @@ import { lessonConstants } from '../_constants';
 import { lessonService } from '../_services';
 
 export const lessonActions = {
+    createLesson,
+    deleteLesson,
     getAllLessonsByCourse,
     createLessonPassed,
     updateLessonPassed,
     deleteAllPassedLessonsByCourse
 };
 
+function createLesson(jwt, course_id, number, name, videolink, descrigtion, text) {
+    return dispatch => {
+        dispatch(request(jwt, course_id, number, name, videolink, descrigtion, text));
+        return lessonService.createLesson(jwt, course_id, number, name, videolink, descrigtion, text)
+            .then(
+                data => dispatch(success(data)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request(jwt, course_id, number, name, videolink, descrigtion, text) { return { type: lessonConstants.CREATE_LESSON_REQUEST, jwt, course_id, number, name, videolink, descrigtion, text } }
+    function success(data) { return { type: lessonConstants.CREATE_LESSON_SUCCESS, data } }
+    function failure(error) { return { type: lessonConstants.CREATE_LESSON_FAILURE, error } }
+}
+
+function deleteLesson(jwt, lesson_id) {
+    return dispatch => {
+        dispatch(request(jwt, lesson_id));
+        return lessonService.deleteLesson(jwt, lesson_id)
+            .then(
+                data => dispatch(success(data)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request() { return { type: lessonConstants.DELETE_LESSON_REQUEST, jwt, lesson_id } }
+    function success(data) { return { type: lessonConstants.DELETE_LESSON_SUCCESS, data, lesson_id } }
+    function failure(error) { return { type: lessonConstants.DELETE_LESSON_FAILURE, error } }
+}
 
 
 function getAllLessonsByCourse(course_id, user_id, teather_id) {
@@ -36,7 +67,7 @@ function createLessonPassed(course_id, lesson_id, user_id) {
             );
     };
 
-    function request(course_id, lesson_id, user_id) { return { type: lessonConstants.CREATE_PASSED_LESSON_REQUEST, course_id, lesson_id, user_id} }
+    function request(course_id, lesson_id, user_id) { return { type: lessonConstants.CREATE_PASSED_LESSON_REQUEST, course_id, lesson_id, user_id } }
     function success(data) { return { type: lessonConstants.CREATE_PASSED_LESSON_SUCCESS, data } }
     function failure(error) { return { type: lessonConstants.CREATE_PASSED_LESSON_FAILURE, error } }
 }
@@ -51,7 +82,7 @@ function updateLessonPassed(passed_id, assessment, finish_time) {
     function update() { return { type: lessonConstants.UPDATE_PASSED_LESSON, passed_id, assessment, finish_time } }
 }
 
-function deleteAllPassedLessonsByCourse(course_id, user_id){
+function deleteAllPassedLessonsByCourse(course_id, user_id) {
     return dispatch => {
         return lessonService.deleteAllPassedLessonsByCourse(course_id, user_id)
             .then(

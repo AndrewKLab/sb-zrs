@@ -3,11 +3,8 @@ import { connect } from 'react-redux';
 import AddPhotoAlternateOutlinedIcon from '@material-ui/icons/AddPhotoAlternateOutlined';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import { userActions, courseActions } from '../_actions';
+import { lessonActions } from '../_actions';
 
-
-import Dropzone from "react-dropzone";
-import Thumb from "../_components/Thumb";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
 import "yup-phone";
@@ -24,7 +21,7 @@ import {
     Button,
     TextInput,
     SelectItem,
-    IconButton
+    Switch
 } from '../_components'
 
 let SignupSchema = yup.object().shape({
@@ -36,7 +33,7 @@ let SignupSchema = yup.object().shape({
         .string()
         .max(50, "Это название слишком длинное.")
         .required("Это поле является обязательным для заполнения."),
-    lesson_descrigtion: yup
+    lesson_description: yup
         .string()
         .required("Это поле является обязательным для заполнения."),
     lesson_text: yup
@@ -51,6 +48,7 @@ class CreateLessonPlane extends React.Component {
         this.state = {
             loading: true,
             changed: false,
+            addTest: props.lesson !== undefined && props.lesson.questions !== null ? true : false,
             lessonCreated: Object.keys(props.lesson).length === 0 ? false : true
         }
     }
@@ -64,25 +62,36 @@ class CreateLessonPlane extends React.Component {
 
     }
 
+    handleToggleChange() {
+        this.setState({
+            addTest: !this.state.addTest
+        })
+    }
+
     render() {
-        const { className, lesson, error, message } = this.props;
-        const { loading, changed, lessonCreated } = this.state;
+        const { dispatch, className, jwt, lesson, error, message, data, lesson_error, course_id, lessons, initialValues } = this.props;
+        const { loading, changed, lessonCreated, addTest } = this.state;
         let styleClass = className == undefined ? '' : ' ' + className;
 
         if (loading) { return <Loading /> }
         return (
             <Paper className={styleClass}>
                 <Formik
-                    initialValues={{
-                        lesson_name: '',
-                        lesson_videolink: '',
-                        lesson_text: '',
-                        lesson_descrigtion: '',
-                    }}
+                    enableReinitialize
+                    initialValues={initialValues}
                     validationSchema={SignupSchema}
                     onSubmit={(values) => {
-                        const { lesson_name, lesson_videolink, lesson_text, lesson_descrigtion } = values;
-                        console.log(values)
+                        const { lessonCreated } = this.state;
+                        const { lesson_name, lesson_videolink, lesson_text, lesson_description } = values;
+                        if (lessonCreated === false) {
+                            dispatch(lessonActions.createLesson(jwt, course_id,
+                                lessons !== null ? Number(data.lessons.length) + 1 : data !== undefined ? Number(data.lessons.length) + 1 : 1,
+                                lesson_name, lesson_videolink, lesson_text, lesson_description)).then(
+                                    () => this.setState({ changed: error === undefined ? false : true, lessonCreated: error === undefined ? true : false })
+                                )
+                        } else {
+                            console.log('изменить урок')
+                        }
                     }
                     }
                 >
@@ -91,7 +100,7 @@ class CreateLessonPlane extends React.Component {
 
                             <TextInput
                                 error={errors.lesson_name && touched.lesson_name}
-                                value={lesson.name || values.lesson_name}
+                                value={values.lesson_name}
                                 id="lesson_name"
                                 name="lesson_name"
                                 label="Название урока"
@@ -109,7 +118,7 @@ class CreateLessonPlane extends React.Component {
 
                             <TextInput
                                 error={errors.lesson_videolink && touched.lesson_videolink}
-                                value={lesson.videolink || values.lesson_videolink}
+                                value={values.lesson_videolink}
                                 id="lesson_videolink"
                                 name="lesson_videolink"
                                 label="Ссылка на видео к уроку"
@@ -127,17 +136,17 @@ class CreateLessonPlane extends React.Component {
                             <TextInput
                                 multiline
                                 rows={4}
-                                error={errors.lesson_descrigtion && touched.lesson_descrigtion}
-                                value={lesson.description || values.lesson_descrigtion}
-                                id="lesson_descrigtion"
+                                error={errors.lesson_description && touched.lesson_description}
+                                value={values.lesson_description}
+                                id="lesson_description"
                                 label="Описание урока"
                                 type={'text'}
                                 variant={'outlined'}
                                 onChange={handleChange}
                                 onSelect={val => setFieldValue("value", val)}
                                 helperText={
-                                    errors.lesson_descrigtion && touched.lesson_descrigtion
-                                        ? errors.lesson_descrigtion
+                                    errors.lesson_description && touched.lesson_description
+                                        ? errors.lesson_description
                                         : null
                                 }
                                 className='w-100 mb-3'
@@ -147,7 +156,7 @@ class CreateLessonPlane extends React.Component {
                                 multiline
                                 rows={4}
                                 error={errors.lesson_text && touched.lesson_text}
-                                value={lesson.text || values.lesson_text}
+                                value={values.lesson_text}
                                 id="lesson_text"
                                 label="Текст урока"
                                 type={'text'}
@@ -161,11 +170,14 @@ class CreateLessonPlane extends React.Component {
                                 }
                                 className='w-100 mb-3'
                             />
+                            <div className='d-flex grid-justify-xs-space-between'>
+                                <Typography component='body' variant='body'>Добавить тест к уроку?</Typography>
+                                <Switch isToggled={addTest} onToggle={() => this.handleToggleChange()} />
+                            </div>
 
-
-                            <div className={`d-flex grid-justify-xs-${error !== undefined || message !== undefined ? 'space-between' : 'flex-end'}`}>
-                                {error && (
-                                    <Alert className='error' severity="error">{error}</Alert>
+                            <div className={`d-flex grid-justify-xs-${lesson_error !== undefined || message !== undefined ? 'space-between' : 'flex-end'}`}>
+                                {data !== undefined && lesson_error !== undefined && (
+                                    <Alert className='error' severity="error">{lesson_error}</Alert>
                                 )}
                                 {message && (
                                     <Alert severity="success">{message}</Alert>
@@ -182,16 +194,15 @@ class CreateLessonPlane extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { authentication, course } = state;
+    const { authentication, lesson } = state;
     const { user, jwt } = authentication;
-    const { loading, course_data, error, message } = course;
+    const { message, lesson_error, data } = lesson
     return {
-        error,
-        message,
         user,
         jwt,
-        loading,
-        course_data
+        message,
+        lesson_error,
+        data
     };
 }
 

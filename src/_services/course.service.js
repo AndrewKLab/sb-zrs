@@ -14,7 +14,7 @@ export const courseService = {
 
 function createCourse(jwt, name, autor_id, category_name, img, description) {
     const formData  = new FormData();
-  
+      
     formData.append('jwt', jwt);
     formData.append('name', name);
     formData.append('autor_id', autor_id);

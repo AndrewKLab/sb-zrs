@@ -70,24 +70,27 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
     }
 
     const change = (event) => {
-        if (reff !== undefined ? event.target.value !== '' : ref && ref.current && ref.current.value !== '') {
-            setStyleFocused(' text-input-' + variants + '-focused');
+        console.log(event.target)
+        if (value !== undefined && value !== '') {
             setStyleLabelFocused(' text-input-label-focused');
             setStyleLegendFocused(' text-input-label-plane-focused')
-            setStyleFocusedColor('');
-            setStyleLabelFocusedColor('');
+        } else {
+            if (InputProps !== undefined && InputProps.startAdornment !== undefined) {
+                setStyleLabelFocused(' text-input-label-focused');
+                setStyleLegendFocused(' text-input-label-plane-focused')
+            } else {
+                setStyleLabelFocused('');
+                setStyleLegendFocused('')
+            }
         }
     }
 
     useEffect(() => {
-        if (value !== undefined && value !== '') {
-            setStyleLabelFocused(' text-input-label-focused');
-            setStyleLegendFocused(' text-input-label-plane-focused')
-        }
-        ref && ref.current && ref.current.addEventListener('change', change);
+
+        ref.current.addEventListener('mousedown', change);
 
         return () => {
-            ref && ref.current && ref.current.removeEventListener('change', change);
+             ref.current.removeEventListener('mousedown', change);
         };
     }, [change]);
 

@@ -78,6 +78,8 @@ body {
     line-height: 1.43;
     letter-spacing: 0.01071em;
     background-color: rgba(var(--background-color));
+    position: static;
+    overflow-y: auto;
 }
 
 [tabindex="-1"]:focus {
@@ -1009,6 +1011,7 @@ footer {
     padding-left: 15px;
     margin-right: auto;
     margin-left: auto;
+    
 }
 
 @media (min-width: 0px) {
@@ -2851,27 +2854,11 @@ div.text-input-group label {
     overflow: hidden;
 }
 
-.list-item-ripple .rippleContainer {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-}
-
-.list-item-ripple .rippleContainer span {
-    transform: scale(0);
-    border-radius: 100%;
-    position: absolute;
-    opacity: 0.75;
-    background-color: rgba(var(--text-dark), 0.23);
-    animation: ripple 850ms;
-}
-
 .list-item-firt-action {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    pointer-events: none
 }
 
 .list-item-second-action {
@@ -2885,6 +2872,7 @@ div.text-input-group label {
     align-items: flex-start;
     display: flex;
     flex-direction: column;
+    text-align: left;
 }
 
 .list-item-text-title {
@@ -3124,6 +3112,10 @@ div.text-input-group label {
     width: 100%;
     z-index: 0;
     fill: rgba(var(--text-dark), 0.3);
+}
+
+.stop-scrolling {
+    overflow-y: hidden !important;
 }
 
 /* TO-DELETE */

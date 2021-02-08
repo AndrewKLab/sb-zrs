@@ -1,33 +1,40 @@
-import React, {useEffect, useRef} from 'react'
 
-export const Dropdown = ({ children, className, id }) => {
+import React, { useEffect, useRef, useState } from 'react'
+
+export const Dropdown = ({ children, className, id, open, onClose }) => {
     let styleClass = className !== undefined ? ' ' + className : '';
     const ref = useRef();
 
-    useEffect(() => {
-        window.addEventListener('mousedown', handleClickOutside);
+
+    const handleClick = e => {
+        if (ref.current && !ref.current.contains(e.target)) {
+            document.body.classList.remove('stop-scrolling')
+            onClose();
+        }
+      };
+    
+      useEffect(() => {
+        document.addEventListener("click", handleClick);
     
         return () => {
-          window.removeEventListener('mousedown', handleClickOutside);
+          document.removeEventListener("click", handleClick);
         };
-      }, [handleClickOutside]);
+      });
 
-    const handleClickOutside = (event) => {
-        if (ref && !ref.current.contains(event.target)) {
-            document.getElementById(id).classList.remove("show");
-            document.body.style.position="static"
-            document.body.style.overflowY="auto"
-        }
+    if (open === true) {
+        document.body.classList.add('stop-scrolling')
+        return (
+            <div className={"dropdown" + styleClass} ref={ref}>
+                <div id={id} className="dropdown-content show">
+                    {children}
+                </div>
+            </div>
+        )
+    } else {
+        document.body.classList.remove('stop-scrolling')
+        return null;
     }
 
-    return (
-        <div className={"dropdown"+styleClass} ref={ref}>
-            <div id={id} className="dropdown-content">
-                {children}
-            </div>
-        </div>
-
-    )
 }
 
 

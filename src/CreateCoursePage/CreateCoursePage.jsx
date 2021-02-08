@@ -34,7 +34,9 @@ import {
     ListItemSubtitle,
     ListItemText,
     ListItemTitle,
+    IconButton
 } from '../_components'
+import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 
 let SignupSchema = yup.object().shape({
     course_name: yup
@@ -57,6 +59,7 @@ class CreateCoursePage extends React.Component {
             loading: true,
             addLesson: false,
             openCreate: false,
+            openDeleteLessonDialog: false,
             changed: false,
             courseCreated: this.props.location.state !== undefined ? true : false,
             lesson: {}
@@ -64,11 +67,11 @@ class CreateCoursePage extends React.Component {
     }
 
     componentDidMount() {
-        const { dispatch, user, jwt, message } = this.props;
+        const { dispatch, user, jwt, message, error } = this.props;
         if (user != undefined) {
             if (this.props.location.state !== undefined) {
                 dispatch(lessonActions.getAllLessonsByCourse(this.props.location.state.course.id, user.id, user.teather_id)).then(
-                    () => this.setState({ loading: false })
+                    () => this.setState({ loading: false }), error !== undefined ? console.log('err') : console.log('noerr')
                 )
             } else {
                 this.setState({ loading: false })
@@ -80,16 +83,31 @@ class CreateCoursePage extends React.Component {
         this.setState({ openCreate: true })
     }
 
+    handleOpenDeleteLessonDialog(id, name) {
+        this.setState({ openDeleteLessonDialog: true, lesson_id: id, lesson_name: name })
+    }
+
 
     handleClose() {
         this.setState({ openCreate: false })
+    }
+
+    handleCloseDeleteLessonDialog() {
+        this.setState({ openDeleteLessonDialog: false })
     }
 
     submit(values) {
         const { course_name, course_category_name, image, course_descrigtion } = values;
         const { dispatch, user, jwt, message, error } = this.props;
         dispatch(courseActions.createCourse(jwt, course_name, user.id, course_category_name === '' ? 'basic' : course_category_name, image, course_descrigtion)).then(
-            () => this.handleClose(), console.log(error), this.setState({ changed: error === undefined ? false : true, courseCreated: error === undefined ? true : false })
+            () => this.handleClose(), this.setState({ changed: error === undefined ? false : true, courseCreated: error === undefined ? true : false })
+        )
+    }
+
+    deleteLesson(lesson_id) {
+        const { jwt, dispatch } = this.props;
+        dispatch(lessonActions.deleteLesson(jwt, lesson_id)).then(
+            () => this.handleCloseDeleteLessonDialog()
         )
     }
 
@@ -108,6 +126,28 @@ class CreateCoursePage extends React.Component {
                         Да
                         </Button>
                     <Button onPress={() => this.handleClose()} variant='outlined' color="primary">
+                        Закрыть
+                        </Button>
+                </DialogActions>
+            </Dialog>
+        )
+    }
+
+    renderOpenDeleteLessonDialog() {
+        const { openDeleteLessonDialog, lesson_id, lesson_name } = this.state;
+        return (
+            <Dialog onClose={() => this.handleCloseDeleteLessonDialog()} open={openDeleteLessonDialog}>
+                <DialogTitle>
+                    <Typography variant='h5' component='h5'>Удалить урок?</Typography>
+                </DialogTitle>
+                <DialogContent dividers className={'d-flex grid-direction-xs-column'}>
+                    <Typography variant='body' component='body'>{`Удалить урок с именем "${lesson_name}"?`}</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onPress={() => this.deleteLesson(lesson_id)} className={'mr-3'} variant='outlined' color="primary">
+                        Да
+                        </Button>
+                    <Button onPress={() => this.handleCloseDeleteLessonDialog()} variant='outlined' color="primary">
                         Закрыть
                         </Button>
                 </DialogActions>
@@ -283,34 +323,58 @@ class CreateCoursePage extends React.Component {
                             )}
                         </Formik>
                     </Paper>
-                    {addLesson === true ? <CreateLessonPlane className='p-2 mt-2' lesson={lesson} /> : null}
+                    {addLesson === true ?
+                        <CreateLessonPlane
+                            className='p-2 mt-2'
+                            lesson={lesson}
+                            course_id={this.props.location.state.course.id}
+                            lessons={this.props.location.state.course.lessons}
+                            initialValues={
+                                Object.keys(lesson).length === 0 ?
+                                    {
+                                        lesson_name: '',
+                                        lesson_videolink: '',
+                                        lesson_text: '',
+                                        lesson_description: ''
+                                    } : {
+                                        lesson_name: lesson.name,
+                                        lesson_videolink: lesson.videolink,
+                                        lesson_text: lesson.text,
+                                        lesson_description: lesson.description
+                                    }}
+
+                        /> : null}
                 </div>
                 <Paper className={'create-course-helper p-2'}>
                     <Typography variant='h5' component='h5'>Уроки в курсе:</Typography>
                     {data !== undefined ?
                         (<List>
                             {data.lessons.map((lesson, index) => (
-                                <ListItem key={index} button
-                                    onPress={() => this.setState({ addLesson: true, lesson: lesson })}
-                                >
-                                    <ListItemFirstAction>
-                                        <ListItemIcon>
-                                            {lesson.number}
-                                        </ListItemIcon>
-                                        <ListItemText>
-                                            <ListItemTitle>
-                                                {lesson.name}
-                                            </ListItemTitle>
-                                        </ListItemText>
-                                    </ListItemFirstAction>
-                                    <ListItemSecondAction>
-
-                                    </ListItemSecondAction>
-                                </ListItem>
-
+                                <div key={index} className='center'>
+                                    <ListItem button
+                                        onPress={() => this.setState({ addLesson: true, lesson: lesson })}
+                                    >
+                                        <ListItemFirstAction>
+                                            <ListItemIcon>
+                                                {lesson.number}
+                                            </ListItemIcon>
+                                            <ListItemText>
+                                                <ListItemTitle>
+                                                    {lesson.name}
+                                                </ListItemTitle>
+                                            </ListItemText>
+                                        </ListItemFirstAction>
+                                    </ListItem>
+                                    <div title='Удалить курс' >
+                                        <IconButton onClick={() => this.handleOpenDeleteLessonDialog(lesson.id, lesson.name)}>
+                                            <DeleteForeverOutlinedIcon className='danger-area-title-icon' />
+                                        </IconButton>
+                                    </div>
+                                </div>
                             ))}
                         </List>
                         ) : null}
+                    {this.renderOpenDeleteLessonDialog()}
                     <div className='center'>
                         <Button disabled={!courseCreated} onPress={() => { this.setState({ addLesson: true, lesson: {} }) }}>Добавить урок</Button>
                     </div>
@@ -324,7 +388,7 @@ function mapStateToProps(state) {
     const { authentication, course, lesson } = state;
     const { user, jwt } = authentication;
     const { loading, course_data, error, message } = course;
-    const { data } = lesson;
+    const { data, lesson_error } = lesson;
     return {
         error,
         message,
@@ -332,7 +396,8 @@ function mapStateToProps(state) {
         jwt,
         loading,
         course_data,
-        data
+        data,
+        lesson_error
     };
 }
 

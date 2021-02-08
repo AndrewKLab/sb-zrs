@@ -21,7 +21,6 @@ export const ListItem = ({ className, children, button, onPress }) => {
             deltaY = (h / 2) + offsetY,
             scaleRatio = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
 
-
         setWidth(...width, w)
         setHeight(...height, h)
 
@@ -41,12 +40,12 @@ export const ListItem = ({ className, children, button, onPress }) => {
     switch (button) {
         case true:
             return (
-                    <button role="button" className={'list-item list-item-button list-item-ripple' + styleClass} onClick={onPress} onMouseDown={handleClick}>
-                        {children}
-                        <svg viewBox={`0 0 ${width} ${height}`} className="ripple-obj">
-                            <circle ref={ref} cx="1" cy="1" r="1" />
-                        </svg>
-                    </button>
+                <button role="button" className={'list-item list-item-button list-item-ripple' + styleClass} onClick={onPress} onMouseDown={handleClick}>
+                    {children}
+                    <svg viewBox={`0 0 ${width} ${height}`} className="ripple-obj">
+                        <circle ref={ref} cx="1" cy="1" r="1" />
+                    </svg>
+                </button>
             )
 
         case false:

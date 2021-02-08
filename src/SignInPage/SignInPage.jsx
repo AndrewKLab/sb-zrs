@@ -123,7 +123,7 @@ class SignInPage extends React.Component {
 
                                             <TextInput
                                                 error={errors.phonenumber && touched.phonenumber}
-                                                value={values.value}
+                                                value={values.phonenumper}
                                                 id="phonenumper"
                                                 name="phonenumber"
                                                 label="Номер телефона"
@@ -145,7 +145,7 @@ class SignInPage extends React.Component {
                                         <Grid item xs={12}>
                                             <TextInput
                                                 error={errors.password && touched.password}
-                                                value={values.value}
+                                                value={values.password}
                                                 id="password"
                                                 label="Пароль"
                                                 type={this.state.showPassword ? 'text' : 'password'}
