@@ -395,6 +395,10 @@ h6, .h6 {
     font-size: 1rem;
 }
 
+.f-initial {
+    font-size: initial
+}
+
 .text-align-left {
     text-align: left;
 }
@@ -1011,7 +1015,6 @@ footer {
     padding-left: 15px;
     margin-right: auto;
     margin-left: auto;
-    
 }
 
 @media (min-width: 0px) {
@@ -1748,6 +1751,7 @@ footer {
 /* Divider */
 
 .divider {
+    width: 100%;
     margin-top: 1rem;
     margin-bottom: 1rem;
     border: 0;
@@ -2127,7 +2131,6 @@ div.text-input-group label {
     border: none;
     width: 100%;
     padding: 23.5px 7px;
-    line-height: 100%;
     background-color: transparent;
     color: rgba(var(--text-dark));
     z-index: 1;

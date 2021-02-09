@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import AddPhotoAlternateOutlinedIcon from '@material-ui/icons/AddPhotoAlternateOutlined';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { CreateTestPlane } from './';
 
 import { lessonActions } from '../_actions';
 
@@ -53,12 +52,18 @@ class CreateLessonPlane extends React.Component {
         }
     }
     componentDidMount() {
+        console.log('123')
         this.setState({ loading: false })
     }
 
     componentWillReceiveProps(nextProps) {
         // You don't have to do this check first, but it can help prevent an unneeded render
-        this.setState({ lessonCreated: Object.keys(nextProps.lesson).length === 0 ? false : true });
+        this.setState({ loading: true }, () => {
+            this.setState({ lessonCreated: Object.keys(nextProps.lesson).length === 0 ? false : true }, ()=>{
+                this.setState({ loading: false })
+            });
+        })
+
 
     }
 
@@ -72,7 +77,6 @@ class CreateLessonPlane extends React.Component {
         const { dispatch, className, jwt, lesson, error, message, data, lesson_error, course_id, lessons, initialValues } = this.props;
         const { loading, changed, lessonCreated, addTest } = this.state;
         let styleClass = className == undefined ? '' : ' ' + className;
-
         if (loading) { return <Loading /> }
         return (
             <Paper className={styleClass}>
@@ -90,7 +94,7 @@ class CreateLessonPlane extends React.Component {
                                     () => this.setState({ changed: error === undefined ? false : true, lessonCreated: error === undefined ? true : false })
                                 )
                         } else {
-                            console.log('изменить урок')
+                            console.log(values)
                         }
                     }
                     }
@@ -171,9 +175,11 @@ class CreateLessonPlane extends React.Component {
                                 className='w-100 mb-3'
                             />
                             <div className='d-flex grid-justify-xs-space-between'>
-                                <Typography component='body' variant='body'>Добавить тест к уроку?</Typography>
-                                <Switch isToggled={addTest} onToggle={() => this.handleToggleChange()} />
+                                <Typography component='body' variant='body' className='m-0 f-initial'>Добавить тест к уроку?</Typography>
+                                <Switch className='m-0' isToggled={addTest} onToggle={() => this.handleToggleChange()} />
                             </div>
+                            {addTest === true && <CreateTestPlane questions={values.lesson_questions} setFieldValue={setFieldValue} handleChange={handleChange} />}
+                            
 
                             <div className={`d-flex grid-justify-xs-${lesson_error !== undefined || message !== undefined ? 'space-between' : 'flex-end'}`}>
                                 {data !== undefined && lesson_error !== undefined && (

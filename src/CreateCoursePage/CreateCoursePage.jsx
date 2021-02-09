@@ -335,12 +335,14 @@ class CreateCoursePage extends React.Component {
                                         lesson_name: '',
                                         lesson_videolink: '',
                                         lesson_text: '',
-                                        lesson_description: ''
+                                        lesson_description: '',
+                                        lesson_questions: []
                                     } : {
                                         lesson_name: lesson.name,
                                         lesson_videolink: lesson.videolink,
                                         lesson_text: lesson.text,
-                                        lesson_description: lesson.description
+                                        lesson_description: lesson.description,
+                                        lesson_questions: lesson.questions
                                     }}
 
                         /> : null}
