@@ -71,7 +71,7 @@ class CreateCoursePage extends React.Component {
         if (user != undefined) {
             if (this.props.location.state !== undefined) {
                 dispatch(lessonActions.getAllLessonsByCourse(this.props.location.state.course.id, user.id, user.teather_id)).then(
-                    () => this.setState({ loading: false }), error !== undefined ? console.log('err') : console.log('noerr')
+                    () => this.setState({ loading: false })
                 )
             } else {
                 this.setState({ loading: false })
@@ -329,21 +329,6 @@ class CreateCoursePage extends React.Component {
                             lesson={lesson}
                             course_id={this.props.location.state.course.id}
                             lessons={this.props.location.state.course.lessons}
-                            initialValues={
-                                Object.keys(lesson).length === 0 ?
-                                    {
-                                        lesson_name: '',
-                                        lesson_videolink: '',
-                                        lesson_text: '',
-                                        lesson_description: '',
-                                        lesson_questions: []
-                                    } : {
-                                        lesson_name: lesson.name,
-                                        lesson_videolink: lesson.videolink,
-                                        lesson_text: lesson.text,
-                                        lesson_description: lesson.description,
-                                        lesson_questions: lesson.questions
-                                    }}
 
                         /> : null}
                 </div>

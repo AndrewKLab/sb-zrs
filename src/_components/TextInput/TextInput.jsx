@@ -70,7 +70,6 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
     }
 
     const change = (event) => {
-        console.log('value')
         if (value !== undefined && value !== '') {
             setStyleLabelFocused(' text-input-label-focused');
             setStyleLegendFocused(' text-input-label-plane-focused')
@@ -87,10 +86,10 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
 
     useEffect(() => {
 
-        ref.current.addEventListener('change', change);
+        ref && ref.current && ref.current.addEventListener('change', change);
 
         return () => {
-            ref.current.removeEventListener('change', change);
+            ref && ref.current && ref.current.removeEventListener('change', change);
         };
     }, [change]);
 

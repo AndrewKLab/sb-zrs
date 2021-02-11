@@ -217,6 +217,7 @@ table {
     border-collapse: collapse;
 }
 
+
 caption {
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
@@ -399,8 +400,14 @@ h6, .h6 {
     font-size: initial
 }
 
+/* text-align */
+
 .text-align-left {
     text-align: left;
+}
+
+.text-align-end {
+    text-align: end;
 }
 
 /* position */
@@ -2447,6 +2454,7 @@ div.text-input-group label {
     width: max-content;
     color: rgba(var(--text-dark));
     z-index: 1;
+    height: max-content;
 }
 
 .icon-button:hover {

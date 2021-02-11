@@ -1,8 +1,9 @@
 import React from 'react'
 
-export const Divider = () => {
+export const Divider = ({className}) => {
+    let styleClass = className !== undefined ? ' ' + className : '';
     return (
-        <hr className='divider'/>
+        <hr className={`divider${styleClass}`}/>
     )
 }
 

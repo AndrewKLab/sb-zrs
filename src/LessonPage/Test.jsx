@@ -39,17 +39,16 @@ export const Test = ({ dispatch, history, jwt, user, category_name, course, pass
                 goToNextLesson()
             }
         } else {
-            var result = questions.reduce((acc, item) => {
-                var ansone = item.question_type === 'text' ? (item.answers[0].answer) : (item.current_answer);
-                var anstwo = item.current_answer_too;
-                acc[item.id] = anstwo === null ? (ansone) : ([ansone, anstwo]);
+            var currentAnserwers = questions.reduce((acc, item) => {
+                acc[item.id] = item.question_type === 'checkbox' ?
+                    item.answers.map((answer, index) => (item.id === answer.question_id ? answer.current !== '0' ? answer.id : null : null)).filter(item => item !== null)
+                    : item.question_type === 'text' ? item.answers.filter(i => i.current !== '0')[0].answer : item.answers.filter(i => i.current !== '0')[0].id
                 return acc;
             }, {});
             var assessment = 2;
-            for (var i = 0; i < Object.keys(result).length; i++) {
-                let currAns = result[Object.keys(result)[i]];
-                let userAns = data[Object.keys(result)[i]];
-                console.log(currAns, userAns)
+            for (var i = 0; i < Object.keys(currentAnserwers).length; i++) {
+                let currAns = currentAnserwers[Object.keys(currentAnserwers)[i]];
+                let userAns = data[Object.keys(currentAnserwers)[i]];
                 if (Array.isArray(currAns) && Array.isArray(userAns)) {
                     for (var a = 0; a < currAns.length; a++) {
                         if (currAns[i] === userAns[a]) {
@@ -57,11 +56,12 @@ export const Test = ({ dispatch, history, jwt, user, category_name, course, pass
                         }
                     }
                 } else {
-                    if (currAns == userAns) {
+                    if (currAns.toUpperCase() == userAns.toUpperCase()) {
                         assessment++
                     }
                 }
             }
+            console.log(assessment)
             finishLesson(lesson_passed_id, assessment, Moment().format())
         }
 
@@ -128,7 +128,7 @@ export const Test = ({ dispatch, history, jwt, user, category_name, course, pass
 
     const handleBack = () => {
         window.scrollTo(0, 0);
-        history.push(`/courses/${category_name}/${course}/${lessons[Number(number-2)].id}`)
+        history.push(`/courses/${category_name}/${course}/${lessons[Number(number - 2)].id}`)
     }
 
     return (

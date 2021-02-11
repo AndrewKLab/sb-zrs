@@ -1,4 +1,4 @@
-import { lessonConstants, courseConstants } from '../_constants';
+import { lessonConstants, courseConstants, questionConstants } from '../_constants';
 
 export function lesson(state = [], action) {
   switch (action.type) {
@@ -177,8 +177,43 @@ export function lesson(state = [], action) {
         }
 
       };
+    //UPDATE QUESTION
+    case questionConstants.UPDATE_QUESTION_REQUEST:
+      return {
+        ...state,
+        data: state.data,
+        question_loading: true
+      };
 
+    case questionConstants.UPDATE_QUESTION_SUCCESS:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          lessons: state.data.lessons.map((lesson, index) => (
+            lesson.id === action.lesson_id ? (
+              {
+                ...lesson,
+                questions: lesson.questions.map((question, index) => (
+                  question.id === action.question_id ?
+                    {
+                      ...question,
+                      question: action.question,
+                      question_type: action.question_type,
+                    } : question))
+              }
+            ) : lesson
+          ))
+        },
+        question_loading: false
+      };
 
+    case questionConstants.UPDATE_QUESTION_FAILURE:
+      return {
+        ...state,
+        data: state.data,
+        question_loading: false
+      };
 
     default:
       return state

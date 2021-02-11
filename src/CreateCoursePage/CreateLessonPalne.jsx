@@ -47,24 +47,26 @@ class CreateLessonPlane extends React.Component {
         this.state = {
             loading: true,
             changed: false,
-            addTest: props.lesson !== undefined && props.lesson.questions !== null ? true : false,
+            addTest: props.lesson.questions === null || props.lesson.questions === undefined ? false : true,
             lessonCreated: Object.keys(props.lesson).length === 0 ? false : true
         }
     }
     componentDidMount() {
-        console.log('123')
         this.setState({ loading: false })
     }
 
     componentWillReceiveProps(nextProps) {
-        // You don't have to do this check first, but it can help prevent an unneeded render
-        this.setState({ loading: true }, () => {
-            this.setState({ lessonCreated: Object.keys(nextProps.lesson).length === 0 ? false : true }, ()=>{
-                this.setState({ loading: false })
-            });
-        })
-
-
+        if (nextProps.lesson.id !== this.props.lesson.id) {
+            this.setState({ loading: true }, () => {
+                this.setState({ 
+                    lessonCreated: Object.keys(nextProps.lesson).length === 0 ? false : true,
+                    addTest: Object.keys(nextProps.lesson).length === 0 ? false : true,
+                    changed: false,
+                }, () => {
+                    this.setState({ loading: false })
+                });
+            })
+        }
     }
 
     handleToggleChange() {
@@ -74,7 +76,7 @@ class CreateLessonPlane extends React.Component {
     }
 
     render() {
-        const { dispatch, className, jwt, lesson, error, message, data, lesson_error, course_id, lessons, initialValues } = this.props;
+        const { dispatch, className, jwt, lesson, error, message, data, lesson_error, course_id, lessons } = this.props;
         const { loading, changed, lessonCreated, addTest } = this.state;
         let styleClass = className == undefined ? '' : ' ' + className;
         if (loading) { return <Loading /> }
@@ -82,7 +84,21 @@ class CreateLessonPlane extends React.Component {
             <Paper className={styleClass}>
                 <Formik
                     enableReinitialize
-                    initialValues={initialValues}
+                    initialValues={
+                        Object.keys(lesson).length === 0 ?
+                            {
+                                lesson_name: '',
+                                lesson_videolink: '',
+                                lesson_text: '',
+                                lesson_description: '',
+                                lesson_questions: []
+                            } : {
+                                lesson_name: lesson.name,
+                                lesson_videolink: lesson.videolink,
+                                lesson_text: lesson.text,
+                                lesson_description: lesson.description,
+                                lesson_questions: lesson.questions
+                            }}
                     validationSchema={SignupSchema}
                     onSubmit={(values) => {
                         const { lessonCreated } = this.state;
@@ -179,7 +195,7 @@ class CreateLessonPlane extends React.Component {
                                 <Switch className='m-0' isToggled={addTest} onToggle={() => this.handleToggleChange()} />
                             </div>
                             {addTest === true && <CreateTestPlane questions={values.lesson_questions} setFieldValue={setFieldValue} handleChange={handleChange} />}
-                            
+
 
                             <div className={`d-flex grid-justify-xs-${lesson_error !== undefined || message !== undefined ? 'space-between' : 'flex-end'}`}>
                                 {data !== undefined && lesson_error !== undefined && (
