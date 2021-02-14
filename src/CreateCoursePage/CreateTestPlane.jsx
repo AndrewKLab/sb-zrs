@@ -55,7 +55,7 @@ class CreateTestPlane extends React.Component {
             question_type: 'checkbox',
             question_answers: [],
             question_answers_error: [],
-
+            answers_error: '',
             editQuestion: '',
         }
     }
@@ -63,7 +63,7 @@ class CreateTestPlane extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps)
+        // console.log(nextProps)
     }
 
     //выбрать вопрос для измененния
@@ -71,11 +71,21 @@ class CreateTestPlane extends React.Component {
 
     //изменить текст вопроса
     changeQestionText(event) {
-        this.setState({
-            changedQ: true,
-            question_text: event.target.value,
-            question_text_error: ''
-        })
+        console.log('change')
+        const { editQuestion } = this.state;
+        if (editQuestion.answers === undefined) {
+            this.setState({
+                changedQ: true,
+                question_text: event.target.value,
+                question_text_error: ''
+            })
+        } else {
+            this.setState({
+                changedQ: true,
+                editQuestion: { ...editQuestion, question: event.target.value },
+                question_text_error: ''
+            })
+        }
     }
 
     //изменить тип вопроса
@@ -87,47 +97,89 @@ class CreateTestPlane extends React.Component {
     }
 
     createQestion() {
+        this.setState({ question_answers_error: [] }, () => {
+            const { questions, setFieldValue } = this.props;
+            const { question_id, question_text, question_type, question_answers, question_answers_error } = this.state;
 
-        const { questions, setFieldValue } = this.props;
-        const { question_id, question_text, question_type, question_answers, question_answers_error } = this.state;
-        questions.push({ id: question_id, question: question_text, question_type: question_type, answers: question_answers })
-        if (question_text === '') {
-            this.setState({ question_text_error: 'Это поле является обязательным для заполнения.' })
-            question_answers.map((item, index) => (
-                item.answer === '' ?
-                    (
-                        question_answers_error.push('Это поле является обязательным для заполнения.'),
-                        this.setState({ question_answers_error: question_answers_error })
-                    ) : (
-                        question_answers_error.push(''),
-                        this.setState({ question_answers_error: question_answers_error })
-                    )
-            ))
-            if (question_answers_error.filter(i => i !== '').length === 0) {
-                if (question_text === '') {
-                    this.setState({ question_text_error: 'Это поле является обязательным для заполнения.' })
+            //Если поле ввода вопроса пустое
+            if (question_text === '') {
+                this.setState({ question_text_error: 'Это поле является обязательным для заполнения.' })
+                question_answers.map((item, index) => (
+                    item.answer === '' ?
+                        (
+                            question_answers_error.push('Это поле является обязательным для заполнения.'),
+                            this.setState({ question_answers_error: question_answers_error })
+                        ) : (
+                            question_answers_error.push(''),
+                            this.setState({ question_answers_error: question_answers_error })
+                        )
+                ))
+                if (question_answers.length !== 0) {
+                    //Если все поля ответов заполнены
+                    if (question_answers_error.filter(i => i !== '').length === 0) {
+                        //Если поле ввода вопроса пустое
+                        if (question_text === '') {
+                            this.setState({ question_text_error: 'Это поле является обязательным для заполнения.' })
+                            //Если поле ввода вопроса не пустое
+                        } else {
+                            questions.push({ id: question_id, question: question_text, question_type: question_type, answers: question_answers })
+                            setFieldValue("lesson_questions", questions)
+                            this.setState({
+                                changedQ: false,
+                                addQuestion: false,
+                                question_text: '',
+                                question_text_error: '',
+                                question_type: 'checkbox',
+                                question_answers: [],
+                                question_text_error: '',
+                                answers_error: ''
+                            })
+                        }
+                    }
                 } else {
-                    setFieldValue("lesson_questions", questions)
-                    this.setState({ changedQ: false, addQuestion: false, question_text_error: '' })
+                    this.setState({ answers_error: 'Добавьте хотябы один ответ!' })
+                }
+                //Если поле ввода вопроса не пустое
+            } else {
+                if (question_answers.length !== 0) {
+                    question_answers.map((item, index) => (
+                        item.answer === '' ?
+                            (
+                                question_answers_error.push('Это поле является обязательным для заполнения.'),
+                                this.setState({ question_answers_error: question_answers_error })
+                            ) : (
+                                question_answers_error.push(''),
+                                this.setState({ question_answers_error: question_answers_error })
+                            )
+                    ))
+                    //Если все поля ответов заполнены
+                    if (question_answers_error.filter(i => i !== '').length === 0) {
+                        questions.push({ id: question_id, question: question_text, question_type: question_type, answers: question_answers })
+                        setFieldValue("lesson_questions", questions)
+                        this.setState({
+                            changedQ: false,
+                            addQuestion: false,
+                            question_text: '',
+                            question_text_error: '',
+                            question_type: 'checkbox',
+                            question_answers: [],
+                            question_text_error: '',
+                            answers_error: ''
+                        })
+                    }
+                } else {
+                    this.setState({ answers_error: 'Добавьте хотябы один ответ!' })
                 }
             }
-        } else {
-            question_answers.map((item, index) => (
-                item.answer === '' ?
-                    (
-                        question_answers_error.push('Это поле является обязательным для заполнения.'),
-                        this.setState({ question_answers_error: question_answers_error })
-                    ) : (
-                        question_answers_error.push(''),
-                        this.setState({ question_answers_error: question_answers_error })
-                    )
-            ))
-            if (question_answers_error.filter(i => i !== '').length === 0) {
-                setFieldValue("lesson_questions", questions)
-                this.setState({ changedQ: false, addQuestion: false, question_text_error: '' })
-            }
-        }
+            console.log(question_answers_error)
+        })
+    }
 
+    //удалить ответ
+    deleteQuestion(q_id) {
+        const {questions, setFieldValue, setState} = this.props;
+        setFieldValue('lesson_questions', questions.filter(ques => ques.id !== q_id ))
+        setState({changed: true})
     }
 
     //OТВЕТ
@@ -207,30 +259,31 @@ class CreateTestPlane extends React.Component {
     }
 
     //создать ответ 
-    creareAnswer() {
+    createAnswer() {
         const { editQuestion, question_id, question_answers } = this.state;
         var newAnswers = editQuestion.answers === undefined ? question_answers : editQuestion.answers;
         newAnswers.push({ id: getRandomInt(10000, 1000000), answer: '', current: '0', question_id: editQuestion.id === undefined ? question_id : editQuestion.id })
         if (editQuestion.answers === undefined) {
             this.setState({
                 changedQ: true,
-                question_answers: newAnswers
-
+                question_answers: newAnswers,
+                answers_error: ''
             })
         } else {
             this.setState({
                 changedQ: true,
                 editQuestion: {
                     ...editQuestion,
-                    answers: newAnswers
-                }
+                    answers: newAnswers,
+                },
+                answers_error: ''
             })
         }
     }
 
     //изменить ответ 
-    changedAnswer(event, answer) {
-        const { editQuestion, question_answers } = this.state;
+    changedAnswer(event, answer, index) {
+        const { editQuestion, question_answers, question_answers_error } = this.state;
         if (editQuestion.answers === undefined) {
             this.setState({
                 changedQ: true,
@@ -240,6 +293,10 @@ class CreateTestPlane extends React.Component {
                             ...item,
                             answer: event.target.value
                         } : item
+                )),
+                question_answers_error: question_answers_error.map((item, j) => (
+                    j === index ?
+                        '' : item
                 ))
             })
         } else {
@@ -254,7 +311,11 @@ class CreateTestPlane extends React.Component {
                                 answer: event.target.value
                             } : item
                     ))
-                }
+                },
+                question_answers_error: question_answers_error.map((item, j) => (
+                    j === index ?
+                        '' : item
+                ))
             })
         }
     }
@@ -281,15 +342,86 @@ class CreateTestPlane extends React.Component {
 
     //сохранить изменения вопроса в уроке
     saveQuestionChanges() {
-        const { jwt, dispatch, setFieldValue, questions } = this.props;
-        const { id, question, question_type, lesson_id, answers } = this.state.editQuestion;
-        setFieldValue('lesson_questions', questions.map((q, i) => (q.id === id ? {
-            ...q,
-            question: question,
-            question_type: question_type,
-            answers: answers
-        } : q)))
-        this.setState({ changedQ: false, editQuestion: '' })
+        this.setState({ question_answers_error: [] }, () => {
+            const { jwt, dispatch, setFieldValue, questions } = this.props;
+            const { id, question, question_type, lesson_id, answers } = this.state.editQuestion;
+            const { question_id, question_answers_error } = this.state;
+            //Если поле ввода вопроса пустое
+            if (question === '') {
+                this.setState({ question_text_error: 'Это поле является обязательным для заполнения.' })
+                answers.map((item, index) => (
+                    item.answer === '' ?
+                        (
+                            question_answers_error.push('Это поле является обязательным для заполнения.'),
+                            this.setState({ question_answers_error: question_answers_error })
+                        ) : (
+                            question_answers_error.push(''),
+                            this.setState({ question_answers_error: question_answers_error })
+                        )
+                ))
+                if (answers.length !== 0) {
+                    //Если все поля ответов заполнены
+                    if (question_answers_error.filter(i => i !== '').length === 0) {
+                        //Если поле ввода вопроса пустое
+                        if (question === '') {
+                            this.setState({ question_text_error: 'Это поле является обязательным для заполнения.' })
+                            //Если поле ввода вопроса не пустое
+                        } else {
+                            setFieldValue('lesson_questions', questions.map((q, i) => (q.id === id ? {
+                                ...q,
+                                question: question,
+                                question_type: question_type,
+                                answers: answers
+                            } : q)))
+                            this.setState({
+                                changedQ: false,
+                                editQuestion: '',
+                                question_type: 'checkbox',
+                                question_answers: [],
+                                question_text_error: ''
+                            })
+                        }
+                    }
+                } else {
+                    this.setState({ answers_error: 'Добавьте хотябы один ответ!' })
+                }
+                //Если поле ввода вопроса не пустое
+            } else {
+                if (answers.length !== 0) {
+                    answers.map((item, index) => (
+                        item.answer === '' ?
+                            (
+                                question_answers_error.push('Это поле является обязательным для заполнения.'),
+                                this.setState({ question_answers_error: question_answers_error })
+                            ) : (
+                                question_answers_error.push(''),
+                                this.setState({ question_answers_error: question_answers_error })
+                            )
+                    ))
+                    //Если все поля ответов заполнены
+                    if (question_answers_error.filter(i => i !== '').length === 0) {
+                        setFieldValue('lesson_questions', questions.map((q, i) => (q.id === id ? {
+                            ...q,
+                            question: question,
+                            question_type: question_type,
+                            answers: answers
+                        } : q)))
+                        this.setState({
+                            changedQ: false,
+                            editQuestion: '',
+                            question_type: 'checkbox',
+                            question_answers: [],
+                            question_text_error: ''
+                        })
+                    }
+
+                } else {
+                    this.setState({ answers_error: 'Добавьте хотябы один ответ!' })
+                }
+            }
+            console.log(question_answers_error)
+        })
+
         // dispatch(questionActions.updateQuestion(jwt, id, question, question_type, lesson_id, current_answer, current_answer_too)).then(
         //     () => this.setState({changedQ: false, editQuestion: ''})
         // )
@@ -297,7 +429,7 @@ class CreateTestPlane extends React.Component {
 
     render() {
         const { questions, setFieldValue } = this.props;
-        const { changedQ, addQuestion, question_text, question_text_error, question_type, question_answers, question_answers_error, editQuestion } = this.state;
+        const { changedQ, addQuestion, question_text, question_text_error, question_type, question_answers, question_answers_error, answers_error, editQuestion } = this.state;
         return (
             <div>
                 {questions && questions.map((question, index) => (
@@ -316,6 +448,11 @@ class CreateTestPlane extends React.Component {
                                         variant={'outlined'}
                                         onChange={(event) => this.changeQestionText(event)}
                                         className='w-100 mb-3'
+                                        helperText={
+                                            question_text_error
+                                                ? question_text_error
+                                                : null
+                                        }
                                     />
 
                                     <TextInput
@@ -338,7 +475,7 @@ class CreateTestPlane extends React.Component {
                                         <SelectItem selectded={question_type === 'text'} value={'text'}>Текстовый ответ</SelectItem>
                                     </TextInput>
                                     <Divider />
-                                    {editQuestion.answers &&
+                                    {editQuestion.answers && editQuestion.answers.length !== 0 &&
                                         <table className='w-100'>
                                             <tbody>
                                                 <tr>
@@ -357,7 +494,12 @@ class CreateTestPlane extends React.Component {
                                                                 label={"Ответ " + (index + 1)}
                                                                 type={'text'}
                                                                 variant={'outlined'}
-                                                                onChange={(event) => this.changedAnswer(event, answer)}
+                                                                onChange={(event) => this.changedAnswer(event, answer, index)}
+                                                                helperText={
+                                                                    question_answers_error !== undefined && question_answers_error.length !== 0
+                                                                        ? question_answers_error[index]
+                                                                        : null
+                                                                }
                                                             />
                                                         </td>
                                                         <td className='text-align-end'>
@@ -379,12 +521,18 @@ class CreateTestPlane extends React.Component {
                                             </tbody>
                                         </table>
                                     }
-                                    <Button fullWidth onPress={() => this.creareAnswer()}>{'+'}</Button>
+                                    <Button fullWidth onPress={() => this.createAnswer()}>{'+'}</Button>
                                     <Divider />
-
-                                    <div className='d-flex grid-justify-xs-flex-end'>
-                                        <Button disabled={changedQ === false} onPress={() => this.saveQuestionChanges()} className='mr-3'>{'Сохранить вопрос'}</Button>
-                                        <Button onPress={() => this.setState({ editQuestion: '' })}>{'Отмена'}</Button>
+                                    <div className='d-flex grid-justify-xs-space-between grid-align-items-xs-center'>
+                                        <div>
+                                            {answers_error !== '' && (
+                                                <Alert className='error' severity="error">{answers_error}</Alert>
+                                            )}
+                                        </div>
+                                        <div className='d-flex grid-justify-xs-flex-end'>
+                                            <Button disabled={changedQ === false} onPress={() => this.saveQuestionChanges()} className='mr-3'>{'Сохранить вопрос'}</Button>
+                                            <Button onPress={() => this.setState({ editQuestion: '' })}>{'Отмена'}</Button>
+                                        </div>
                                     </div>
                                 </div>
                                 :
@@ -395,7 +543,7 @@ class CreateTestPlane extends React.Component {
                                             <IconButton onClick={() => this.selectQestion(question)}>
                                                 <EditOutlinedIcon />
                                             </IconButton>
-                                            <IconButton onClick={() => { }}>
+                                            <IconButton onClick={() => this.deleteQuestion(question.id)}>
                                                 <DeleteForeverOutlinedIcon className='danger-area-title-icon' />
                                             </IconButton>
                                         </div>
@@ -546,7 +694,7 @@ class CreateTestPlane extends React.Component {
                                                     label={"Ответ " + (index + 1)}
                                                     type={'text'}
                                                     variant={'outlined'}
-                                                    onChange={(event) => this.changedAnswer(event, answer)}
+                                                    onChange={(event) => this.changedAnswer(event, answer, index)}
                                                     helperText={
                                                         question_answers_error !== undefined && question_answers_error.length !== 0
                                                             ? question_answers_error[index]
@@ -572,12 +720,20 @@ class CreateTestPlane extends React.Component {
                                     ))}
                                 </tbody>
                             </table>}
-                        <Button fullWidth onPress={() => this.creareAnswer()}>{'+'}</Button>
+                        <Button fullWidth onPress={() => this.createAnswer()}>{'+'}</Button>
                         <Divider />
-                        <div className='d-flex grid-justify-xs-flex-end'>
-                            <Button disabled={!changedQ} onPress={() => this.createQestion()} className='mr-3'>{'Добавить вопрос'}</Button>
-                            <Button onPress={() => this.setState({ editQuestion: '', addQuestion: false })}>{'Отмена'}</Button>
+                        <div className='d-flex grid-justify-xs-space-between grid-align-items-xs-center'>
+                            <div>
+                                {answers_error !== '' && (
+                                    <Alert className='error' severity="error">{answers_error}</Alert>
+                                )}
+                            </div>
+                            <div className='d-flex grid-justify-xs-flex-end '>
+                                <Button disabled={!changedQ} onPress={() => this.createQestion()} className='mr-3'>{'Добавить вопрос'}</Button>
+                                <Button onPress={() => this.setState({ editQuestion: '', addQuestion: false })}>{'Отмена'}</Button>
+                            </div>
                         </div>
+
                         <Divider />
                     </div>
                     : <Button onPress={() => this.setState({ addQuestion: true, editQuestion: '', question_id: getRandomInt(10000, 100000) })}>{'Добавить вопрос'}</Button>}

@@ -98,9 +98,13 @@ class CreateCoursePage extends React.Component {
 
     submit(values) {
         const { course_name, course_category_name, image, course_descrigtion } = values;
-        const { dispatch, user, jwt, message, error } = this.props;
+        const { dispatch, user, jwt, message, error, data } = this.props;
         dispatch(courseActions.createCourse(jwt, course_name, user.id, course_category_name === '' ? 'basic' : course_category_name, image, course_descrigtion)).then(
-            () => this.handleClose(), this.setState({ changed: error === undefined ? false : true, courseCreated: error === undefined ? true : false })
+            () => {
+                this.handleClose(),
+
+                    this.setState({ changed: error === undefined ? false : true, courseCreated: error === undefined ? true : false })
+            }
         )
     }
 
@@ -109,6 +113,14 @@ class CreateCoursePage extends React.Component {
         dispatch(lessonActions.deleteLesson(jwt, lesson_id)).then(
             () => this.handleCloseDeleteLessonDialog()
         )
+    }
+
+    changeLesson() {
+        const { data } = this.props;
+        this.setState({
+            lesson: data.lessons[data.lessons.length - 1]
+        })
+
     }
 
     renderConfermCreateDialog(values) {
@@ -327,8 +339,10 @@ class CreateCoursePage extends React.Component {
                         <CreateLessonPlane
                             className='p-2 mt-2'
                             lesson={lesson}
+                            changeLesson={() => this.changeLesson()}
                             course_id={this.props.location.state.course.id}
                             lessons={this.props.location.state.course.lessons}
+                            
 
                         /> : null}
                 </div>

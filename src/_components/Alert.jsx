@@ -39,7 +39,7 @@ export const Alert = ({ children, severity, className }) => {
     }
 
     return (
-        <div className={'alert mb-3' + alertType + styleClass} role="alert">
+        <div className={'alert' + alertType + styleClass} role="alert">
             <div className='alert-icon'>{alertIcon}</div>
             <div className="alert-message">
                 {children}

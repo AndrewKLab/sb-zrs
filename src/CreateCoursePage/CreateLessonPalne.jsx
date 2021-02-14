@@ -60,7 +60,7 @@ class CreateLessonPlane extends React.Component {
             this.setState({ loading: true }, () => {
                 this.setState({ 
                     lessonCreated: Object.keys(nextProps.lesson).length === 0 ? false : true,
-                    addTest: Object.keys(nextProps.lesson).length === 0 ? false : true,
+                    addTest: nextProps.lesson.questions && Object.keys(nextProps.lesson.questions).length !== 0 ? true : false,
                     changed: false,
                 }, () => {
                     this.setState({ loading: false })
@@ -76,7 +76,7 @@ class CreateLessonPlane extends React.Component {
     }
 
     render() {
-        const { dispatch, className, jwt, lesson, error, message, data, lesson_error, course_id, lessons } = this.props;
+        const { dispatch, className, jwt, lesson, error, message, data, lesson_error, course_id, lessons, changeLesson } = this.props;
         const { loading, changed, lessonCreated, addTest } = this.state;
         let styleClass = className == undefined ? '' : ' ' + className;
         if (loading) { return <Loading /> }
@@ -101,13 +101,13 @@ class CreateLessonPlane extends React.Component {
                             }}
                     validationSchema={SignupSchema}
                     onSubmit={(values) => {
-                        const { lessonCreated } = this.state;
+                        const { lessonCreated, addTest } = this.state;
                         const { lesson_name, lesson_videolink, lesson_text, lesson_description } = values;
                         if (lessonCreated === false) {
                             dispatch(lessonActions.createLesson(jwt, course_id,
                                 lessons !== null ? Number(data.lessons.length) + 1 : data !== undefined ? Number(data.lessons.length) + 1 : 1,
                                 lesson_name, lesson_videolink, lesson_text, lesson_description)).then(
-                                    () => this.setState({ changed: error === undefined ? false : true, lessonCreated: error === undefined ? true : false })
+                                    () => changeLesson(), this.setState({ changed: error === undefined ? false : true, lessonCreated: error === undefined ? true : false })
                                 )
                         } else {
                             console.log(values)
@@ -194,10 +194,10 @@ class CreateLessonPlane extends React.Component {
                                 <Typography component='body' variant='body' className='m-0 f-initial'>Добавить тест к уроку?</Typography>
                                 <Switch className='m-0' isToggled={addTest} onToggle={() => this.handleToggleChange()} />
                             </div>
-                            {addTest === true && <CreateTestPlane questions={values.lesson_questions} setFieldValue={setFieldValue} handleChange={handleChange} />}
+                            {addTest === true && <CreateTestPlane questions={values.lesson_questions} setFieldValue={setFieldValue} handleChange={handleChange} setState={(obj) => this.setState(obj)} />}
 
 
-                            <div className={`d-flex grid-justify-xs-${lesson_error !== undefined || message !== undefined ? 'space-between' : 'flex-end'}`}>
+                            <div className={`d-flex grid-justify-xs-${lesson_error !== undefined || message !== undefined ? 'space-between' : 'flex-end'} grid-align-items-xs-center`}>
                                 {data !== undefined && lesson_error !== undefined && (
                                     <Alert className='error' severity="error">{lesson_error}</Alert>
                                 )}
