@@ -47,7 +47,7 @@ class CreateLessonPlane extends React.Component {
         this.state = {
             loading: true,
             changed: false,
-            addTest: props.lesson.questions === null || props.lesson.questions === undefined ? false : true,
+            addTest: props.lesson.questions.length === 0  ? false : true,
             lessonCreated: Object.keys(props.lesson).length === 0 ? false : true
         }
     }
@@ -58,7 +58,7 @@ class CreateLessonPlane extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.lesson.id !== this.props.lesson.id) {
             this.setState({ loading: true }, () => {
-                this.setState({ 
+                this.setState({
                     lessonCreated: Object.keys(nextProps.lesson).length === 0 ? false : true,
                     addTest: nextProps.lesson.questions && Object.keys(nextProps.lesson.questions).length !== 0 ? true : false,
                     changed: false,
@@ -83,7 +83,6 @@ class CreateLessonPlane extends React.Component {
         return (
             <Paper className={styleClass}>
                 <Formik
-                    enableReinitialize
                     initialValues={
                         Object.keys(lesson).length === 0 ?
                             {
@@ -102,13 +101,20 @@ class CreateLessonPlane extends React.Component {
                     validationSchema={SignupSchema}
                     onSubmit={(values) => {
                         const { lessonCreated, addTest } = this.state;
-                        const { lesson_name, lesson_videolink, lesson_text, lesson_description } = values;
+                        const { lesson_name, lesson_videolink, lesson_text, lesson_description, lesson_questions } = values;
                         if (lessonCreated === false) {
-                            dispatch(lessonActions.createLesson(jwt, course_id,
+                            dispatch(lessonActions.createLesson(
+                                jwt,
+                                course_id,
                                 lessons !== null ? Number(data.lessons.length) + 1 : data !== undefined ? Number(data.lessons.length) + 1 : 1,
-                                lesson_name, lesson_videolink, lesson_text, lesson_description)).then(
-                                    () => changeLesson(), this.setState({ changed: error === undefined ? false : true, lessonCreated: error === undefined ? true : false })
-                                )
+                                lesson_name,
+                                lesson_videolink,
+                                lesson_description,
+                                lesson_text,
+                                lesson_questions
+                            )).then(
+                                () => changeLesson(), this.setState({ changed: error === undefined ? false : true, lessonCreated: error === undefined ? true : false })
+                            )
                         } else {
                             console.log(values)
                         }
@@ -125,10 +131,9 @@ class CreateLessonPlane extends React.Component {
                                 name="lesson_name"
                                 label="Название урока"
                                 type={'text'}
-                                autoComplete="lesson_name"
                                 variant={'outlined'}
                                 onChange={handleChange}
-                                onSelect={val => setFieldValue("value", val)}
+                                onSelect={val => setFieldValue("lesson_name", val)}
                                 helperText={
                                     errors.lesson_name && touched.lesson_name ? errors.lesson_name : null
                                 }
@@ -146,7 +151,7 @@ class CreateLessonPlane extends React.Component {
                                 autoComplete="lesson_videolink"
                                 variant={'outlined'}
                                 onChange={handleChange}
-                                onSelect={val => setFieldValue("value", val)}
+                                onSelect={val => setFieldValue("lesson_videolink", val)}
                                 helperText={
                                     errors.lesson_videolink && touched.lesson_videolink ? errors.lesson_videolink : null
                                 }
@@ -163,7 +168,7 @@ class CreateLessonPlane extends React.Component {
                                 type={'text'}
                                 variant={'outlined'}
                                 onChange={handleChange}
-                                onSelect={val => setFieldValue("value", val)}
+                                onSelect={val => setFieldValue("lesson_description", val)}
                                 helperText={
                                     errors.lesson_description && touched.lesson_description
                                         ? errors.lesson_description
@@ -182,7 +187,7 @@ class CreateLessonPlane extends React.Component {
                                 type={'text'}
                                 variant={'outlined'}
                                 onChange={handleChange}
-                                onSelect={val => setFieldValue("value", val)}
+                                onSelect={val => setFieldValue("lesson_text", val)}
                                 helperText={
                                     errors.lesson_text && touched.lesson_text
                                         ? errors.lesson_text
@@ -197,7 +202,7 @@ class CreateLessonPlane extends React.Component {
                             {addTest === true && <CreateTestPlane questions={values.lesson_questions} setFieldValue={setFieldValue} handleChange={handleChange} setState={(obj) => this.setState(obj)} />}
 
 
-                            <div className={`d-flex grid-justify-xs-${lesson_error !== undefined || message !== undefined ? 'space-between' : 'flex-end'} grid-align-items-xs-center`}>
+                            <div className={`d-flex grid-justify-xs-${lesson_error !== undefined && lesson_error !== null || message !== undefined && message !== null? 'space-between' : 'flex-end'} grid-align-items-xs-center`}>
                                 {data !== undefined && lesson_error !== undefined && (
                                     <Alert className='error' severity="error">{lesson_error}</Alert>
                                 )}

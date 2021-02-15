@@ -9,32 +9,27 @@ export const lessonService = {
     deleteAllPassedLessonsByCourse
 };
 
-function createLesson(jwt, course_id, number, name, videolink, description, text) {
-    const formData = new FormData();
-
-    formData.append('jwt', jwt);
-    formData.append('number', number);
-    formData.append('name', name);
-    formData.append('videolink', videolink);
-    formData.append('description', description);
-    formData.append('text', text);
-
+function createLesson(jwt, course_id, number, name, videolink, description, text, questions) {
     const requestOptions = {
         method: 'POST',
-        headers: {
-            'Accept': 'application/json, text/plain, */*',
-            'Accept-Encoding': 'gzip, deflate',
-            'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
-        },
-        body: formData
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            jwt,
+            number,
+            name,
+            videolink,
+            description,
+            text,
+            questions
+        })
     };
 
     return fetch(`${config.apiUrl}/lesson/create.php?course_id=${course_id}`, requestOptions).then(handleResponse);
 }
 
 function deleteLesson(jwt, lesson_id) {
-    const formData  = new FormData();
-  
+    const formData = new FormData();
+
     formData.append('jwt', jwt);
 
     const requestOptions = {

@@ -7,20 +7,21 @@ export const lessonActions = {
     getAllLessonsByCourse,
     createLessonPassed,
     updateLessonPassed,
-    deleteAllPassedLessonsByCourse
+    deleteAllPassedLessonsByCourse,
+    clearMessageAndError
 };
 
-function createLesson(jwt, course_id, number, name, videolink, descrigtion, text) {
+function createLesson(jwt, course_id, number, name, videolink, descrigtion, text, questions) {
     return dispatch => {
-        dispatch(request(jwt, course_id, number, name, videolink, descrigtion, text));
-        return lessonService.createLesson(jwt, course_id, number, name, videolink, descrigtion, text)
+        dispatch(request(jwt, course_id, number, name, videolink, descrigtion, text, questions));
+        return lessonService.createLesson(jwt, course_id, number, name, videolink, descrigtion, text, questions)
             .then(
                 data => dispatch(success(data)),
                 error => dispatch(failure(error))
             );
     };
 
-    function request(jwt, course_id, number, name, videolink, descrigtion, text) { return { type: lessonConstants.CREATE_LESSON_REQUEST, jwt, course_id, number, name, videolink, descrigtion, text } }
+    function request(jwt, course_id, number, name, videolink, descrigtion, text) { return { type: lessonConstants.CREATE_LESSON_REQUEST, jwt, course_id, number, name, videolink, descrigtion, text, questions } }
     function success(data) { return { type: lessonConstants.CREATE_LESSON_SUCCESS, data } }
     function failure(error) { return { type: lessonConstants.CREATE_LESSON_FAILURE, error } }
 }
@@ -90,4 +91,9 @@ function deleteAllPassedLessonsByCourse(course_id, user_id) {
             );
     };
     function clear() { return { type: lessonConstants.DELETE_ALL_PASSED_LESSONS_BY_COURSE } }
+}
+
+
+function clearMessageAndError() {
+    return { type: lessonConstants.CLEAR_MESSAGE_AND_ERROR };
 }

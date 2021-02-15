@@ -17,9 +17,9 @@ export function lesson(state = [], action) {
           }
       };
     case lessonConstants.CREATE_LESSON_SUCCESS:
-      const { id, number, name, videolink, description, text } = action.data.lesson;
+      const { id, number, name, videolink, description, text, questions } = action.data.lesson;
       var new_lessons_arr = state.data.lessons
-      new_lessons_arr.push({ id, number, name, videolink, description, text })
+      new_lessons_arr.push({ id, number, name, videolink, description, text, questions })
       return {
         ...state,
         loading: false,
@@ -215,7 +215,15 @@ export function lesson(state = [], action) {
         question_loading: false
       };
 
+    case lessonConstants.CLEAR_MESSAGE_AND_ERROR:
+      return {
+        ...state,
+        message: null,
+        error: null
+      };
+
     default:
       return state
   }
+
 }

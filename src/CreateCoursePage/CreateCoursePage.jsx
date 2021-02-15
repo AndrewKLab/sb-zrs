@@ -84,6 +84,7 @@ class CreateCoursePage extends React.Component {
     }
 
     handleOpenDeleteLessonDialog(id, name) {
+
         this.setState({ openDeleteLessonDialog: true, lesson_id: id, lesson_name: name })
     }
 
@@ -110,8 +111,9 @@ class CreateCoursePage extends React.Component {
 
     deleteLesson(lesson_id) {
         const { jwt, dispatch } = this.props;
+        const { lesson } = this.state;
         dispatch(lessonActions.deleteLesson(jwt, lesson_id)).then(
-            () => this.handleCloseDeleteLessonDialog()
+            () => this.setState({ lesson: lesson.id === lesson_id ? {} : lesson }), this.handleCloseDeleteLessonDialog()
         )
     }
 
@@ -342,7 +344,7 @@ class CreateCoursePage extends React.Component {
                             changeLesson={() => this.changeLesson()}
                             course_id={this.props.location.state.course.id}
                             lessons={this.props.location.state.course.lessons}
-                            
+
 
                         /> : null}
                 </div>
@@ -353,7 +355,7 @@ class CreateCoursePage extends React.Component {
                             {data.lessons.map((lesson, index) => (
                                 <div key={index} className='center'>
                                     <ListItem button
-                                        onPress={() => this.setState({ addLesson: true, lesson: lesson })}
+                                        onPress={() => { dispatch(lessonActions.clearMessageAndError()), this.setState({ addLesson: true, lesson: lesson }) }}
                                     >
                                         <ListItemFirstAction>
                                             <ListItemIcon>

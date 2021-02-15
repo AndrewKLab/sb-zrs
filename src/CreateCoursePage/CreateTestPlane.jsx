@@ -71,7 +71,6 @@ class CreateTestPlane extends React.Component {
 
     //изменить текст вопроса
     changeQestionText(event) {
-        console.log('change')
         const { editQuestion } = this.state;
         if (editQuestion.answers === undefined) {
             this.setState({
@@ -90,16 +89,25 @@ class CreateTestPlane extends React.Component {
 
     //изменить тип вопроса
     changeQestionType(event) {
-        this.setState({
-            changedQ: true,
-            question_type: event.target.value,
-        })
+        const { editQuestion } = this.state;
+        if (editQuestion.answers === undefined) {
+            this.setState({
+                changedQ: true,
+                question_type: event.target.value,
+            })
+        } else {
+            this.setState({
+                changedQ: true,
+                editQuestion: { ...editQuestion, question_type: event.target.value },
+                question_text_error: ''
+            })
+        }
     }
 
     createQestion() {
         this.setState({ question_answers_error: [] }, () => {
             const { questions, setFieldValue } = this.props;
-            const { question_id, question_text, question_type, question_answers, question_answers_error } = this.state;
+            const { question_id, question_text, question_type, question_answers, question_answers_error, editQuestion } = this.state;
 
             //Если поле ввода вопроса пустое
             if (question_text === '') {
@@ -122,8 +130,13 @@ class CreateTestPlane extends React.Component {
                             this.setState({ question_text_error: 'Это поле является обязательным для заполнения.' })
                             //Если поле ввода вопроса не пустое
                         } else {
-                            questions.push({ id: question_id, question: question_text, question_type: question_type, answers: question_answers })
-                            setFieldValue("lesson_questions", questions)
+                            console.log(editQuestion)
+                            editQuestion === '' ?
+                                (questions.push({ id: question_id, question: question_text, question_type: question_type, answers: question_answers }),
+                                    setFieldValue("lesson_questions", questions))
+                                :
+                                setFieldValue("lesson_questions", editQuestion)
+
                             this.setState({
                                 changedQ: false,
                                 addQuestion: false,
@@ -132,7 +145,8 @@ class CreateTestPlane extends React.Component {
                                 question_type: 'checkbox',
                                 question_answers: [],
                                 question_text_error: '',
-                                answers_error: ''
+                                answers_error: '',
+                                editQuestion: ''
                             })
                         }
                     }
@@ -154,8 +168,12 @@ class CreateTestPlane extends React.Component {
                     ))
                     //Если все поля ответов заполнены
                     if (question_answers_error.filter(i => i !== '').length === 0) {
-                        questions.push({ id: question_id, question: question_text, question_type: question_type, answers: question_answers })
-                        setFieldValue("lesson_questions", questions)
+                        console.log(editQuestion)
+                        editQuestion === '' ?
+                            (questions.push({ id: question_id, question: question_text, question_type: question_type, answers: question_answers }),
+                                setFieldValue("lesson_questions", questions))
+                            :
+                            setFieldValue("lesson_questions", editQuestion)
                         this.setState({
                             changedQ: false,
                             addQuestion: false,
@@ -164,7 +182,8 @@ class CreateTestPlane extends React.Component {
                             question_type: 'checkbox',
                             question_answers: [],
                             question_text_error: '',
-                            answers_error: ''
+                            answers_error: '',
+                            editQuestion: ''
                         })
                     }
                 } else {
@@ -177,9 +196,9 @@ class CreateTestPlane extends React.Component {
 
     //удалить ответ
     deleteQuestion(q_id) {
-        const {questions, setFieldValue, setState} = this.props;
-        setFieldValue('lesson_questions', questions.filter(ques => ques.id !== q_id ))
-        setState({changed: true})
+        const { questions, setFieldValue, setState } = this.props;
+        setFieldValue('lesson_questions', questions.filter(ques => ques.id !== q_id))
+        setState({ changed: true })
     }
 
     //OТВЕТ
