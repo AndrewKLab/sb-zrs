@@ -33,8 +33,6 @@ import {
     Switch
 } from '../_components';
 
-import { CreateQestionPlane } from './';
-
 const getRandomInt = (min, max) => {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -57,6 +55,10 @@ class CreateTestPlane extends React.Component {
             question_answers_error: [],
             answers_error: '',
             editQuestion: '',
+
+            a_delete: [],
+            a_update: [],
+            a_create: []
         }
     }
     componentDidMount() {
@@ -67,7 +69,7 @@ class CreateTestPlane extends React.Component {
     }
 
     //выбрать вопрос для измененния
-    selectQestion(question) { console.log(question), this.setState({ editQuestion: question, addQuestion: false }) }
+    selectQestion(question) { this.setState({ editQuestion: question, addQuestion: false }) }
 
     //изменить текст вопроса
     changeQestionText(event) {
@@ -106,7 +108,7 @@ class CreateTestPlane extends React.Component {
 
     createQestion() {
         this.setState({ question_answers_error: [] }, () => {
-            const { questions, setFieldValue } = this.props;
+            const { questions, setFieldValue, setState, create } = this.props;
             const { question_id, question_text, question_type, question_answers, question_answers_error, editQuestion } = this.state;
 
             //Если поле ввода вопроса пустое
@@ -130,12 +132,19 @@ class CreateTestPlane extends React.Component {
                             this.setState({ question_text_error: 'Это поле является обязательным для заполнения.' })
                             //Если поле ввода вопроса не пустое
                         } else {
-                            console.log(editQuestion)
-                            editQuestion === '' ?
-                                (questions.push({ id: question_id, question: question_text, question_type: question_type, answers: question_answers }),
-                                    setFieldValue("lesson_questions", questions))
-                                :
+
+                            if (editQuestion === '') {
+
+                                questions.push({ id: question_id, question: question_text, question_type: question_type, answers: question_answers });
+                                setFieldValue("lesson_questions", questions);
+                                var to_create_arr = create;
+                                to_create_arr.push({ id: question_id, question: question_text, question_type: question_type, answers: question_answers })
+                                setState({ changed: true, create: to_create_arr });
+                            } else {
+
                                 setFieldValue("lesson_questions", editQuestion)
+                            }
+
 
                             this.setState({
                                 changedQ: false,
@@ -168,12 +177,21 @@ class CreateTestPlane extends React.Component {
                     ))
                     //Если все поля ответов заполнены
                     if (question_answers_error.filter(i => i !== '').length === 0) {
-                        console.log(editQuestion)
-                        editQuestion === '' ?
-                            (questions.push({ id: question_id, question: question_text, question_type: question_type, answers: question_answers }),
-                                setFieldValue("lesson_questions", questions))
-                            :
-                            setFieldValue("lesson_questions", editQuestion)
+                        var to_create_arr;
+                        if (editQuestion === '') {
+                            console.log(3),
+                                questions.push({ id: question_id, question: question_text, question_type: question_type, answers: question_answers });
+                            setFieldValue("lesson_questions", questions);
+
+                            var to_create_arr = create;
+                            to_create_arr.push({ id: question_id, question: question_text, question_type: question_type, answers: question_answers })
+                            setState({ changed: true, create: to_create_arr });
+
+                        } else {
+                            console.log(4),
+                                setFieldValue("lesson_questions", editQuestion)
+                        }
+
                         this.setState({
                             changedQ: false,
                             addQuestion: false,
@@ -196,15 +214,21 @@ class CreateTestPlane extends React.Component {
 
     //удалить ответ
     deleteQuestion(q_id) {
-        const { questions, setFieldValue, setState } = this.props;
+        const { questions, setFieldValue, setState, del, create } = this.props;
         setFieldValue('lesson_questions', questions.filter(ques => ques.id !== q_id))
-        setState({ changed: true })
+        var to_dell_arr = del;
+        if (Number(q_id) < 10000) {
+            to_dell_arr.push({ id: q_id })
+        } else {
+            setState({ create: create.filter(ques => ques.id !== q_id) })
+        }
+        setState({ changed: true, del: to_dell_arr })
     }
 
     //OТВЕТ
     //изменить правильный ответ
     changedQuestionCurrentAnswer(event, answer) {
-        const { editQuestion, question_answers, question_type } = this.state;
+        const { editQuestion, question_answers, question_type, a_create, a_update } = this.state;
 
         if (editQuestion.answers === undefined) {
             this.setState({
@@ -238,6 +262,72 @@ class CreateTestPlane extends React.Component {
                 )
             })
         } else {
+            if (a_create.some(function (el) { return el.id === answer.id })) {
+                this.setState({
+                    a_create: a_create.map((item, j) => {
+                        switch (question_type) {
+                            case 'checkbox':
+                                return (item.id === answer.id ?
+                                    {
+                                        ...item,
+                                        current: item.current === '0' ? '1' : '0'
+                                    } : item)
+
+                            case 'radio':
+                                return item.id === answer.id ?
+                                    {
+                                        ...item,
+                                        current: '1'
+                                    } :
+                                    {
+                                        ...item,
+                                        current: '0'
+                                    }
+                            case 'text':
+                                return {
+                                    ...item,
+                                    answer: event.target.value
+                                }
+                        }
+                    })
+                })
+            } else {
+                if (a_update.some(function (el) { return el.id === answer.id })) {
+                    this.setState({
+                        a_update: a_update.map((item, j) => {
+                            switch (question_type) {
+                                case 'checkbox':
+                                    return (item.id === answer.id ?
+                                        {
+                                            ...item,
+                                            current: item.current === '0' ? '1' : '0'
+                                        } : item)
+
+                                case 'radio':
+                                    return item.id === answer.id ?
+                                        {
+                                            ...item,
+                                            current: '1'
+                                        } :
+                                        {
+                                            ...item,
+                                            current: '0'
+                                        }
+                                case 'text':
+                                    return {
+                                        ...item,
+                                        answer: event.target.value
+                                    }
+                            }
+                        })
+                    })
+                } else {
+                    var update_answers_arr = a_update;
+                    update_answers_arr.push({ id: answer.id, answer: event.target.value, current: answer.current, question_id: answer.question_id });
+                    this.setState({ a_update: update_answers_arr })
+                }
+            }
+
             this.setState({
                 changedQ: true,
                 editQuestion: {
@@ -279,9 +369,13 @@ class CreateTestPlane extends React.Component {
 
     //создать ответ 
     createAnswer() {
-        const { editQuestion, question_id, question_answers } = this.state;
+        const { editQuestion, question_id, question_answers, a_create } = this.state;
         var newAnswers = editQuestion.answers === undefined ? question_answers : editQuestion.answers;
-        newAnswers.push({ id: getRandomInt(10000, 1000000), answer: '', current: '0', question_id: editQuestion.id === undefined ? question_id : editQuestion.id })
+        var randomINT = getRandomInt(10000, 1000000);
+        newAnswers.push({ id: randomINT, answer: '', current: '0', question_id: editQuestion.id === undefined ? question_id : editQuestion.id });
+        var create_answers_arr = a_create;
+        create_answers_arr.push({ id: randomINT, answer: '', current: '0', question_id: editQuestion.id === undefined ? question_id : editQuestion.id });
+        this.setState({ a_create: create_answers_arr })
         if (editQuestion.answers === undefined) {
             this.setState({
                 changedQ: true,
@@ -302,7 +396,29 @@ class CreateTestPlane extends React.Component {
 
     //изменить ответ 
     changedAnswer(event, answer, index) {
-        const { editQuestion, question_answers, question_answers_error } = this.state;
+        const { editQuestion, question_answers, question_answers_error, a_create, a_update } = this.state;
+        if (a_create.some(function (el) { return el.id === answer.id })) {
+            this.setState({
+                a_create: a_create.map((i, j) => (i.id === answer.id ? {
+                    ...i,
+                    answer: event.target.value
+                } : i))
+            })
+        } else {
+            if (a_update.some(function (el) { return el.id === answer.id })) {
+                this.setState({
+                    a_update: a_update.map((i, j) => (i.id === answer.id ? {
+                        ...i,
+                        answer: event.target.value
+                    } : i))
+                })
+            } else {
+                var update_answers_arr = a_update;
+                update_answers_arr.push({ id: answer.id, answer: event.target.value, current: answer.current, question_id: answer.question_id });
+                this.setState({ a_update: update_answers_arr })
+            }
+        }
+
         if (editQuestion.answers === undefined) {
             this.setState({
                 changedQ: true,
@@ -341,11 +457,11 @@ class CreateTestPlane extends React.Component {
 
     //удалить ответ
     deleteAnswer(answer) {
-        const { editQuestion, question_answers } = this.state;
+        const { editQuestion, question_answers, a_delete, a_create, a_update } = this.state;
         if (editQuestion.answers === undefined) {
             this.setState({
                 changedQ: true,
-                question_answers: question_answers.filter(item => item.id !== answer.id)
+                question_answers: question_answers.filter(item => item.id !== answer.id),
             })
         }
         else {
@@ -356,15 +472,27 @@ class CreateTestPlane extends React.Component {
                     answers: editQuestion.answers.filter(item => item.id !== answer.id)
                 }
             })
+            var to_dell_arr = a_delete;
+            if (Number(answer.id) < 10000) {
+                to_dell_arr.push({ id: answer.id, question_id: answer.question_id })
+            } else {
+                if (a_create.some(function (el) { return el.id === id })) {
+                    this.setState({ a_create: a_create.filter(ans => ans.id !== answer.id) })
+                } else {
+                    this.setState({ a_update: a_update.filter(ans => ans.id !== answer.id) })
+                }
+
+            }
+            this.setState({ changed: true, a_delete: to_dell_arr })
         }
     }
 
     //сохранить изменения вопроса в уроке
     saveQuestionChanges() {
         this.setState({ question_answers_error: [] }, () => {
-            const { jwt, dispatch, setFieldValue, questions } = this.props;
+            const { jwt, dispatch, setFieldValue, questions, setState, update, create } = this.props;
             const { id, question, question_type, lesson_id, answers } = this.state.editQuestion;
-            const { question_id, question_answers_error } = this.state;
+            const { question_id, question_answers_error, a_create, a_update, a_delete } = this.state;
             //Если поле ввода вопроса пустое
             if (question === '') {
                 this.setState({ question_text_error: 'Это поле является обязательным для заполнения.' })
@@ -392,6 +520,7 @@ class CreateTestPlane extends React.Component {
                                 question_type: question_type,
                                 answers: answers
                             } : q)))
+
                             this.setState({
                                 changedQ: false,
                                 editQuestion: '',
@@ -425,6 +554,48 @@ class CreateTestPlane extends React.Component {
                             question_type: question_type,
                             answers: answers
                         } : q)))
+
+                        var to_update_arr = update;
+                        if (!(to_update_arr.some(function (el) { return el.id === id }))) {
+                            if (!(create.some(function (el) { return el.id === id }))) {
+                                console.log(a_delete, a_update, a_create)
+                                to_update_arr.push({
+                                    id: id,
+                                    question: question,
+                                    question_type: question_type,
+                                    answers: {
+                                        delete: a_delete.filter(i => i.question_id === id),
+                                        update: a_update.filter(i => i.question_id === id),
+                                        create: a_create.filter(i => i.question_id === id)
+                                    }
+                                })
+                            } else {
+                                var to_create_arr = create;
+                                to_create_arr = to_create_arr.map((q, i) => (q.id === id ? {
+                                    ...q,
+                                    question: question,
+                                    question_type: question_type,
+                                    answers: answers
+                                } : q))
+
+                                setState({ changed: true, create: to_create_arr });
+                            }
+                        } else {
+                            to_update_arr = to_update_arr.map((q, i) => (q.id === id ? {
+                                ...q,
+                                question: question,
+                                question_type: question_type,
+                                answers: {
+                                    delete: a_delete.filter(i => i.question_id === id),
+                                    update: a_update.filter(i => i.question_id === id),
+                                    create: a_create.filter(i => i.question_id === id)
+                                }
+                            } : q))
+
+                        }
+
+                        setState({ changed: true, update: to_update_arr });
+
                         this.setState({
                             changedQ: false,
                             editQuestion: '',
