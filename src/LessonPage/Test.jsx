@@ -26,10 +26,17 @@ export const Test = ({ dispatch, history, jwt, user, category_name, course, pass
                         return Object.values(acc);
                     }, {});
                     var sum = 0;
-                    for (var i = 0; i < result.length; i++) {
-                        sum = sum + parseInt(result[i])
+                    result = result.filter(i => i !== null && i !== '0');
+                    var assessment;
+                    if(result.length){
+                        for (var i = 0; i < result.length; i++) {
+                            sum = sum + parseInt(result[i])
+                        }
+                        assessment = sum / result.length;
+                    } else {
+                        assessment = null 
                     }
-                    var assessment = sum / result.length;
+
                     finishCourse(assessment)
                 } else {
                     // Назад к курсу
@@ -45,22 +52,28 @@ export const Test = ({ dispatch, history, jwt, user, category_name, course, pass
                     : item.question_type === 'text' ? item.answers.filter(i => i.current !== '0')[0].answer : item.answers.filter(i => i.current !== '0')[0].id
                 return acc;
             }, {});
-            var assessment = 2;
-            for (var i = 0; i < Object.keys(currentAnserwers).length; i++) {
-                let currAns = currentAnserwers[Object.keys(currentAnserwers)[i]];
-                let userAns = data[Object.keys(currentAnserwers)[i]];
-                if (Array.isArray(currAns) && Array.isArray(userAns)) {
-                    for (var a = 0; a < currAns.length; a++) {
-                        if (currAns[i] === userAns[a]) {
+            var assessment;
+            if (Object.keys(currentAnserwers).length !== 0) {
+                assessment = 2;
+                for (var i = 0; i < Object.keys(currentAnserwers).length; i++) {
+                    let currAns = currentAnserwers[Object.keys(currentAnserwers)[i]];
+                    let userAns = data[Object.keys(currentAnserwers)[i]];
+                    if (Array.isArray(currAns) && Array.isArray(userAns)) {
+                        for (var a = 0; a < currAns.length; a++) {
+                            if (currAns[i] === userAns[a]) {
+                                assessment++
+                            }
+                        }
+                    } else {
+                        if (currAns.toUpperCase() == userAns.toUpperCase()) {
                             assessment++
                         }
                     }
-                } else {
-                    if (currAns.toUpperCase() == userAns.toUpperCase()) {
-                        assessment++
-                    }
                 }
+            } else {
+                assessment = null
             }
+
             console.log(assessment)
             finishLesson(lesson_passed_id, assessment, Moment().format())
         }

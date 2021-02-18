@@ -13,6 +13,3 @@ export const ToAllButton = ({ children, className, categoty_name }) => {
         </div>
     );
 };
-
-
-

@@ -1,4 +1,3 @@
-
 import React from "react";
 
 export const Avatar = ({ children, alt, src, className }) => {

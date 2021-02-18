@@ -7,7 +7,9 @@ export const userService = {
     logout,
     updateUser,
     updateUserById,
+    deleteUser,
     validateToken,
+    readAll,
     getAllTeathers,
     getAllStudentsByUser
 };
@@ -101,11 +103,19 @@ function updateUserById(user_id, jwt, firstname, lastname, phonenumber, country,
             roles,
             teather_id,
             avatar
-        
-        })
-};
 
-return fetch(`/api/update_user_by_id.php?user_id=${user_id}`, requestOptions).then(handleResponse)
+        })
+    };
+
+    return fetch(`/api/update_user_by_id.php?user_id=${user_id}`, requestOptions).then(handleResponse)
+}
+
+function deleteUser(jwt, user_id) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` }
+    };
+    return fetch(`${config.apiUrl}/user/delete.php?user_id=${user_id}`, requestOptions).then(handleResponse);
 }
 
 function validateToken(jwt) {
@@ -122,6 +132,13 @@ function validateToken(jwt) {
         });
 }
 
+function readAll(jwt) {
+    const requestOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` }
+    };
+    return fetch(`${config.apiUrl}/user/read.php`, requestOptions).then(handleResponse);
+}
 
 function getAllTeathers() {
     return fetch(`${config.apiUrl}/read_all_teathers.php`, config.GET).then(handleResponse);

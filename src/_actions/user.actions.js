@@ -9,7 +9,9 @@ export const userActions = {
     logout,
     updateUser,
     updateUserById,
+    deleteUser,
     validateToken,
+    readAll,
     getAllTeathers,
     getAllStudentsByUser
 };
@@ -161,6 +163,37 @@ function updateUserById(user_id, jwt, firstname, lastname, phonenumber, country,
     function request() { return { type: userConstants.USER_UPDATE_BY_ID_REQUEST, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar } }
     function success(user) { return { type: userConstants.USER_UPDATE_BY_ID_SUCCESS, user } }
     function failure(error) { return { type: userConstants.USER_UPDATE_BY_ID_FAILURE, error } }
+}
+
+function deleteUser(jwt, user_id) {
+    return dispatch => {
+        dispatch(request({ jwt, user_id }));
+
+        return userService.deleteUser(jwt, user_id)
+            .then(
+                data => dispatch(success(data)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request() { return { type: userConstants.USER_DELETE_REQUEST } }
+    function success(data) { return { type: userConstants.USER_DELETE_SUCCESS, user_id, data } }
+    function failure(error) { return { type: userConstants.USER_UPDATE_BY_ID_FAILURE, error } }
+}
+
+function readAll(jwt) {
+    return dispatch => {
+        dispatch(request());
+        return userService.readAll(jwt)
+            .then(
+                users => dispatch(success(users)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request() { return { type: userConstants.GETALL_USERS_REQUEST } }
+    function success(users) { return { type: userConstants.GETALL_USERS_SUCCESS, users } }
+    function failure(error) { return { type: userConstants.GETALL_USERS_FAILURE, error } }
 }
 
 function getAllTeathers() {

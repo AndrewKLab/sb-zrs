@@ -53,4 +53,13 @@ export * from './List/ListItemTitle'
 export * from './Menu/Menu'
 export * from './Menu/MenuItem'
 
+//Table
+export * from './Table/DataTable';
+export * from './Table/Table';
+export * from './Table/TableActions';
+export * from './Table/TableHeader';
+export * from './Table/TableHeaderText';
+export * from './Table/Row';
+export * from './Table/Cell';
+
 

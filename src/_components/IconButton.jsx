@@ -1,11 +1,12 @@
 import React, { useState, useRef } from "react";
 import { TweenMax } from "gsap";
 
-export const IconButton = ({ children, className, onClick, ariaLabel, color }) => {
+export const IconButton = ({ children, className, onClick, ariaLabel, color, disabled }) => {
     const [width, setWidth] = useState(0);
     const [height, setHeight] = useState(0);
-    const ref = useRef(null)
+    const ref = useRef(null);
 
+    let styleDisabled = disabled && disabled === true ? ' icon-button-disabled' : '';
     let styleClass = className == undefined ? '' : ' ' + className;
     let styleColor;
     switch (color) {
@@ -43,7 +44,7 @@ export const IconButton = ({ children, className, onClick, ariaLabel, color }) =
 
 
     return (
-        <button type="button" aria-label={ariaLabel} className={`icon-button${styleClass}${styleColor}`} onClick={onClick} onMouseDown={handleClick}>
+        <button type="button" aria-label={ariaLabel} className={`icon-button${styleClass}${styleColor}${styleDisabled}`} disabled={disabled} onClick={onClick} onMouseDown={handleClick}>
             {children}
             <svg viewBox={`0 0 ${width} ${height}`} className="ripple-obj">
                 <circle ref={ref} cx="1" cy="1" r="1" />

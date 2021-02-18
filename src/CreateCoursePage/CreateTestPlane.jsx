@@ -265,7 +265,7 @@ class CreateTestPlane extends React.Component {
             if (a_create.some(function (el) { return el.id === answer.id })) {
                 this.setState({
                     a_create: a_create.map((item, j) => {
-                        switch (question_type) {
+                        switch (editQuestion.question_type) {
                             case 'checkbox':
                                 return (item.id === answer.id ?
                                     {
@@ -292,10 +292,11 @@ class CreateTestPlane extends React.Component {
                     })
                 })
             } else {
+
                 if (a_update.some(function (el) { return el.id === answer.id })) {
                     this.setState({
                         a_update: a_update.map((item, j) => {
-                            switch (question_type) {
+                            switch (editQuestion.question_type) {
                                 case 'checkbox':
                                     return (item.id === answer.id ?
                                         {
@@ -322,8 +323,62 @@ class CreateTestPlane extends React.Component {
                         })
                     })
                 } else {
+
                     var update_answers_arr = a_update;
-                    update_answers_arr.push({ id: answer.id, answer: event.target.value, current: answer.current, question_id: answer.question_id });
+
+                    editQuestion.answers.map((item, j) => {
+                        switch (editQuestion.question_type) {
+                            case 'checkbox':
+                                return (item.id === answer.id ? (
+                                    update_answers_arr.push({
+                                        id: item.id,
+                                        answer: item.answer,
+                                        current: item.current === '0' ? '1' : '0',
+                                        question_id: item.question_id
+                                    }),
+                                    {
+                                        ...item,
+                                        current: item.current === '0' ? '1' : '0'
+                                    }) : item)
+
+                            case 'radio':
+                                return item.id === answer.id ? (
+                                    update_answers_arr.push({
+                                        id: item.id,
+                                        answer: item.answer,
+                                        current: '1',
+                                        question_id: item.question_id
+                                    }),
+                                    {
+                                        ...item,
+                                        current: '1'
+                                    }) :
+                                    (update_answers_arr.push({
+                                        id: item.id,
+                                        answer: item.answer,
+                                        current: '0',
+                                        question_id: item.question_id
+                                    }),
+                                    {
+                                        ...item,
+                                        current: '0'
+                                    })
+                            case 'text':
+                                return (
+                                    update_answers_arr.push({
+                                        id: answer.id,
+                                        answer: answer.answer,
+                                        current: event.target.value,
+                                        question_id: answer.question_id
+                                    }),
+                                    {
+                                        ...item,
+                                        answer: event.target.value
+                                    }
+                                )
+                        }
+                    })
+
                     this.setState({ a_update: update_answers_arr })
                 }
             }
@@ -475,8 +530,13 @@ class CreateTestPlane extends React.Component {
             var to_dell_arr = a_delete;
             if (Number(answer.id) < 10000) {
                 to_dell_arr.push({ id: answer.id, question_id: answer.question_id })
+                if (a_create.some(function (el) { return el.id === answer.id })) {
+                    this.setState({ a_create: a_create.filter(ans => ans.id !== answer.id) })
+                } else {
+                    this.setState({ a_update: a_update.filter(ans => ans.id !== answer.id) })
+                }
             } else {
-                if (a_create.some(function (el) { return el.id === id })) {
+                if (a_create.some(function (el) { return el.id === answer.id })) {
                     this.setState({ a_create: a_create.filter(ans => ans.id !== answer.id) })
                 } else {
                     this.setState({ a_update: a_update.filter(ans => ans.id !== answer.id) })

@@ -47,7 +47,7 @@ class CreateLessonPlane extends React.Component {
         this.state = {
             loading: true,
             changed: false,
-            addTest: props.lesson.questions.length === 0 ? false : true,
+            addTest: props.lesson.questions && props.lesson.questions.length !== 0 ? true : false,
             lessonCreated: Object.keys(props.lesson).length === 0 ? false : true,
             create: [],
             update: [],
@@ -103,6 +103,7 @@ class CreateLessonPlane extends React.Component {
                             }}
                     validationSchema={SignupSchema}
                     onSubmit={(values) => {
+                        const { lesson, course_id } = this.props;
                         const { lessonCreated, addTest, create, update, del } = this.state;
                         const { lesson_name, lesson_videolink, lesson_text, lesson_description, lesson_questions } = values;
                         if (lessonCreated === false) {
@@ -120,11 +121,12 @@ class CreateLessonPlane extends React.Component {
                             )
                         } else {
                             var questions;
-
-                            console.log(
-
+                            dispatch(lessonActions.updateLesson(
+                                jwt,
+                                lesson.id,
                                 lessons !== null ? Number(data.lessons.length) + 1 : data !== undefined ? Number(data.lessons.length) + 1 : 1,
                                 lesson_name,
+                                course_id,
                                 lesson_videolink,
                                 lesson_description,
                                 lesson_text,
@@ -133,7 +135,10 @@ class CreateLessonPlane extends React.Component {
                                     update: update,
                                     create: create
                                 }
+                            )).then(
+                                () => this.setState({ changed: error === undefined ? false : true })
                             )
+
                         }
                     }
                     }
@@ -216,16 +221,16 @@ class CreateLessonPlane extends React.Component {
                                 <Typography component='body' variant='body' className='m-0 f-initial'>Добавить тест к уроку?</Typography>
                                 <Switch className='m-0' isToggled={addTest} onToggle={() => this.handleToggleChange()} />
                             </div>
-                            {addTest === true && 
-                            <CreateTestPlane 
-                            questions={values.lesson_questions} 
-                            setFieldValue={setFieldValue} 
-                            handleChange={handleChange} 
-                            setState={(obj) => this.setState(obj)} 
-                            del={this.state.del}
-                            update={this.state.update}
-                            create={this.state.create}
-                            />}
+                            {addTest === true &&
+                                <CreateTestPlane
+                                    questions={values.lesson_questions}
+                                    setFieldValue={setFieldValue}
+                                    handleChange={handleChange}
+                                    setState={(obj) => this.setState(obj)}
+                                    del={this.state.del}
+                                    update={this.state.update}
+                                    create={this.state.create}
+                                />}
 
 
                             <div className={`d-flex grid-justify-xs-${lesson_error !== undefined && lesson_error !== null || message !== undefined && message !== null ? 'space-between' : 'flex-end'} grid-align-items-xs-center`}>

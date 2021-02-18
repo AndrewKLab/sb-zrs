@@ -39,7 +39,30 @@ export function lesson(state = [], action) {
         }
       };
 
-    //DELETE COURSE
+    // UPDATE LESSON
+    case lessonConstants.UPDATE_LESSON_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        lesson_error: undefined
+      };
+    case lessonConstants.UPDATE_LESSON_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        lesson_error: undefined,
+        message: action.data.message,
+        data: {
+          ...state.data,
+          lessons: state.data.lessons.map((item, index)=> item.id === action.data.lesson.id ? action.data.lesson : item)
+        }
+      };
+    case lessonConstants.UPDATE_LESSON_FAILURE:
+      return {
+        lesson_error: action.error,
+      };
+
+    //DELETE LESSON
     case lessonConstants.DELETE_LESSON_REQUEST:
       return {
         ...state,
@@ -47,7 +70,6 @@ export function lesson(state = [], action) {
         data: state.data
       };
     case lessonConstants.DELETE_LESSON_SUCCESS:
-      console.log()
       return {
         loading: false,
         data: {

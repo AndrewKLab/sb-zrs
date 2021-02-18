@@ -1,14 +1,19 @@
 import config from 'config';
 
 export const lessonService = {
+    //lessons
     createLesson,
+    updateLesson,
     deleteLesson,
     getAllLessonsByCourse,
+
+    //lessons_passed
     createLessonPassed,
     updateLessonPassed,
     deleteAllPassedLessonsByCourse
 };
 
+//создать урок
 function createLesson(jwt, course_id, number, name, videolink, description, text, questions) {
     const requestOptions = {
         method: 'POST',
@@ -27,6 +32,28 @@ function createLesson(jwt, course_id, number, name, videolink, description, text
     return fetch(`${config.apiUrl}/lesson/create.php?course_id=${course_id}`, requestOptions).then(handleResponse);
 }
 
+//обновить урок
+function updateLesson(jwt, lesson_id, number, name, courses_id, videolink, description, text, questions) {
+
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            jwt,
+            number,
+            name,
+            courses_id,
+            videolink,
+            description,
+            text,
+            questions
+        })
+    };
+
+    return fetch(`${config.apiUrl}/lesson/update.php?lesson_id=${lesson_id}`, requestOptions).then(handleResponse);
+}
+
+//удалить урок
 function deleteLesson(jwt, lesson_id) {
     const formData = new FormData();
 
@@ -45,14 +72,19 @@ function deleteLesson(jwt, lesson_id) {
     return fetch(`${config.apiUrl}/lesson/delete.php?lesson_id=${lesson_id}`, requestOptions).then(handleResponse);
 }
 
+//прочитать все уроку в конкретном курсе
 function getAllLessonsByCourse(course_id, user_id, teather_id) {
     return fetch(`${config.apiUrl}/lesson/read_by_course.php?courses_id=${course_id}&user_id=${user_id}&teather_id=${teather_id}`, config.GET).then(handleResponse);
 }
 
+// !!!-----!!!///
+
+//создать проходимый урок
 function createLessonPassed(course_id, lesson_id, user_id) {
     return fetch(`${config.apiUrl}/lessons_passed/create.php?course_id=${course_id}&lesson_id=${lesson_id}&user_id=${user_id}`, config.POST).then(handleResponse);
 }
 
+//обновить проходимый урок
 function updateLessonPassed(passed_id, assessment, finish_time) {
     return fetch(`${config.apiUrl}/lessons_passed/update.php?id=${passed_id}`,
         {
@@ -70,6 +102,7 @@ function updateLessonPassed(passed_id, assessment, finish_time) {
         }).then(handleResponse);
 }
 
+//удалить проходимый урок
 function deleteAllPassedLessonsByCourse(course_id, user_id) {
     return fetch(`${config.apiUrl}/lessons_passed/delete_all_by_course_passed.php?course_id=${course_id}&user_id=${user_id}`, config.POST).then(handleResponse);
 }

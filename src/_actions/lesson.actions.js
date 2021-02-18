@@ -2,15 +2,20 @@ import { lessonConstants } from '../_constants';
 import { lessonService } from '../_services';
 
 export const lessonActions = {
+    //lesson
     createLesson,
+    updateLesson,
     deleteLesson,
     getAllLessonsByCourse,
+
+    //passed_lesson
     createLessonPassed,
     updateLessonPassed,
     deleteAllPassedLessonsByCourse,
     clearMessageAndError
 };
 
+//создать урок
 function createLesson(jwt, course_id, number, name, videolink, descrigtion, text, questions) {
     return dispatch => {
         dispatch(request(jwt, course_id, number, name, videolink, descrigtion, text, questions));
@@ -26,6 +31,23 @@ function createLesson(jwt, course_id, number, name, videolink, descrigtion, text
     function failure(error) { return { type: lessonConstants.CREATE_LESSON_FAILURE, error } }
 }
 
+//обновть урок
+function updateLesson(jwt, lesson_id, number, name, courses_id, videolink, description, text, questions) {
+    return dispatch => {
+        dispatch(request(jwt, lesson_id, number, name, courses_id, videolink, description, text, questions));
+        return lessonService.updateLesson(jwt, lesson_id, number, name, courses_id, videolink, description, text, questions)
+            .then(
+                data => dispatch(success(data)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request(jwt, lesson_id, number, name, courses_id, videolink, description, text, questions) { return { type: lessonConstants.UPDATE_LESSON_REQUEST, jwt, lesson_id, number, name, courses_id, videolink, description, text, questions } }
+    function success(data) { return { type: lessonConstants.UPDATE_LESSON_SUCCESS, data } }
+    function failure(error) { return { type: lessonConstants.UPDATE_LESSON_FAILURE, error } }
+}
+
+//удалить урок
 function deleteLesson(jwt, lesson_id) {
     return dispatch => {
         dispatch(request(jwt, lesson_id));
