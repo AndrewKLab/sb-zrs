@@ -123,7 +123,7 @@ class TeatherPanelPage extends React.Component {
         const { dispatch, jwt } = this.props;
         const { user_id, firstname, lastname, phonenumber, country, sity, access, roles, teather_id, avatar } = this.state;
         event.preventDefault();
-        dispatch(userActions.updateUserById(user_id, jwt, firstname, lastname, phonenumber, country, sity, this.state.selectedOption, access, roles, teather_id, avatar))
+        dispatch(userActions.updateUser(user_id, jwt, firstname, lastname, phonenumber, country, sity, this.state.selectedOption, access, roles, teather_id, avatar))
         this.setState({ selectedOption: '' });
         this.handleClose()
     }
@@ -131,7 +131,7 @@ class TeatherPanelPage extends React.Component {
     changeUserAcces() {
         const { dispatch, jwt } = this.props;
         const { user_id, firstname, lastname, phonenumber, country, sity, access, roles, status, teather_id, avatar } = this.state;
-        dispatch(userActions.updateUserById(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access === 'limited' ? 'full' : 'limited', roles, teather_id, avatar))
+        dispatch(userActions.updateUser(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access === 'limited' ? 'full' : 'limited', roles, teather_id, avatar))
         this.handleCloseAccessDialog()
     }
 

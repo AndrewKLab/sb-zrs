@@ -7,13 +7,15 @@ export const userActions = {
     signin,
     signup,
     logout,
+    updateSelf,
     updateUser,
-    updateUserById,
     deleteUser,
     validateToken,
+    readOne,
     readAll,
     getAllTeathers,
-    getAllStudentsByUser
+    getAllStudentsByUser,
+    getAllStudentsByPromouter
 };
 
 function signin(phonenumber, password) {
@@ -43,11 +45,10 @@ function signin(phonenumber, password) {
     function failure(error) { return { type: userConstants.SIGNIN_FAILURE, error } }
 }
 
-function signup(firstname, lastname, phonenumber, country, sity, password) {
+function signup(firstname, lastname, phonenumber, country, sity, password, teather_id, promouter_id) {
     return dispatch => {
         dispatch(request({ phonenumber }));
-
-        userService.signup(firstname, lastname, phonenumber, country, sity, password)
+        userService.signup(firstname, lastname, phonenumber, country, sity, password, teather_id !== undefined ? teather_id : 0, promouter_id !== undefined ? promouter_id : 0)
             .then(
                 response => {
                     dispatch(success(response));
@@ -95,11 +96,11 @@ function validateToken(jwt) {
     function failure(error) { return { type: userConstants.VALIDATE_FAILURE, error } }
 }
 
-function updateUser(jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar) {
+function updateSelf(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar) {
     return dispatch => {
-        dispatch(request({ jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar }));
+        dispatch(request({ user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar }));
 
-        return userService.updateUser(jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar)
+        return userService.updateUser(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar)
             .then(
                 data => {
                     localStorage.setItem("user", data.jwt);
@@ -131,11 +132,11 @@ function updateUser(jwt, firstname, lastname, phonenumber, country, sity, status
 }
 
 
-function updateUserById(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar) {
+function updateUser(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar) {
     return dispatch => {
         dispatch(request({ user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar }));
 
-        return userService.updateUserById(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar)
+        return userService.updateUser(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar)
             .then(
                 data => {
                     const user = {
@@ -179,6 +180,21 @@ function deleteUser(jwt, user_id) {
     function request() { return { type: userConstants.USER_DELETE_REQUEST } }
     function success(data) { return { type: userConstants.USER_DELETE_SUCCESS, user_id, data } }
     function failure(error) { return { type: userConstants.USER_UPDATE_BY_ID_FAILURE, error } }
+}
+
+function readOne(user_id, jwt) {
+    return dispatch => {
+        dispatch(request());
+        return userService.readOne(user_id, jwt)
+            .then(
+                user => dispatch(success(user)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request() { return { type: userConstants.GETONE_USER_REQUEST } }
+    function success(user) { return { type: userConstants.GETONE_USER_SUCCESS, user } }
+    function failure(error) { return { type: userConstants.GETONE_USER_FAILURE, error } }
 }
 
 function readAll(jwt) {
@@ -226,4 +242,20 @@ function getAllStudentsByUser(teather_id) {
     function request() { return { type: userConstants.GETALL_STUDENTS_REQUEST } }
     function success(students) { return { type: userConstants.GETALL_STUDENTS_SUCCESS, students } }
     function failure(error) { return { type: userConstants.GETALL_STUDENTS_FAILURE, error } }
+}
+
+function getAllStudentsByPromouter(promouter_id, jwt) {
+    return dispatch => {
+        dispatch(request());
+
+        return userService.getAllStudentsByPromouter(promouter_id, jwt)
+            .then(
+                students => dispatch(success(students)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request() { return { type: userConstants.GETALL_STUDENTS_BY_PROMOUTER_REQUEST } }
+    function success(students) { return { type: userConstants.GETALL_STUDENTS_BY_PROMOUTER_SUCCESS, students } }
+    function failure(error) { return { type: userConstants.GETALL_STUDENTS_BY_PROMOUTER_FAILURE, error } }
 }

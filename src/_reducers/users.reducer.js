@@ -2,6 +2,57 @@ import { userConstants } from '../_constants';
 
 export function users(state = {}, action) {
   switch (action.type) {
+    //USER_UPDATE_BY_ID
+    case userConstants.USER_UPDATE_BY_ID_REQUEST:
+      return {
+        ...state,
+        users_array: state.users_array
+      };
+    case userConstants.USER_UPDATE_BY_ID_SUCCESS:
+      return {
+        ...state,
+        users_array: state.users_array.map(item => item.id === action.user.user_id ?
+          {
+            ...item,
+            firstname: action.user.firstname,
+            lastname: action.user.lastname,
+            phonenumber: action.user.phonenumber,
+            country: action.user.country,
+            sity: action.user.sity,
+            status: action.user.status,
+            access: action.user.access,
+            roles: action.user.roles,
+            teather_id: action.user.teather_id,
+            avatar: action.user.avatar
+          } : item),
+      };
+    case userConstants.USER_UPDATE_BY_ID_FAILURE:
+      return {
+        error: action.error
+      };
+
+    //DELETE USER
+    case userConstants.USER_DELETE_REQUEST:
+      return {
+        ...state,
+        user_loading: true
+      };
+    case userConstants.USER_DELETE_SUCCESS:
+      var students = state.students.filter(u => u.id !== action.user_id)
+      var promouters = state.promouters.filter(u => u.id !== action.user_id);
+      var teathers = state.teathers.filter(u => u.id !== action.user_id);
+      return {
+        ...state,
+        students: students,
+        promouters: promouters,
+        teathers: teathers,
+        users: state.users
+      };
+    case userConstants.USER_DELETE_FAILURE:
+      return {
+        user_loading: false,
+        error: action.error
+      };
 
     //GETALL_USERS
     case userConstants.GETALL_USERS_REQUEST:
@@ -71,59 +122,39 @@ export function users(state = {}, action) {
         error: action.error
       };
 
-    //USER_UPDATE_BY_ID
-    case userConstants.USER_UPDATE_BY_ID_REQUEST:
+    //GETALL_STUDENTS_BY_PROMOUTER
+    case userConstants.GETALL_STUDENTS_BY_PROMOUTER_REQUEST:
       return {
-        ...state,
-        users_array: state.users_array
+        users_loading: true
       };
-    case userConstants.USER_UPDATE_BY_ID_SUCCESS:
+    case userConstants.GETALL_STUDENTS_BY_PROMOUTER_SUCCESS:
       return {
-        ...state,
-        users_array: state.users_array.map(item => item.id === action.user.user_id ?
-          {
-            ...item,
-            firstname: action.user.firstname,
-            lastname: action.user.lastname,
-            phonenumber: action.user.phonenumber,
-            country: action.user.country,
-            sity: action.user.sity,
-            status: action.user.status,
-            access: action.user.access,
-            roles: action.user.roles,
-            teather_id: action.user.teather_id,
-            avatar: action.user.avatar
-          } : item),
+        users_loading: false,
+        students: action.students.users
       };
-    case userConstants.USER_UPDATE_BY_ID_FAILURE:
+    case userConstants.GETALL_STUDENTS_BY_PROMOUTER_FAILURE:
       return {
-        error: action.error
+        users_error: action.error
       };
 
-    //DELETE USER
-    case userConstants.USER_DELETE_REQUEST:
+    //GETALL_STUDENTS
+    case userConstants.GETONE_USER_REQUEST:
       return {
-        ...state,
-        user_loading: true
+        users_loading: true
       };
-    case userConstants.USER_DELETE_SUCCESS:
-      var students = state.students.filter(u => u.id !== action.user_id)
-      var promouters = state.promouters.filter(u => u.id !== action.user_id);
-      var teathers = state.teathers.filter(u => u.id !== action.user_id);
+    case userConstants.GETONE_USER_SUCCESS:
       return {
-        ...state,
-        students: students,
-        promouters: promouters,
-        teathers: teathers,
-        users: state.users
+        users_loading: false,
+        user_data: action.user
       };
-    case userConstants.USER_DELETE_FAILURE:
+    case userConstants.GETONE_USER_REQUEST:
       return {
-        user_loading: false,
-        error: action.error
+        users_error: action.error
       };
 
     default:
       return state
   }
+
+
 }

@@ -32,7 +32,6 @@ let SignupSchema = yup.object().shape({
 
 
     firstname: yup.string().required("Это поле является обязательным для заполнения."),
-    lastname: yup.string().required("Это поле является обязательным для заполнения."),
 
     phonenumber: yup
         .string()
@@ -83,7 +82,8 @@ class SignUpPage extends React.Component {
     };
 
     render() {
-        const { classes, message } = this.props;
+        const { message } = this.props;
+        const { promouter_id, teather_id } = this.props.match.params;
         return (
             <Grid container>
                 <Grid xs={12} sm={6} className='center'>
@@ -104,12 +104,12 @@ class SignUpPage extends React.Component {
                             this.setState({ submitted: true });
                             const { dispatch } = this.props;
                             if (phonenumber && password) {
-                                dispatch(userActions.signup(firstname, lastname, phonenumber, country, sity, password));
+                                dispatch(userActions.signup(firstname, lastname, phonenumber, country, sity, password, teather_id, promouter_id));
                             }
                         }
                         }
                     >
-                        {({ errors, handleChange, touched }) => (
+                        {({ errors, values, handleChange, touched }) => (
                             <Form className='form'>
 
                                 <div className='title'>
@@ -146,9 +146,9 @@ class SignUpPage extends React.Component {
                                             fullWidth
                                             onChange={handleChange}
                                             id="lastname"
-                                            label="Фамилия*"
+                                            label="Фамилия"
                                             name="lastname"
-                                            autoComplete="lname"
+                                            autoComplete="lastname"
                                             variant={'outlined'}
                                             helperText={
                                                 errors.lastname && touched.lastname
@@ -205,13 +205,14 @@ class SignUpPage extends React.Component {
                                     <Grid item xs={12}>
                                         <TextInput
                                             error={errors.password && touched.password}
+                                            value={values.password}
                                             fullWidth
                                             id="password"
                                             variant="outlined"
                                             type={this.state.showPassword === true ? 'text' : 'password'}
                                             label="Пароль*"
                                             onChange={handleChange}
-                                            autoComplete="current-password"
+                                            autoComplete="password"
                                             helperText={
                                                 errors.password && touched.password
                                                     ? errors.password
@@ -241,7 +242,7 @@ class SignUpPage extends React.Component {
                                             label="Подтвердите пароль*"
                                             type={this.state.showPassword ? 'text' : 'password'}
                                             id="passwordConfirmation"
-                                            autoComplete="current-password"
+                                            autoComplete="password"
                                             helperText={
                                                 errors.passwordConfirmation && touched.passwordConfirmation
                                                     ? errors.passwordConfirmation
@@ -280,11 +281,8 @@ class SignUpPage extends React.Component {
 function mapStateToProps(state) {
     const { message } = state.alert;
     const { loggingIn } = state.authentication;
-    const { theme, classes } = state.style;
     return {
         loggingIn,
-        theme,
-        classes,
         message
     };
 }

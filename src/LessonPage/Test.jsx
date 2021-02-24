@@ -84,7 +84,7 @@ export const Test = ({ dispatch, history, jwt, user, category_name, course, pass
     const finishCourse = (assessment) => {
         const status = "УЧЕНИК"
         if (user.status === "ИСКАТЕЛЬ") {
-            dispatch(userActions.updateUser(jwt, user.firstname, user.lastname, user.phonenumber, user.country, user.sity, status, user.access, user.roles, user.teather_id, user.avatar))
+            dispatch(userActions.updateSelf(user.id, jwt, user.firstname, user.lastname, user.phonenumber, user.country, user.sity, status, user.access, user.roles, user.teather_id, user.avatar))
                 .then(() => dispatch(courseActions.updateCoursePassed(
                     passed_course_id,
                     'finished',

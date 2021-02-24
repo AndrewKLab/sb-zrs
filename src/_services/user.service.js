@@ -1,17 +1,17 @@
 import config from 'config';
-import { authHeader } from '../_helpers';
 
 export const userService = {
     signin,
     signup,
     logout,
     updateUser,
-    updateUserById,
     deleteUser,
     validateToken,
+    readOne,
     readAll,
     getAllTeathers,
-    getAllStudentsByUser
+    getAllStudentsByUser,
+    getAllStudentsByPromouter
 };
 
 
@@ -33,10 +33,9 @@ function signin(phonenumber, password) {
         });
 }
 
-function signup(firstname, lastname, phonenumber, country, sity, password) {
+function signup(firstname, lastname, phonenumber, country, sity, password, teather_id, promouter_id) {
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             firstname,
             lastname,
@@ -44,6 +43,8 @@ function signup(firstname, lastname, phonenumber, country, sity, password) {
             country,
             sity,
             password,
+            teather_id,
+            promouter_id,
             status: "ИСКАТЕЛЬ",
             access: "limited",
             roles: "user",
@@ -51,7 +52,7 @@ function signup(firstname, lastname, phonenumber, country, sity, password) {
         })
     };
 
-    return fetch(`/api/create_user.php`, requestOptions)
+    return fetch(`${config.apiUrl}/user/create.php`, requestOptions)
         .then(handleResponse)
         .then(response => {
             console.log(response);
@@ -65,29 +66,7 @@ function logout() {
     localStorage.removeItem('user');
 }
 
-function updateUser(jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar) {
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            jwt,
-            firstname,
-            lastname,
-            phonenumber,
-            country,
-            sity,
-            status,
-            access,
-            roles,
-            teather_id,
-            avatar
-        })
-    };
-
-    return fetch(`/api/update_user.php`, requestOptions).then(handleResponse)
-}
-
-function updateUserById(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar) {
+function updateUser(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -107,7 +86,7 @@ function updateUserById(user_id, jwt, firstname, lastname, phonenumber, country,
         })
     };
 
-    return fetch(`/api/update_user_by_id.php?user_id=${user_id}`, requestOptions).then(handleResponse)
+    return fetch(`/api/user/update.php?user_id=${user_id}`, requestOptions).then(handleResponse)
 }
 
 function deleteUser(jwt, user_id) {
@@ -132,6 +111,14 @@ function validateToken(jwt) {
         });
 }
 
+function readOne(user_id, jwt) {
+    const requestOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` }
+    };
+    return fetch(`${config.apiUrl}/user/read_one_user.php?user_id=${user_id}`, requestOptions).then(handleResponse);
+}
+
 function readAll(jwt) {
     const requestOptions = {
         method: 'GET',
@@ -146,6 +133,14 @@ function getAllTeathers() {
 
 function getAllStudentsByUser(teather_id) {
     return fetch(`${config.apiUrl}/read_all_students_by_teather.php?teather_id=${teather_id}`, config.GET).then(handleResponse);
+}
+
+function getAllStudentsByPromouter(promouter_id, jwt) {
+    const requestOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` }
+    };
+    return fetch(`${config.apiUrl}/user/read_all_students_by_promouter.php?promouter_id=${promouter_id}`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {

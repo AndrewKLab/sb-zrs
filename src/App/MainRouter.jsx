@@ -13,6 +13,7 @@ import { CategoriesPage } from '../CategoriesPage';
 import { CoursesPage, CoursePage } from '../CoursesPage';
 import { LessonPage } from '../LessonPage';
 import { ProfilePage } from '../ProfilePage';
+import { PromouterPanelPage } from '../PromouterPanelPage';
 import { TeatherPanelPage } from '../TeatherPanelPage';
 import { CreateCoursePage } from '../CreateCoursePage';
 import { AdminPanelPage } from '../AdminPanelPage';
@@ -35,6 +36,7 @@ class MainRouter extends React.Component {
             <div>
                 <PrivateRoute exact path="/" component={HomePage} />
                 <PrivateRoute exact path="/profile" component={ProfilePage} />
+                <PrivateRoute exact path="/promouter-panel" component={PromouterPanelPage} />
                 <PrivateRoute exact path="/teather-panel/create-course" component={CreateCoursePage} />
                 <PrivateRoute exact path="/teather-panel" component={TeatherPanelPage} />
                 <PrivateRoute exact path="/admin-panel" component={AdminPanelPage} />
@@ -44,6 +46,7 @@ class MainRouter extends React.Component {
                 <Route exact path="/courses" component={CategoriesPage} />
                 <Route exact path="/sign-in" component={SignInPage} />
                 <Route exact path="/sign-up" component={SignUpPage} />
+                <Route exact path="/sign-up/:promouter_id/:teather_id" component={SignUpPage} />
             </div>
         );
     }

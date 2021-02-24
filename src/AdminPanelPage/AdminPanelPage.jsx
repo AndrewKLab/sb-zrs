@@ -15,7 +15,8 @@ import {
     DialogActions,
     Divider,
     Typography,
-    DataTable
+    DataTable,
+    Form
 } from '../_components'
 
 const AdminPanelPage = ({ dispatch, history, jwt, user, users }) => {
@@ -33,14 +34,34 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users }) => {
         }
     }, []);
 
+
     //EDIT
-    const edit = (user) => {
-        console.log(user)
+    const edit = (user) => { setEditDialog(true), setUserData(user) }
+    const editClose = () => { setEditDialog(false) }
+    const editDialogPlane = () => {
+        return (
+            <Dialog onClose={() => editClose()} open={editDialog}>
+                <Form onSubmit={() => editUser()}>
+                    <DialogTitle>
+                        <Typography variant='h5' component='h5' className='m-0'>{`Изменить пользователя ${userData.firstname}?`}</Typography>
+                    </DialogTitle>
+                    <DialogContent dividers className={'d-flex grid-direction-xs-column'}>
+                        <Typography component={'body'} variant={'body'} className='m-0'>{`Изменить доступ к курсам?`}</Typography>
+
+
+                    </DialogContent>
+                    <DialogActions>
+                        <Button type="submit" className={'mr-3'} variant='outlined' color="primary">Сохранить</Button>
+                        <Button onPress={() => editClose()} variant='outlined' color="primary">Отмена</Button>
+                    </DialogActions>
+                </Form>
+            </Dialog >
+        )
+    }
+    const editUser = () => {
+        editClose();
     }
 
-    const editDialogPlane = () => {
-        console.log(123)
-    }
 
     //DETETE
     const remove = (user) => { setDeleteDialog(true), setUserData(user) }
@@ -56,7 +77,7 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users }) => {
                 </DialogContent>
                 <DialogActions>
                     <Button onPress={() => { dispatch(userActions.deleteUser(jwt, userData.id)).then(() => { removeClose() }) }} className={'mr-3'} variant='outlined' color="primary">Да</Button>
-                    <Button onPress={() => removeClose()} variant='outlined' color="primary">Закрыть</Button>
+                    <Button onPress={() => removeClose()} variant='outlined' color="primary">Отмена</Button>
                 </DialogActions>
             </Dialog>
         )
@@ -72,6 +93,7 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users }) => {
     } else {
         return (
             <div className='py-3'>
+                {editDialogPlane()}
                 {removeDialogPlane()}
                 <DataTable columns={
                     [
@@ -111,7 +133,6 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users }) => {
                     data={users.students !== undefined ? users.students : []}
                     edit={edit}
                     remove={remove}
-                    more={more}
                 />
                 Статистика
                 Управление курсами

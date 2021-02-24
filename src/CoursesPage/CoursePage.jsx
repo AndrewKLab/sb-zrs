@@ -33,15 +33,17 @@ class CoursePage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            open: false
+            open: false,
+            loading: true
         }
     }
     componentDidMount() {
-        const { dispatch, history, user } = this.props;
+        const { dispatch, history, user, jwt } = this.props;
         if (user !== undefined) {
-            dispatch(userActions.getAllTeathers()).then(
-                () => dispatch(lessonActions.getAllLessonsByCourse(
-                    this.props.match.params.course, user.id, user.teather_id))
+            dispatch(userActions.readOne(user.teather_id, jwt)).then(
+                () => dispatch(lessonActions.getAllLessonsByCourse(this.props.match.params.course, user.id, user.teather_id)).then(
+                    () => this.setState({ loading: false })
+                )
             )
         } else {
             history.push('/sign-in')
@@ -147,7 +149,7 @@ class CoursePage extends React.Component {
 
     sendRequest(id) {
         const { dispatch, user, jwt } = this.props
-        dispatch(userActions.updateUser(jwt, user.firstname, user.lastname, user.phonenumber, user.country, user.sity, user.status, user.access, user.roles, id, user.avatar))
+        dispatch(userActions.updateSelf(user.id, jwt, user.firstname, user.lastname, user.phonenumber, user.country, user.sity, user.status, user.access, user.roles, id, user.avatar))
         this.handleClose();
     }
 
@@ -158,7 +160,7 @@ class CoursePage extends React.Component {
         } else if (passed_course_status === "inprocess") {
             return <Button variant='contained' onPress={() => this.enroll(course_id, category_name, passed_course_status, passed_course_id, assessment, finish_time, user.id, lessons)}>Прекратить прохождение курса</Button>
         } else if (Number(user.teather_id) === 0 && user.roles === "user") {
-            return <Typography>Пожалуйста выберите учителя!</Typography>
+            return <Button disabled={true} variant="contained" color="secondary">Записаться на курс</Button>
         } else {
             return <Button variant="contained" color="secondary" onPress={() => this.enroll(course_id, category_name, passed_course_status, passed_course_id, assessment, finish_time, user.id, lessons)}>Записаться на курс</Button>
         }
@@ -192,104 +194,119 @@ class CoursePage extends React.Component {
     }
 
     render() {
-        const { data, loading, user, teathers } = this.props;
+        const { data, user, user_data } = this.props;
+        const { loading } = this.state;
         var lessons;
-        if (loading == true || loading == undefined || teathers == undefined || user == undefined) {
+        if (loading) {
             return <Loading />
         } else {
             lessons = data;
-        }
-
-        return (
-            <div className='py-3'>
-                <Paper variant="outlined" square className='d-flex'>
-                    <div className='w-70 p-relative'>
-                        <img className='w-100' src={lessons.img} alt={lessons.course_name} height="350" />
-                        <div className='wrap-area'>
-                            <Typography variant="h2" component="h1">{lessons.course_name}</Typography>
+            return (
+                <div className='py-3'>
+                    <Paper variant="outlined" square className='d-flex'>
+                        <div className='w-70 p-relative'>
+                            <img className='w-100' src={data.img} alt={data.course_name} height="350" />
+                            <div className='wrap-area'>
+                                <Typography variant="h2" component="h1">{data.course_name}</Typography>
+                            </div>
                         </div>
-                    </div>
-                    <div className='course-info-area'>
-                        <div className='course-info-text'>
-                            <Typography variant="h5" component="h5">Количество уроков:</Typography>
-                            <Typography variant="h5" component="h5">{lessons.lessons.length}</Typography>
-                        </div>
-                        {this.renderTeathersList(user, teathers, lessons.teather_name, lessons.teather_status, lessons.teather_avatar)}
-                        {lessons.passed_course_status === "finished" ?
+                        <div className='course-info-area'>
+                            <div className='course-info-text'>
+                                <Typography variant="h5" component="h5">Количество уроков:</Typography>
+                                <Typography variant="h5" component="h5">{data.lessons.length}</Typography>
+                            </div>
+                            {user.teather_id === "0" ? user.roles === 'user' ? 'В скором времени мы запишем вас в группу к учителю!' : '' :
                             (
                                 <div>
-                                    <div className='done-area-title'>
-                                        <Typography variant="h5" component="h5">Курс пройден</Typography>
-                                        <CheckCircleOutlineIcon className='done-area-title-icon' fontSize="large" />
-                                    </div>
-                                    <Typography variant="body" component="body">Оценка: {lessons.assessment}</Typography>
-                                    <Typography variant="body" component="body">Дата и время прохождения: {Moment(lessons.finish_time).locale('ru').format('Do MMMM YYYY, hh:mm:ss')}</Typography>
-                                </div>
-                            ) : (null)
-                        }
-                        <div className='course-info-button'>
-                            {this.renderCourseButton(
-                                lessons.course_id,
-                                lessons.category_name,
-                                lessons.passed_course_status,
-                                lessons.passed_course_id,
-                                lessons.assessment,
-                                lessons.finish_time,
-                                user,
-                                lessons.lessons
-                            )}
-                        </div>
-                    </div>
-                </Paper>
-                <Typography variant="h5" component="h5">О курсе:</Typography>
-                <Typography>{lessons.description}</Typography>
-                {lessons.passed_course_status === "inprocess" || lessons.passed_course_status === "finished" ? (
-                    <div>
-                        <h5>Уроки:</h5>
-                        <Grid
-                            container
-                            direction={"row"}
-                            justify={"space-around"}
-                            alignItems={"flex-start"}
-                            spacing={1}>
-                            {lessons.lessons.map((lesson, index) => (
-                                <Grid item xs key={index}>
-                                    <Paper >
-                                        <Card>
-                                            <Link to={`/courses/${lessons.category_name}/${lessons.course_id}/${lesson.id}`}>
-                                                <CardActionArea>
-                                                    <CardMedia
-                                                        component="img"
-                                                        alt={lesson.name}
-                                                        height="140"
-                                                        image="http://lifestudio-test.ru/assets/img/350x250.png"
-                                                        title="Contemplative Reptile"
-                                                    />
-                                                    <CardContent>
-                                                        <Typography gutterBottom variant="h6" component="h6">
-                                                            {lesson.name}
-                                                        </Typography>
-                                                        <ClampLines
-                                                            text={lesson.description}
-                                                            id="really-unique-id"
-                                                            lines={3}
-                                                            ellipsis="..."
-                                                            buttons={false}
-                                                            innerElement="p"
-                                                        />
-                                                    </CardContent>
-                                                </CardActionArea>
-                                            </Link>
-                                        </Card>
+                                    <Typography variant="h6" >Учитель: </Typography>
+                                    <Paper variant="outlined" square >
+                                        <ListItem>
+                                            <ListItemFirstAction>
+                                                <ListItemIcon>
+                                                    <Avatar alt={user_data.firstname+" "+user_data.lastname} src={user_data.avatar} />
+                                                </ListItemIcon>
+                                                <ListItemText title={user_data.firstname+" "+user_data.lastname} subtitle={"Регалии: " + user_data.status} />
+                                            </ListItemFirstAction>
+                                        </ListItem>
                                     </Paper>
-                                </Grid>
-                            )
+                                </div>
                             )}
-                        </Grid>
-                    </div>
-                ) : (null)}
-            </div>
-        );
+                            {data.passed_course_status === "finished" ?
+                                (
+                                    <div>
+                                        <div className='done-area-title'>
+                                            <Typography variant="h5" component="h5">Курс пройден</Typography>
+                                            <CheckCircleOutlineIcon className='done-area-title-icon' fontSize="large" />
+                                        </div>
+                                        <Typography variant="body" component="body">Оценка: {data.assessment}</Typography>
+                                        <Typography variant="body" component="body">Дата и время прохождения: {Moment(lessons.finish_time).locale('ru').format('Do MMMM YYYY, hh:mm:ss')}</Typography>
+                                    </div>
+                                ) : (null)
+                            }
+                            <div className='course-info-button'>
+                                {this.renderCourseButton(
+                                    data.course_id,
+                                    data.category_name,
+                                    data.passed_course_status,
+                                    data.passed_course_id,
+                                    data.assessment,
+                                    data.finish_time,
+                                    user,
+                                    data.lessons
+                                )}
+                            </div>
+                        </div>
+                    </Paper>
+                    <Typography variant="h5" component="h5">О курсе:</Typography>
+                    <Typography>{data.description}</Typography>
+                    {data.passed_course_status === "inprocess" || data.passed_course_status === "finished" ? (
+                        <div>
+                            <h5>Уроки:</h5>
+                            <Grid
+                                container
+                                direction={"row"}
+                                justify={"space-around"}
+                                alignItems={"flex-start"}
+                                spacing={1}>
+                                {data.lessons.map((lesson, index) => (
+                                    <Grid item xs key={index}>
+                                        <Paper >
+                                            <Card>
+                                                <Link to={`/courses/${data.category_name}/${data.course_id}/${lesson.id}`}>
+                                                    <CardActionArea>
+                                                        <CardMedia
+                                                            component="img"
+                                                            alt={lesson.name}
+                                                            height="140"
+                                                            image="http://lifestudio-test.ru/assets/img/350x250.png"
+                                                            title="Contemplative Reptile"
+                                                        />
+                                                        <CardContent>
+                                                            <Typography gutterBottom variant="h6" component="h6">
+                                                                {lesson.name}
+                                                            </Typography>
+                                                            <ClampLines
+                                                                text={lesson.description}
+                                                                id="really-unique-id"
+                                                                lines={3}
+                                                                ellipsis="..."
+                                                                buttons={false}
+                                                                innerElement="p"
+                                                            />
+                                                        </CardContent>
+                                                    </CardActionArea>
+                                                </Link>
+                                            </Card>
+                                        </Paper>
+                                    </Grid>
+                                )
+                                )}
+                            </Grid>
+                        </div>
+                    ) : (null)}
+                </div>
+            );
+        }
     }
 }
 
@@ -297,12 +314,12 @@ function mapStateToProps(state) {
     const { lesson, authentication, users } = state;
     const { loading, data } = lesson;
     const { user, jwt } = authentication;
-    const { teathers } = users;
+    const { user_data } = users;
     return {
         jwt,
         user,
         data,
-        teathers,
+        user_data,
         loading
     };
 }

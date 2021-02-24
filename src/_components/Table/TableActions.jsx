@@ -6,7 +6,7 @@ import MoreHorizOutlinedIcon from '@material-ui/icons/MoreHorizOutlined';
 
 import { IconButton } from '../'
 
-export const TableActions = ({ children, className, user, edit, remove, more }) => {
+export const TableActions = ({ children, className, user, edit, remove }) => {
     let styleClass = className !== undefined ? ' ' + className : '';
 
     return (
@@ -16,9 +16,6 @@ export const TableActions = ({ children, className, user, edit, remove, more }) 
             </IconButton>
             <IconButton onClick={() => remove(user)}>
                 <DeleteForeverOutlinedIcon className='danger-area-title-icon'/>
-            </IconButton>
-            <IconButton onClick={() => more(user)}>
-                <MoreHorizOutlinedIcon />
             </IconButton>
         </div>
     );
