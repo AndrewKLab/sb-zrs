@@ -16,7 +16,9 @@ import {
     Divider,
     Typography,
     DataTable,
-    Form
+    Form,
+    FormControlLabel,
+    Radio
 } from '../_components'
 
 const AdminPanelPage = ({ dispatch, history, jwt, user, users }) => {
@@ -25,6 +27,10 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users }) => {
     const [userData, setUserData] = useState({});
     const [editDialog, setEditDialog] = useState(false);
     const [deleteDialog, setDeleteDialog] = useState(false);
+
+    const [status, setStatus] = useState('');
+    const [roles, setRoles] = useState('');
+    const [access, setAccess] = useState('');
 
     useEffect(() => {
         if (user.roles !== 'ROLE_ADMIN') {
@@ -36,7 +42,7 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users }) => {
 
 
     //EDIT
-    const edit = (user) => { setEditDialog(true), setUserData(user) }
+    const edit = (user) => { setEditDialog(true), setUserData(user), setStatus(user.status), setRoles(user.roles), setAccess(user.access) }
     const editClose = () => { setEditDialog(false) }
     const editDialogPlane = () => {
         return (
@@ -46,9 +52,94 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users }) => {
                         <Typography variant='h5' component='h5' className='m-0'>{`Изменить пользователя ${userData.firstname}?`}</Typography>
                     </DialogTitle>
                     <DialogContent dividers className={'d-flex grid-direction-xs-column'}>
+                        <Typography component={'body'} variant={'body'} className='m-0'>{`Изменить учителя пользователя?`}</Typography>
+                        {userData !== null && JSON.stringify(userData)}
                         <Typography component={'body'} variant={'body'} className='m-0'>{`Изменить доступ к курсам?`}</Typography>
-
-
+                        <FormControlLabel
+                            className='w-max'
+                            control={
+                                <Radio
+                                    name={'access'}
+                                    value={'limited'}
+                                    selected={access === "limited" ? "limited" : ""}
+                                    onChange={onValueChangeAccess}
+                                />
+                            }
+                            label={'Ограниченый'}
+                        />
+                        <FormControlLabel
+                            className='w-max'
+                            control={
+                                <Radio
+                                    name={'access'}
+                                    value={'full'}
+                                    selected={access === "full" ? "full" : ""}
+                                    onChange={onValueChangeAccess}
+                                />
+                            }
+                            label={'Полный'}
+                        />
+                        <Typography component={'body'} variant={'body'} className='m-0'>{`Изменить статус пользователя?`}</Typography>
+                        <FormControlLabel
+                            className='w-max'
+                            control={
+                                <Radio
+                                    name={'status'}
+                                    value={'ИСКАТЕЛЬ'}
+                                    selected={status === "ИСКАТЕЛЬ" ? "ИСКАТЕЛЬ" : ""}
+                                    onChange={onValueChange}
+                                />
+                            }
+                            label={'ИСКАТЕЛЬ'}
+                        />
+                        <FormControlLabel
+                            className='w-max'
+                            control={
+                                <Radio
+                                    name={'status'}
+                                    value={'УЧЕНИК'}
+                                    selected={status === "УЧЕНИК" ? "УЧЕНИК" : ""}
+                                    onChange={onValueChange}
+                                />
+                            }
+                            label={'УЧЕНИК'}
+                        />
+                        <FormControlLabel
+                            className='w-max'
+                            control={
+                                <Radio
+                                    name={'status'}
+                                    value={'ПРОМОУТЕР'}
+                                    selected={status === "ПРОМОУТЕР" ? "ПРОМОУТЕР" : ""}
+                                    onChange={onValueChange}
+                                />
+                            }
+                            label={'ПРОМОУТЕР'}
+                        />
+                        <FormControlLabel
+                            className='w-max'
+                            control={
+                                <Radio
+                                    name={'status'}
+                                    value={'УЧИТЕЛЬ'}
+                                    selected={status === "УЧИТЕЛЬ" ? "УЧИТЕЛЬ" : ""}
+                                    onChange={onValueChange}
+                                />
+                            }
+                            label={'УЧИТЕЛЬ'}
+                        />
+                        <FormControlLabel
+                            className='w-max'
+                            control={
+                                <Radio
+                                    name={'status'}
+                                    value={'admin'}
+                                    selected={status === "admin" ? "admin" : ""}
+                                    onChange={onValueChange}
+                                />
+                            }
+                            label={'АДМИНИСТРАТОР'}
+                        />
                     </DialogContent>
                     <DialogActions>
                         <Button type="submit" className={'mr-3'} variant='outlined' color="primary">Сохранить</Button>
@@ -57,6 +148,36 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users }) => {
                 </Form>
             </Dialog >
         )
+    }
+    const onValueChangeAccess = (event) => { setAccess(event) }
+    const onValueChange = (event) => {
+        switch (event) {
+            case 'ИСКАТЕЛЬ':
+                setStatus(event);
+                setRoles('user');
+                setAccess('limited');
+                break;
+            case 'УЧЕНИК':
+                setStatus(event);
+                setRoles('user');
+                setAccess('limited');
+                break;
+            case 'ПРОМОУТЕР':
+                setStatus(event);
+                setRoles('user');
+                setAccess('limited');
+                break;
+            case 'УЧИТЕЛЬ':
+                setStatus(event);
+                setRoles('ROLE_TEATHER');
+                setAccess('full');
+                break;
+            case 'admin':
+                setStatus(event);
+                setRoles('ROLE_ADMIN');
+                setAccess('full');
+                break;
+        }
     }
     const editUser = () => {
         editClose();
@@ -118,12 +239,16 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users }) => {
                             accessor: 'sity',
                         },
                         {
+                            Header: 'Статус',
+                            accessor: 'status',
+                        },
+                        {
                             Header: 'Доступ ко всем курсам',
                             accessor: 'access',
                         },
                         {
                             Header: 'Учитель',
-                            accessor: 'teather_id',
+                            accessor: 'teather.name',
                         },
                         {
                             Header: 'Действия',
