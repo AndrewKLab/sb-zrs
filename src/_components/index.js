@@ -62,4 +62,7 @@ export * from './Table/TableHeaderText';
 export * from './Table/Row';
 export * from './Table/Cell';
 
+//User
+export * from './User/UserPlane';
+export * from './User/UsersListPlane';
 

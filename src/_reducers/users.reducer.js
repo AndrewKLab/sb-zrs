@@ -1,14 +1,22 @@
 import { userConstants } from '../_constants';
 
-export function users(state = {}, action) {
+const initialState =  {
+  students: [],
+  promouters: [],
+  teathers: [],
+  admins: []
+}
+
+export function users(state = initialState, action) {
   switch (action.type) {
     //USER_UPDATE_BY_ID
     case userConstants.USER_UPDATE_BY_ID_REQUEST:
       return {
         ...state,
-        users_array: state.users_array
+        user_loading: true
       };
     case userConstants.USER_UPDATE_BY_ID_SUCCESS:
+      var users = [state.students, state.promouters, state.teathers, state.admins];
       return {
         ...state,
         users_array: state.users_array.map(item => item.id === action.user.user_id ?
@@ -57,6 +65,7 @@ export function users(state = {}, action) {
     //GETALL_USERS
     case userConstants.GETALL_USERS_REQUEST:
       return {
+        ...state,
         user_loading: true
       };
     case userConstants.GETALL_USERS_SUCCESS:
@@ -96,6 +105,7 @@ export function users(state = {}, action) {
     //GETALL_TEATHERS
     case userConstants.GETALL_TEATHERS_REQUEST:
       return {
+        ...state,
         loading: true
       };
     case userConstants.GETALL_TEATHERS_SUCCESS:
@@ -110,12 +120,13 @@ export function users(state = {}, action) {
     //GETALL_STUDENTS
     case userConstants.GETALL_STUDENTS_REQUEST:
       return {
+        ...state,
         loading: true
       };
     case userConstants.GETALL_STUDENTS_SUCCESS:
       return {
         loading: false,
-        users_array: action.students.students
+        students: action.students.students
       };
     case userConstants.GETALL_STUDENTS_FAILURE:
       return {
@@ -125,21 +136,23 @@ export function users(state = {}, action) {
     //GETALL_STUDENTS_BY_PROMOUTER
     case userConstants.GETALL_STUDENTS_BY_PROMOUTER_REQUEST:
       return {
+        ...state,
         users_loading: true
       };
     case userConstants.GETALL_STUDENTS_BY_PROMOUTER_SUCCESS:
       return {
         users_loading: false,
-        students: action.students.users
+        promouters: action.students.users
       };
     case userConstants.GETALL_STUDENTS_BY_PROMOUTER_FAILURE:
       return {
         users_error: action.error
       };
 
-    //GETALL_STUDENTS
+    //GETONE_USER
     case userConstants.GETONE_USER_REQUEST:
       return {
+        ...state,
         users_loading: true
       };
     case userConstants.GETONE_USER_SUCCESS:

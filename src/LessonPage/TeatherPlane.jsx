@@ -8,13 +8,13 @@ import {
     ListItemText
 } from '../_components';
 
-export const TeatherPlane = ({ teather_status, teather_name, teather_avatar }) => {
+export const TeatherPlane = ({ teather_status, teather_name, teather_avatar, onClick }) => {
     return (
         teather_status !== null ? (
             <Paper className={'p-1 mt-3'}>
                 <h5 className={'pl-2 mb-0 pt-1'} >Учитель:</h5>
                 <div className={'pt-1 w-100'}>
-                    <ListItem button>
+                    <ListItem button onPress={onClick}>
                         <ListItemFirstAction>
                             <ListItemIcon>
                                 <Avatar alt={teather_name} src={teather_avatar} />

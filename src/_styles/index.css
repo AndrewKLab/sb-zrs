@@ -2461,7 +2461,6 @@ div.text-input-group label {
     position: relative;
     width: max-content;
     color: rgba(var(--text-dark));
-    z-index: 1;
     height: max-content;
 }
 
@@ -2504,8 +2503,6 @@ tr.row th {
     padding: 1rem;
     border: 1px solid rgba(var(--text-dark), 0.12);
 }
-
-.cell {}
 
 .pagination {
     display: flex;
@@ -3081,7 +3078,7 @@ tr.row th {
     overflow: auto;
     position: relative;
     max-height: 140px;
-    background-color: rgba(var(--background-color));
+    background-color: transparent;
 }
 
 /* step */
