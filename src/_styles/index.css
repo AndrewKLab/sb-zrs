@@ -79,7 +79,7 @@ body {
     letter-spacing: 0.01071em;
     background-color: rgba(var(--background-color));
     position: static;
-    overflow-y: auto;
+    overflow: auto;
 }
 
 [tabindex="-1"]:focus {
@@ -933,10 +933,10 @@ header {
     top: 0;
     left: 0;
     position: fixed;
-    width: 100%;
     display: flex;
     justify-content: center;
     z-index: 1100;
+    width: 100%;
     box-sizing: border-box;
     flex-shrink: 0;
     flex-direction: column;
@@ -2521,6 +2521,7 @@ tr.row th {
     flex-direction: column;
     display: flex;
     align-items: flex-start;
+    z-index: 1;
 }
 
 .menu-item {

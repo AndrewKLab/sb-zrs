@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect } from 'react-redux';
-import { userActions } from "../_actions";
+import { userActions, courseActions } from "../_actions";
 import {
     Table,
     Row,
@@ -38,7 +38,11 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users }) => {
         if (user.roles !== 'ROLE_ADMIN') {
             history.push('/')
         } else {
-            dispatch(userActions.readAll(jwt)).then(setLoading(false))
+            dispatch(userActions.readAll(jwt)).then(
+                () => dispatch(courseActions.getAllCoursesByAutor(user.id)).then(
+                    () => setLoading(false)))
+
+
         }
     }, []);
 
@@ -72,25 +76,70 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users }) => {
                     teathers={users.teathers !== undefined ? users.teathers : []}
                 />
                 <DialogDeleteUser open={deleteDialog} close={removeClose} userData={userData} />
-                <DataTable columns={
-                    [
-                        { Header: 'Имя', accessor: 'firstname' },
-                        { Header: 'Фамилия', accessor: 'lastname' },
-                        { Header: 'Номер телефона', accessor: 'phonenumber' },
-                        { Header: 'Страна', accessor: 'country' },
-                        { Header: 'Город', accessor: 'sity' },
-                        { Header: 'Статус', accessor: 'status' },
-                        { Header: 'Доступ ко всем курсам', accessor: 'access' },
-                        { Header: 'Учитель', accessor: 'teather.name' },
-                        { Header: 'Действия', accessor: '' }
-                    ]}
-                    data={users.students !== undefined ? users.students : []}
-                    edit={edit}
-                    remove={remove}
-                />
-                Статистика
-                Управление курсами
-                Управление пользователями
+                <Typography variant='h3' component='h3'>Управление курсами:</Typography>
+
+
+                <Divider />
+                <div className='mb-3'>
+                    <Typography variant='h3' component='h3'>Ученики:</Typography>
+                    <DataTable columns={
+                        [
+                            { Header: 'Имя', accessor: 'firstname' },
+                            { Header: 'Фамилия', accessor: 'lastname' },
+                            { Header: 'Номер телефона', accessor: 'phonenumber' },
+                            { Header: 'Страна', accessor: 'country' },
+                            { Header: 'Город', accessor: 'sity' },
+                            { Header: 'Статус', accessor: 'status' },
+                            { Header: 'Доступ ко всем курсам', accessor: 'access' },
+                            { Header: 'Учитель', accessor: 'teather.name' },
+                            { Header: 'Действия', accessor: '' }
+                        ]}
+                        data={users.students !== undefined ? users.students : []}
+                        edit={edit}
+                        remove={remove}
+                    />
+                </div>
+
+                <div className='mb-3'>
+                    <Typography variant='h3' component='h3'>Промоутеры:</Typography>
+                    <DataTable columns={
+                        [
+                            { Header: 'Имя', accessor: 'firstname' },
+                            { Header: 'Фамилия', accessor: 'lastname' },
+                            { Header: 'Номер телефона', accessor: 'phonenumber' },
+                            { Header: 'Страна', accessor: 'country' },
+                            { Header: 'Город', accessor: 'sity' },
+                            { Header: 'Статус', accessor: 'status' },
+                            { Header: 'Доступ ко всем курсам', accessor: 'access' },
+                            { Header: 'Учитель', accessor: 'teather.name' },
+                            { Header: 'Действия', accessor: '' }
+                        ]}
+                        data={users.promouters !== undefined ? users.promouters : []}
+                        edit={edit}
+                        remove={remove}
+                    />
+                </div>
+
+                <div className='mb-3'>
+                    <Typography variant='h3' component='h3'>Учителя:</Typography>
+                    <DataTable columns={
+                        [
+                            { Header: 'Имя', accessor: 'firstname' },
+                            { Header: 'Фамилия', accessor: 'lastname' },
+                            { Header: 'Номер телефона', accessor: 'phonenumber' },
+                            { Header: 'Страна', accessor: 'country' },
+                            { Header: 'Город', accessor: 'sity' },
+                            { Header: 'Статус', accessor: 'status' },
+                            { Header: 'Доступ ко всем курсам', accessor: 'access' },
+                            { Header: 'Учитель', accessor: 'teather.name' },
+                            { Header: 'Действия', accessor: '' }
+                        ]}
+                        data={users.teathers !== undefined ? users.teathers : []}
+                        edit={edit}
+                        remove={remove}
+                    />
+                </div>
+
             </div>
         );
     }
