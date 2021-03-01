@@ -103,7 +103,7 @@ export function course(state = {}, action) {
       };
     case courseConstants.GETALL_BY_AUTOR_FAILURE:
       return {
-        error: action.error
+        course_error: action.error
       };
     //GET_ALL_PASSED_COURSE_BY_USER_REQUEST
     case courseConstants.GET_ALL_PASSED_COURSE_BY_USER_REQUEST:

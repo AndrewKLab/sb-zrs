@@ -22,6 +22,7 @@ import {
 } from '../_components';
 
 import { DialogDeleteUser, DialogChangeUser } from './';
+import { TeatherCourses } from '../TeatherPanelPage/TeatherCourses';
 
 const AdminPanelPage = ({ dispatch, history, jwt, user, users }) => {
     const [loading, setLoading] = useState(true);
@@ -77,8 +78,7 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users }) => {
                 />
                 <DialogDeleteUser open={deleteDialog} close={removeClose} userData={userData} />
                 <Typography variant='h3' component='h3'>Управление курсами:</Typography>
-
-
+                <TeatherCourses history={history} panel={'admin-panel'} />
                 <Divider />
                 <div className='mb-3'>
                     <Typography variant='h3' component='h3'>Ученики:</Typography>

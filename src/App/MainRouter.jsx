@@ -39,6 +39,7 @@ class MainRouter extends React.Component {
                 <PrivateRoute exact path="/promouter-panel" component={PromouterPanelPage} />
                 <PrivateRoute exact path="/teather-panel/create-course" component={CreateCoursePage} />
                 <PrivateRoute exact path="/teather-panel" component={TeatherPanelPage} />
+                <PrivateRoute exact path="/admin-panel/create-course" component={CreateCoursePage} />
                 <PrivateRoute exact path="/admin-panel" component={AdminPanelPage} />
                 <Route exact path="/courses/:category_name/:course/:lesson" component={LessonPage} />
                 <Route exact path="/courses/:category_name/:course" component={CoursePage} />
