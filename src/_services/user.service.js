@@ -91,7 +91,7 @@ function updateUser(user_id, jwt, firstname, lastname, phonenumber, country, sit
 function deleteUser(jwt, user_id) {
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` }
+        headers: { 'Authorization': `Bearer ${jwt}` }
     };
     return fetch(`${config.apiUrl}/user/delete.php?user_id=${user_id}`, requestOptions).then(handleResponse);
 }
@@ -121,7 +121,7 @@ function readOne(user_id, jwt) {
 function readAll(jwt) {
     const requestOptions = {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` }
+        headers: {'Authorization': `Bearer ${jwt}` }
     };
     return fetch(`${config.apiUrl}/user/read.php`, requestOptions).then(handleResponse);
 }

@@ -94,11 +94,11 @@ const DialogChangeUser = ({ jwt, dispatch, open, close, userData, setUserData, s
                 <DialogContent dividers className={'d-flex grid-direction-xs-column'}>
                     <Typography component={'body'} variant={'body'} className='m-0'>{`Изменить учителя пользователя?`}</Typography>
                     {userData !== null && userData.teather !== null && userData !== undefined && userData.teather !== undefined ? (
-                        <UserPlane onClick={(e) => selectTeather(e)} name={userData.teather.name} avatar={userData.teather.avatar} status={userData.teather.status} />
+                        <UserPlane button onClick={(e) => selectTeather(e)} name={userData.teather.name} avatar={userData.teather.avatar} status={userData.teather.status} />
                     ) : (
                             <div className={'teathers-list'}>
                                 {teathers.map((teather, index) => (
-                                    <UserPlane key={index} onClick={(e) => selectTeather(e, teather)} name={teather.firstname + ' ' + teather.lastname} avatar={teather.avatar} status={teather.status} />
+                                    <UserPlane button key={index} onClick={(e) => selectTeather(e, teather)} name={teather.firstname + ' ' + teather.lastname} avatar={teather.avatar} status={teather.status} />
                                 ))}
                             </div>
                         )}

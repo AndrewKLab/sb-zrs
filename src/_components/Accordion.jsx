@@ -29,7 +29,7 @@ export const Accordion = ({ children, className, labеl }) => {
             </button>
             
             </div>
-            <div ref={content} className="panel" style={{ maxHeight: `${setHeight}` }}>
+            <div ref={content} className={"panel"} style={{ maxHeight: `${setHeight}` }}>
                 {children}
             </div>
         </div>

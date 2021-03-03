@@ -61,13 +61,8 @@ class CreateTestPlane extends React.Component {
             a_create: []
         }
     }
-    componentDidMount() {
-    }
 
-    componentWillReceiveProps(nextProps) {
-        // console.log(nextProps)
-    }
-
+    
     //выбрать вопрос для измененния
     selectQestion(question) { this.setState({ editQuestion: question, addQuestion: false }) }
 

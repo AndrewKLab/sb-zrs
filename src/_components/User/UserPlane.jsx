@@ -7,9 +7,11 @@ import {
     ListItemText
 } from '../';
 
-export const UserPlane = ({ name, avatar, status, onClick }) => {
+export const UserPlane = ({ name, avatar, status, button, onClick, className }) => {
+    let styleClass = className !== undefined ? ' '+className : '';
+    let isButton = button === undefined ? false : true;
     return (
-        <ListItem button onPress={onClick}>
+        <ListItem button={isButton} onPress={onClick} className={styleClass}>
             <ListItemFirstAction>
                 <ListItemIcon>
                     <Avatar alt={name} src={avatar} />

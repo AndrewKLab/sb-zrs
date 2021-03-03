@@ -29,19 +29,19 @@ function createCourse(jwt, name, autor_id, category_name, img, description) {
     function failure(error) { return { type: courseConstants.CREATE_COURSE_FAILURE, error } }
 }
 
-function updateCourse(jwt, course_id, name, autor_id, category_name, img, description) {
+function updateCourse(jwt, course_id, name, autor_id, category_name, img, description, published) {
     return dispatch => {
-        dispatch(request(jwt, course_id, name, autor_id, category_name, img, description));
+        dispatch(request(jwt, course_id, name, autor_id, category_name, img, description, published));
 
-        return courseService.updateCourse(jwt, course_id, name, autor_id, category_name, img, description)
+        return courseService.updateCourse(jwt, course_id, name, autor_id, category_name, img, description, published)
             .then(
                 courses => dispatch(success(courses)),
                 error => dispatch(failure(error))
             );
     };
 
-    function request() { return { type: courseConstants.UPDATE_COURSE_REQUEST, jwt, course_id, name, autor_id, category_name, img, description } }
-    function success(courses) { return { type: courseConstants.UPDATE_COURSE_SUCCESS, courses, jwt, course_id, name, autor_id, category_name, img, description } }
+    function request() { return { type: courseConstants.UPDATE_COURSE_REQUEST, jwt, course_id, name, autor_id, category_name, img, description, published } }
+    function success(courses) { return { type: courseConstants.UPDATE_COURSE_SUCCESS, courses, jwt, course_id, name, autor_id, category_name, img, description, published } }
     function failure(error) { return { type: courseConstants.UPDATE_COURSE_FAILURE, error } }
 }
 

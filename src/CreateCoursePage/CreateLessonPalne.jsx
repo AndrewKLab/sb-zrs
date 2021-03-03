@@ -59,7 +59,7 @@ class CreateLessonPlane extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.lesson.id !== this.props.lesson.id) {
+        if (nextProps.lesson !== undefined && nextProps.lesson.id !== this.props.lesson.id) {
             this.setState({ loading: true }, () => {
                 this.setState({
                     lessonCreated: Object.keys(nextProps.lesson).length === 0 ? false : true,

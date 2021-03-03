@@ -66,3 +66,8 @@ export * from './Table/Cell';
 export * from './User/UserPlane';
 export * from './User/UsersListPlane';
 
+//Tabs
+export * from './Tabs/Tabs';
+export * from './Tabs/Tab';
+export * from './Tabs/TabPanel'; 
+

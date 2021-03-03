@@ -49,7 +49,7 @@ export const Button = ({ type, children = null, className, variant, onPress, ful
 
     const [width, setWidth] = useState(0);
     const [height, setHeight] = useState(0);
-    const ref = useRef('ripple')
+    const ref = useRef('ripple');
 
 
     const handleClick = (event) => {

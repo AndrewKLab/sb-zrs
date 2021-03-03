@@ -37,7 +37,7 @@ import EventAvailableOutlinedIcon from '@material-ui/icons/EventAvailableOutline
 import EventBusyOutlinedIcon from '@material-ui/icons/EventBusyOutlined';
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 
-const TeatherPanelPage = ({ history, dispatch, user, courses, courses_error, students, promouters }) => {
+const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, students, promouters }) => {
     const [loading, setLoading] = useState(true);
     const [statusDialog, setStatusDialog] = useState(false);
     const [accessDialog, setAccessDialog] = useState(false);
@@ -67,7 +67,7 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, courses_error, stu
     return (
         <div className={'py-3'}>
             <Grid container spacing={2}>
-                <TeatherCourses history={history} panel={'teather-panel'} />
+                <TeatherCourses create={true} user={user} courses={courses} course_error={course_error} history={history} panel={'teather-panel'} />
                 <Grid item xs={12} sm={6}>
                     <UpdateUserAccessDialog open={accessDialog} close={closeAccessDialog} user={userData} />
                     <UpdateUserStatusDialog open={statusDialog} close={closeStatusDialog} user={userData} />
@@ -258,14 +258,14 @@ function mapStateToProps(state) {
     const { authentication, users, course } = state;
     const { user, jwt } = authentication;
     const { students, promouters } = users;
-    const { courses, courses_error } = course;
+    const { courses, course_error } = course;
     return {
         jwt,
         students,
         promouters,
         user,
         courses,
-        courses_error
+        course_error
     };
 }
 const connectedTeatherPanelPage = connect(mapStateToProps)(TeatherPanelPage);

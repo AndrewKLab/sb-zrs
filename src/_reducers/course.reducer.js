@@ -15,7 +15,7 @@ export function course(state = {}, action) {
       };
     case courseConstants.CREATE_COURSE_FAILURE:
       return {
-        error: action.error,
+        course_error: action.error,
         message: undefined
       };
 
@@ -23,26 +23,54 @@ export function course(state = {}, action) {
     case courseConstants.UPDATE_COURSE_REQUEST:
       return {
         ...state,
-        loading: true,
-        courses: state.courses
+        loading: true
       };
     case courseConstants.UPDATE_COURSE_SUCCESS:
-      return {
-        loading: false,
-        message: action.courses.message,
-        course_data: {
+      var name;
+      var value;
+      if (state.courses !== undefined) {
+        name = 'courses';
+        var category_item = [];
+        var courses_new = {};
+        var category_valuses = Object.values(state.courses);
+        var category_keys = Object.keys(state.courses);
+        for (let i = 0; i < category_valuses.length; i++) {
+          category_item = category_valuses[i].map((course) => course.id === action.course_id ? {
+            id: action.course_id,
+            category_name: action.category_name,
+            description: action.description,
+            img: action.img,
+            name: action.name,
+            autor_id: action.autor_id,
+            published: action.published
+          } : course)
+          if (category_item.length > 0) {
+            courses_new[category_keys[i]] = category_item;
+          }
+        }
+
+        value = courses_new;
+      } else {
+        name = 'course_data'
+        value = {
           id: action.course_id,
           category_name: action.category_name,
           description: action.description,
           img: action.img,
           name: action.name,
-          autor_id: action.autor_id
+          autor_id: action.autor_id,
+          published: action.published
         }
+      }
+      return {
+        ...state,
+        loading: false,
+        message: action.courses.message,
+        [name]: value
       };
     case courseConstants.UPDATE_COURSE_FAILURE:
       return {
         ...state,
-        courses: state.courses,
         error: action.error,
         message: undefined
       };
@@ -64,7 +92,6 @@ export function course(state = {}, action) {
         if (category_item.length > 0) {
           courses_new[category_keys[i]] = category_item;
         }
-
       }
       return {
         loading: false,

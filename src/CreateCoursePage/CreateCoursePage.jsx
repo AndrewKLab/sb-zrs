@@ -67,7 +67,7 @@ class CreateCoursePage extends React.Component {
     }
 
     componentDidMount() {
-        const { dispatch, user, jwt, message, error } = this.props;
+        const { dispatch, user, jwt, message, course_error } = this.props;
         if (user != undefined) {
             if (this.props.location.state !== undefined) {
                 dispatch(lessonActions.getAllLessonsByCourse(this.props.location.state.course.id, user.id, user.teather_id)).then(
@@ -99,12 +99,11 @@ class CreateCoursePage extends React.Component {
 
     submit(values) {
         const { course_name, course_category_name, image, course_descrigtion } = values;
-        const { dispatch, user, jwt, message, error, data } = this.props;
+        const { dispatch, user, jwt } = this.props;
         dispatch(courseActions.createCourse(jwt, course_name, user.id, course_category_name === '' ? 'basic' : course_category_name, image, course_descrigtion)).then(
-            () => {
-                this.handleClose(),
-
-                    this.setState({ changed: error === undefined ? false : true, courseCreated: error === undefined ? true : false })
+            (data) => {
+                this.handleClose();
+                this.setState({ changed: data.error === undefined ? false : true, courseCreated: data.error === undefined ? true : false })
             }
         )
     }
@@ -170,7 +169,7 @@ class CreateCoursePage extends React.Component {
     }
 
     render() {
-        const { jwt, error, message, dispatch, course_data, data } = this.props;
+        const { jwt, course_error, message, dispatch, course_data, data } = this.props;
         const { loading, changed, courseCreated, addLesson, lesson } = this.state;
 
         if (loading) {
@@ -209,7 +208,7 @@ class CreateCoursePage extends React.Component {
                                         image,
                                         course_descrigtion
                                     )).then(
-                                        () => this.setState({ changed: false })
+                                        (data) => { if (data.error === undefined) { this.setState({ changed: false }) } }
                                     )
                                 }
 
@@ -322,9 +321,9 @@ class CreateCoursePage extends React.Component {
                                         }
                                         className='w-100 mb-3'
                                     />
-                                    <div className={`d-flex grid-justify-xs-${error !== undefined || message !== undefined ? 'space-between' : 'flex-end'}`}>
-                                        {error && (
-                                            <Alert className='error' severity="error">{error}</Alert>
+                                    <div className={`d-flex grid-justify-xs-${course_error !== undefined || message !== undefined ? 'space-between' : 'flex-end'}`}>
+                                        {course_error && (
+                                            <Alert className='error' severity="error">{course_error}</Alert>
                                         )}
                                         {message && (
                                             <Alert severity="success">{message}</Alert>
@@ -342,8 +341,8 @@ class CreateCoursePage extends React.Component {
                             className='p-2 mt-2'
                             lesson={lesson}
                             changeLesson={() => this.changeLesson()}
-                            course_id={this.props.location.state.course.id}
-                            lessons={this.props.location.state.course.lessons}
+                            course_id={this.props.location.state === undefined ? course_data.id : this.props.location.state.course.id}
+                            lessons={this.props.location.state === undefined ? null : this.props.location.state.course.lessons}
 
 
                         /> : null}
@@ -390,10 +389,10 @@ class CreateCoursePage extends React.Component {
 function mapStateToProps(state) {
     const { authentication, course, lesson } = state;
     const { user, jwt } = authentication;
-    const { loading, course_data, error, message } = course;
+    const { loading, course_data, course_error, message } = course;
     const { data, lesson_error } = lesson;
     return {
-        error,
+        course_error,
         message,
         user,
         jwt,
