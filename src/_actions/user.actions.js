@@ -96,11 +96,11 @@ function validateToken(jwt) {
     function failure(error) { return { type: userConstants.VALIDATE_FAILURE, error } }
 }
 
-function updateSelf(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, avatar, teather_id, promouter_id) {
+function updateSelf(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, avatar, admin_id, teather_id, promouter_id) {
     return dispatch => {
-        dispatch(request({ user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, avatar, teather_id, promouter_id }));
+        dispatch(request({ user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, avatar, admin_id, teather_id, promouter_id }));
 
-        return userService.updateUser(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, avatar, teather_id, promouter_id)
+        return userService.updateUser(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, admin_id, avatar, teather_id, promouter_id)
             .then(
                 data => {
                     localStorage.setItem("user", data.jwt);
@@ -126,16 +126,16 @@ function updateSelf(user_id, jwt, firstname, lastname, phonenumber, country, sit
             );
     };
 
-    function request() { return { type: userConstants.USER_UPDATE_REQUEST, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, teather_id, avatar } }
+    function request() { return { type: userConstants.USER_UPDATE_REQUEST, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, admin_id, teather_id, avatar } }
     function success(user) { return { type: userConstants.USER_UPDATE_SUCCESS, user } }
     function failure(error) { return { type: userConstants.USER_UPDATE_FAILURE, error } }
 }
 
 
-function updateUser(id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, avatar, teather, promouter_id) {
+function updateUser(id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, avatar, admin_id, teather, promouter_id) {
     return dispatch => {
         dispatch(request());
-        return userService.updateUser(id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, avatar, teather === '0' ? '0' : typeof teather === "string" ? teather : teather.id, promouter_id)
+        return userService.updateUser(id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, avatar, admin_id, teather === '0' ? '0' : typeof teather === "string" ? teather : teather.id, promouter_id)
             .then(
                 data => {
                     const user = {

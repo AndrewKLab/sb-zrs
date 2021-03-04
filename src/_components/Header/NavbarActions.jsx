@@ -208,7 +208,7 @@ class NavbarActions extends Component {
                     <div id="myDropdown" className="dropdown-content">
                         {user ? (
                             <Link to="/profile" onClick={() => this.handleCloseDropdown()} className="p-0">
-                                <ListItem>
+                                <ListItem button>
                                     <ListItemFirstAction>
                                         <ListItemIcon>
                                             <Avatar alt="" src={user.avatar} />
@@ -229,7 +229,7 @@ class NavbarActions extends Component {
 
                             )}
 
-                        <Divider />
+                        <Divider className={'mt-0'} />
 
                         <ListItem>
                             <ListItemFirstAction>

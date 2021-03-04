@@ -109,6 +109,26 @@ export function users(state = initialState, action) {
                     } : user)
                   }
                   break;
+                case 'admin':
+                  users = {
+                    ...users,
+                    admins: users.admins.map(user => user.id === action.user.id ? {
+                      ...user,
+                      id: action.user.id,
+                      firstname: action.user.firstname,
+                      lastname: action.user.lastname,
+                      phonenumber: action.user.phonenumber,
+                      country: action.user.country,
+                      sity: action.user.sity,
+                      status: action.user.status,
+                      access: action.user.access,
+                      roles: action.user.roles,
+                      teather_id: action.user.teather,
+                      avatar: action.user.avatar,
+                      promouter_id: action.user.promouter_id
+                    } : user)
+                  }
+                  break;
               }
             } else {
               switch (users_arr[i][j].status) {
@@ -138,6 +158,13 @@ export function users(state = initialState, action) {
                   users = {
                     ...users,
                     teathers: result
+                  }
+                  break;
+                case 'admin':
+                  var result = users.admins.filter(user => user.id !== action.user.id);
+                  users = {
+                    ...users,
+                    admins: result
                   }
                   break;
               }
@@ -230,6 +257,28 @@ export function users(state = initialState, action) {
                     teathers: result
                   }
                   break;
+                  case 'admin':
+                    var result = users.teathers;
+                    result.push({
+                      ...users_arr[i][j],
+                      id: action.user.id,
+                      firstname: action.user.firstname,
+                      lastname: action.user.lastname,
+                      phonenumber: action.user.phonenumber,
+                      country: action.user.country,
+                      sity: action.user.sity,
+                      status: action.user.status,
+                      access: action.user.access,
+                      roles: action.user.roles,
+                      teather_id: action.user.teather,
+                      avatar: action.user.avatar,
+                      promouter_id: action.user.promouter_id
+                    })
+                    users = {
+                      ...users,
+                      admins: result
+                    }
+                    break;
               }
             }
           } else {
@@ -260,11 +309,13 @@ export function users(state = initialState, action) {
       var students = state.students.filter(u => u.id !== action.user_id)
       var promouters = state.promouters.filter(u => u.id !== action.user_id);
       var teathers = state.teathers.filter(u => u.id !== action.user_id);
+      var admins = state.admins.filter(u => u.id !== action.user_id);
       return {
         ...state,
         students: students,
         promouters: promouters,
         teathers: teathers,
+        admins: admins,
         users: state.users
       };
     case userConstants.USER_DELETE_FAILURE:
@@ -283,6 +334,7 @@ export function users(state = initialState, action) {
       var students = [];
       var promouters = [];
       var teathers = [];
+      var admins = []
       for (let i = 0; i < action.users.users.length; i++) {
         switch (action.users.users[i].status) {
           case 'ИСКАТЕЛЬ':
@@ -297,6 +349,9 @@ export function users(state = initialState, action) {
           case 'УЧИТЕЛЬ':
             teathers.push(action.users.users[i])
             break;
+          case 'admin':
+            admins.push(action.users.users[i])
+            break;
         }
 
       }
@@ -306,6 +361,7 @@ export function users(state = initialState, action) {
         students: students,
         promouters: promouters,
         teathers: teathers,
+        admins: admins,
         users: action.users.users
       };
     case userConstants.GETALL_USERS_FAILURE:

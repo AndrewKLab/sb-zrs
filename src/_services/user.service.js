@@ -66,7 +66,7 @@ function logout() {
     localStorage.removeItem('user');
 }
 
-function updateUser(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, avatar, teather_id, promouter_id) {
+function updateUser(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, avatar, admin_id, teather_id, promouter_id) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` },
@@ -80,6 +80,7 @@ function updateUser(user_id, jwt, firstname, lastname, phonenumber, country, sit
             access,
             roles,
             avatar,
+            admin_id,
             teather_id,
             promouter_id
         })

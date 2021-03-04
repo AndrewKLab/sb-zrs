@@ -67,7 +67,11 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, stud
     return (
         <div className={'py-3'}>
             <Grid container spacing={2}>
-                <TeatherCourses create={true} user={user} courses={courses} course_error={course_error} history={history} panel={'teather-panel'} />
+                <Grid item xs={12}>
+                    <Paper square>
+                        <TeatherCourses create={true} user={user} courses={courses} course_error={course_error} history={history} panel={'teather-panel'} />
+                    </Paper>
+                </Grid>
                 <Grid item xs={12} sm={6}>
                     <UpdateUserAccessDialog open={accessDialog} close={closeAccessDialog} user={userData} />
                     <UpdateUserStatusDialog open={statusDialog} close={closeStatusDialog} user={userData} />
