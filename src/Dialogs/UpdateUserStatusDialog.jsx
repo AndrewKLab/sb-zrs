@@ -20,7 +20,7 @@ const UpdateUserStatusDialog  = ({ open, close, jwt, dispatch, user }) => {
     const changeStauts = (event) => { setStauts(event) }
     const submit = (event) => {
         event.preventDefault();
-        dispatch(userActions.updateUser(user.id, jwt, user.firstname, user.lastname, user.phonenumber, user.country, user.sity, status, user.access, user.roles, user.avatar, user.teather_id, user.promouter_id)).then(close())
+        dispatch(userActions.updateUser(user.id, jwt, user.firstname, user.lastname, user.phonenumber, user.country, user.sity, status, user.access, user.roles, user.avatar, user.admin_id, user.teather_id, user.promouter_id)).then(close())
     }
 
     return (

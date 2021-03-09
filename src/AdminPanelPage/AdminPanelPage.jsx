@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { connect } from 'react-redux';
 import { userActions, courseActions } from "../_actions";
 import {
+    Avatar,
     Paper,
     Accordion,
     UserPlane,
-    TableHeader,
+    IconButton,
     TableHeaderText,
     Button,
     Loading,
@@ -27,6 +28,8 @@ import {
 
 import { DialogDeleteUser, DialogChangeUser } from './';
 import { TeatherCourses } from '../TeatherPanelPage/TeatherCourses';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 
 const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_error }) => {
     const [loading, setLoading] = useState(true);
@@ -39,6 +42,7 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
     const [status, setStatus] = useState('');
     const [roles, setRoles] = useState('');
     const [access, setAccess] = useState('');
+    const [adminId, setAdminId] = useState('0');
 
     useEffect(() => {
         if (user.roles === 'ROLE_ADMIN' || user.roles === 'ROLE_SUPER_ADMIN') {
@@ -95,11 +99,89 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                         roles={roles}
                         setAccess={setAccess}
                         access={access}
+                        setAdminId={setAdminId}
+                        adminId={adminId}
                         teathers={users.teathers !== undefined ? users.teathers : []}
                     />
                     <DialogDeleteUser open={deleteDialog} close={removeClose} userData={userData} />
 
+                    <div className='mb-3'>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6}>
+                                <Paper square >
+                                    <div className='paper-header'>
+                                        <Typography component='h4' variant='h4' className={'paper-header-text'}>Ваши учителя и их ученики:</Typography>
+                                    </div>
 
+                                    {users.teathers !== undefined && users.teathers.filter(teather => teather.admin_id === user.id).map((teather, index) => (
+                                        <div key={index} className={'mx-3 mb-3'}>
+                                            <Accordion labеl={
+                                                <UserPlane className={'p-0'} name={teather.firstname + " " + teather.lastname} avatar={teather.avatar} status={teather.status} />
+                                            }>
+                                                <div>
+                                                    <div className={'d-flex p-3 grid-align-items-xs-center'}>
+                                                        <Avatar alt={teather.firstname + " " + teather.lastname} src={teather.avatar} className={'avatar-large'} />
+                                                        <div className={'p-3 w-100'}>
+                                                            <div className={'d-flex grid-justify-xs-space-between grid-align-items-xs-center'}>
+                                                                <Typography component='h5' variant='h5'>{teather.firstname + " " + teather.lastname}</Typography>
+                                                                <div>
+                                                                    <IconButton onClick={() => edit(teather)}>
+                                                                        <EditOutlinedIcon />
+                                                                    </IconButton>
+                                                                    <IconButton onClick={() => remove(teather)}>
+                                                                        <DeleteForeverOutlinedIcon className='danger-area-title-icon' />
+                                                                    </IconButton>
+                                                                </div>
+                                                            </div>
+                                                            <div className={'d-flex'}>
+                                                                <div>
+                                                                    <strong>Телефон: </strong>+7{teather.phonenumber}<br />
+                                                                    <strong>Страна: </strong>{teather.country}<br />
+                                                                    <strong>Город: </strong>{teather.sity}
+                                                                </div>
+
+                                                                <div className={'ml-3'}>
+                                                                    <strong>Статус: </strong>{teather.status}<br />
+                                                                    <strong>Доступ к курсам: </strong>{teather.access === 'full' ? 'полный' : 'ограниченый'}<br />
+                                                                    <strong>Учитель: </strong>{teather.teather === null ? 'НЕТ' : teather.teather.name}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <Grid container spacing={2}>
+                                                        <Grid item xs={12} sm={6}>
+                                                            <Divider className={'mt-0'} />
+                                                            <Typography component='h5' variant='h5' className={'paper-header-text'}>Ученики:</Typography>
+                                                            <Divider />
+                                                            {users.students !== undefined ? users.students.filter(student => student.teather !== null && student.teather.id === teather.id).map((student, index) => (
+                                                                <UserPlane name={student.firstname + " " + student.lastname} avatar={student.avatar} status={student.status} />
+                                                            )) : 'Уданного учителя нет учеников.'}
+                                                        </Grid>
+                                                        <Grid item xs={12} sm={6}>
+                                                            <Divider className={'mt-0'} />
+                                                            <Typography component='h5' variant='h5' className={'paper-header-text'}>Промоутеры:</Typography>
+                                                            <Divider />
+                                                        </Grid>
+                                                    </Grid>
+
+                                                </div>
+                                            </Accordion>
+                                        </div>
+                                    ))}
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Paper square>
+                                    <div className='paper-header'>
+                                        <Typography component='h4' variant='h4' className={'paper-header-text'}>Ученики без учителя:</Typography>
+                                    </div>
+
+                                </Paper>
+                            </Grid>
+                        </Grid>
+                    </div>
 
                     <div className='mb-3'>
                         <Typography variant='h3' component='h3'>Ученики:</Typography>
@@ -198,7 +280,7 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                                 <div className='paper-header'>
                                     <Typography component='h4' variant='h4' className={'paper-header-text'}>Ваши учителя и их курсы:</Typography>
                                 </div>
-                                {users.teathers.filter(teather => teather.admin_id === user.id).map((teather, index) => (
+                                {users.teathers !== undefined && users.teathers.filter(teather => teather.admin_id === user.id).map((teather, index) => (
                                     <div key={index} className={'mx-3 mb-3'}>
                                         <Accordion labеl={
                                             <UserPlane className={'p-0'} name={teather.firstname + " " + teather.lastname} avatar={teather.avatar} status={teather.status} />

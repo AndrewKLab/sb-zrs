@@ -17,7 +17,7 @@ import {
 import { userActions } from "../_actions";
 
 
-const DialogChangeUser = ({ jwt, dispatch, open, close, userData, setUserData, setStatus, status, setRoles, roles, setAccess, access, teathers }) => {
+const DialogChangeUser = ({ jwt, user, dispatch, open, close, userData, setUserData, setStatus, status, setRoles, roles, setAccess, access, setAdminId, adminId, teathers }) => {
 
     const onValueChangeAccess = (event) => { setAccess(event) }
     const onValueChange = (event) => {
@@ -26,21 +26,25 @@ const DialogChangeUser = ({ jwt, dispatch, open, close, userData, setUserData, s
                 setStatus(event);
                 setRoles('user');
                 setAccess('limited');
+                setAdminId('0');
                 break;
             case 'УЧЕНИК':
                 setStatus(event);
                 setRoles('user');
                 setAccess('limited');
+                setAdminId('0');
                 break;
             case 'ПРОМОУТЕР':
                 setStatus(event);
                 setRoles('user');
                 setAccess('limited');
+                setAdminId('0');
                 break;
             case 'УЧИТЕЛЬ':
                 setStatus(event);
                 setRoles('ROLE_TEATHER');
                 setAccess('full');
+                setAdminId(user.id);
                 break;
             case 'admin':
                 setStatus(event);
@@ -49,6 +53,8 @@ const DialogChangeUser = ({ jwt, dispatch, open, close, userData, setUserData, s
                 break;
         }
     }
+
+    console.log(adminId)
 
     const selectTeather = (e, teather) => {
         e.preventDefault();
@@ -78,12 +84,12 @@ const DialogChangeUser = ({ jwt, dispatch, open, close, userData, setUserData, s
 
     const changeUser = (e) => {
         e.preventDefault();
-        dispatch(userActions.updateUser(userData.id, jwt, userData.firstname, userData.lastname, userData.phonenumber, userData.country, userData.sity, status, access, roles, userData.avatar, userData.teather === null ? '0' : userData.teather, userData.promouter_id )).then(
+        dispatch(userActions.updateUser(userData.id, jwt, userData.firstname, userData.lastname, userData.phonenumber, userData.country, userData.sity, status, access, roles, userData.avatar, roles === 'ROLE_TEATHER' ? user.id : '0', userData.teather === null ? '0' : userData.teather, userData.promouter_id)).then(
             () => close()
         )
     }
 
-
+    console.log(roles)
 
     return (
         <Dialog onClose={() => close()} open={open}>
@@ -176,7 +182,7 @@ const DialogChangeUser = ({ jwt, dispatch, open, close, userData, setUserData, s
                         }
                         label={'УЧИТЕЛЬ'}
                     />
-                    <FormControlLabel
+                    {user.roles === 'ROLE_SUPER_ADMIN' && <FormControlLabel
                         className='w-max'
                         control={
                             <Radio
@@ -187,7 +193,7 @@ const DialogChangeUser = ({ jwt, dispatch, open, close, userData, setUserData, s
                             />
                         }
                         label={'АДМИНИСТРАТОР'}
-                    />
+                    />}
                 </DialogContent>
                 <DialogActions>
                     <Button type="submit" className={'mr-3'} variant='outlined' color="primary">Сохранить</Button>
@@ -199,8 +205,8 @@ const DialogChangeUser = ({ jwt, dispatch, open, close, userData, setUserData, s
 }
 
 function mapStateToProps(state) {
-    const { jwt } = state.authentication;
-    return { jwt };
+    const { jwt, user } = state.authentication;
+    return { jwt, user };
 }
 
 const connectedDialogChangeUser = connect(mapStateToProps)(DialogChangeUser);

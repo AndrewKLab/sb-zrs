@@ -2410,8 +2410,8 @@ div.text-input-group label {
 }
 
 .avatar-large {
-    width: 120px;
-    height: 120px;
+    width: 120px !important;
+    height: 120px !important;
 }
 
 /* Accordion */

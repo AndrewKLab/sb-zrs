@@ -149,7 +149,7 @@ class CoursePage extends React.Component {
 
     sendRequest(id) {
         const { dispatch, user, jwt } = this.props
-        dispatch(userActions.updateSelf(user.id, jwt, user.firstname, user.lastname, user.phonenumber, user.country, user.sity, user.status, user.access, user.roles, id, user.avatar))
+        dispatch(userActions.updateSelf(user.id, jwt, user.firstname, user.lastname, user.phonenumber, user.country, user.sity, user.status, user.access, user.roles, user.admin_id, id, user.avatar))
         this.handleClose();
     }
 

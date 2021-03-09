@@ -21,7 +21,7 @@ const UpdateUserAccessDialog = ({ open, close, jwt, dispatch, user }) => {
                 <Typography component={'body'} variant={'body'}>{user.access === 'limited' ? "Открыть " : "Закрыть "} доступ ко всем категориям курсов для ученика: {user.firstname + ' ' + user.lastname}?</Typography>
             </DialogContent>
             <DialogActions>
-                <Button onPress={() => dispatch(userActions.updateUser(user.id, jwt, user.firstname, user.lastname, user.phonenumber, user.country, user.sity, user.status, user.access === 'limited' ? 'full' : 'limited', user.roles, user.avatar, user.teather_id, user.promouter_id)).then(close())} className={'mr-3'} variant='outlined' color="primary">Да</Button>
+                <Button onPress={() => dispatch(userActions.updateUser(user.id, jwt, user.firstname, user.lastname, user.phonenumber, user.country, user.sity, user.status, user.access === 'limited' ? 'full' : 'limited', user.roles, user.avatar, user.admin_id, user.teather_id, user.promouter_id)).then(close())} className={'mr-3'} variant='outlined' color="primary">Да</Button>
                 <Button onPress={() => close()} variant='outlined' color="primary">Отмена</Button>
             </DialogActions>
         </Dialog>

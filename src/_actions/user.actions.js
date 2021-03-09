@@ -149,6 +149,7 @@ function updateUser(id, jwt, firstname, lastname, phonenumber, country, sity, st
                         access,
                         roles,
                         avatar,
+                        admin_id,
                         teather,
                         promouter_id
                     }

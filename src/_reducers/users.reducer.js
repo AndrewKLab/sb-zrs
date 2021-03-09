@@ -43,6 +43,7 @@ export function users(state = initialState, action) {
                       status: action.user.status,
                       access: action.user.access,
                       roles: action.user.roles,
+                      admin_id: action.user.admin_id,
                       teather_id: action.user.teather,
                       avatar: action.user.avatar,
                       promouter_id: action.user.promouter_id
@@ -63,6 +64,7 @@ export function users(state = initialState, action) {
                       status: action.user.status,
                       access: action.user.access,
                       roles: action.user.roles,
+                      admin_id: action.user.admin_id,
                       teather_id: action.user.teather,
                       avatar: action.user.avatar,
                       promouter_id: action.user.promouter_id
@@ -83,6 +85,7 @@ export function users(state = initialState, action) {
                       status: action.user.status,
                       access: action.user.access,
                       roles: action.user.roles,
+                      admin_id: action.user.admin_id,
                       teather_id: action.user.teather,
                       avatar: action.user.avatar,
                       promouter_id: action.user.promouter_id
@@ -103,6 +106,7 @@ export function users(state = initialState, action) {
                       status: action.user.status,
                       access: action.user.access,
                       roles: action.user.roles,
+                      admin_id: action.user.admin_id,
                       teather_id: action.user.teather,
                       avatar: action.user.avatar,
                       promouter_id: action.user.promouter_id
@@ -123,6 +127,7 @@ export function users(state = initialState, action) {
                       status: action.user.status,
                       access: action.user.access,
                       roles: action.user.roles,
+                      admin_id: action.user.admin_id,
                       teather_id: action.user.teather,
                       avatar: action.user.avatar,
                       promouter_id: action.user.promouter_id
@@ -182,6 +187,7 @@ export function users(state = initialState, action) {
                     status: action.user.status,
                     access: action.user.access,
                     roles: action.user.roles,
+                    admin_id: action.user.admin_id,
                     teather_id: action.user.teather,
                     avatar: action.user.avatar,
                     promouter_id: action.user.promouter_id
@@ -204,6 +210,7 @@ export function users(state = initialState, action) {
                     status: action.user.status,
                     access: action.user.access,
                     roles: action.user.roles,
+                    admin_id: action.user.admin_id,
                     teather_id: action.user.teather,
                     avatar: action.user.avatar,
                     promouter_id: action.user.promouter_id
@@ -226,6 +233,7 @@ export function users(state = initialState, action) {
                     status: action.user.status,
                     access: action.user.access,
                     roles: action.user.roles,
+                    admin_id: action.user.admin_id,
                     teather_id: action.user.teather,
                     avatar: action.user.avatar,
                     promouter_id: action.user.promouter_id
@@ -248,6 +256,7 @@ export function users(state = initialState, action) {
                     status: action.user.status,
                     access: action.user.access,
                     roles: action.user.roles,
+                    admin_id: action.user.admin_id,
                     teather_id: action.user.teather,
                     avatar: action.user.avatar,
                     promouter_id: action.user.promouter_id
@@ -258,7 +267,7 @@ export function users(state = initialState, action) {
                   }
                   break;
                   case 'admin':
-                    var result = users.teathers;
+                    var result = users.admins;
                     result.push({
                       ...users_arr[i][j],
                       id: action.user.id,
@@ -270,6 +279,7 @@ export function users(state = initialState, action) {
                       status: action.user.status,
                       access: action.user.access,
                       roles: action.user.roles,
+                      admin_id: action.user.admin_id,
                       teather_id: action.user.teather,
                       avatar: action.user.avatar,
                       promouter_id: action.user.promouter_id
