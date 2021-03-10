@@ -44,7 +44,7 @@ export function users(state = initialState, action) {
                       access: action.user.access,
                       roles: action.user.roles,
                       admin_id: action.user.admin_id,
-                      teather_id: action.user.teather,
+                      teather: action.user.teather,
                       avatar: action.user.avatar,
                       promouter_id: action.user.promouter_id
                     } : user)
@@ -65,7 +65,7 @@ export function users(state = initialState, action) {
                       access: action.user.access,
                       roles: action.user.roles,
                       admin_id: action.user.admin_id,
-                      teather_id: action.user.teather,
+                      teather: action.user.teather,
                       avatar: action.user.avatar,
                       promouter_id: action.user.promouter_id
                     } : user)
@@ -86,7 +86,7 @@ export function users(state = initialState, action) {
                       access: action.user.access,
                       roles: action.user.roles,
                       admin_id: action.user.admin_id,
-                      teather_id: action.user.teather,
+                      teather: action.user.teather,
                       avatar: action.user.avatar,
                       promouter_id: action.user.promouter_id
                     } : user)
@@ -107,7 +107,7 @@ export function users(state = initialState, action) {
                       access: action.user.access,
                       roles: action.user.roles,
                       admin_id: action.user.admin_id,
-                      teather_id: action.user.teather,
+                      teather: action.user.teather,
                       avatar: action.user.avatar,
                       promouter_id: action.user.promouter_id
                     } : user)
@@ -128,7 +128,7 @@ export function users(state = initialState, action) {
                       access: action.user.access,
                       roles: action.user.roles,
                       admin_id: action.user.admin_id,
-                      teather_id: action.user.teather,
+                      teather: action.user.teather,
                       avatar: action.user.avatar,
                       promouter_id: action.user.promouter_id
                     } : user)
@@ -188,7 +188,7 @@ export function users(state = initialState, action) {
                     access: action.user.access,
                     roles: action.user.roles,
                     admin_id: action.user.admin_id,
-                    teather_id: action.user.teather,
+                    teather: action.user.teather,
                     avatar: action.user.avatar,
                     promouter_id: action.user.promouter_id
                   })
@@ -211,7 +211,7 @@ export function users(state = initialState, action) {
                     access: action.user.access,
                     roles: action.user.roles,
                     admin_id: action.user.admin_id,
-                    teather_id: action.user.teather,
+                    teather: action.user.teather,
                     avatar: action.user.avatar,
                     promouter_id: action.user.promouter_id
                   })
@@ -234,7 +234,7 @@ export function users(state = initialState, action) {
                     access: action.user.access,
                     roles: action.user.roles,
                     admin_id: action.user.admin_id,
-                    teather_id: action.user.teather,
+                    teather: action.user.teather,
                     avatar: action.user.avatar,
                     promouter_id: action.user.promouter_id
                   })
@@ -257,7 +257,7 @@ export function users(state = initialState, action) {
                     access: action.user.access,
                     roles: action.user.roles,
                     admin_id: action.user.admin_id,
-                    teather_id: action.user.teather,
+                    teather: action.user.teather,
                     avatar: action.user.avatar,
                     promouter_id: action.user.promouter_id
                   })
@@ -280,7 +280,7 @@ export function users(state = initialState, action) {
                       access: action.user.access,
                       roles: action.user.roles,
                       admin_id: action.user.admin_id,
-                      teather_id: action.user.teather,
+                      teather: action.user.teather,
                       avatar: action.user.avatar,
                       promouter_id: action.user.promouter_id
                     })

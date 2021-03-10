@@ -150,7 +150,7 @@ function updateUser(id, jwt, firstname, lastname, phonenumber, country, sity, st
                         roles,
                         avatar,
                         admin_id,
-                        teather,
+                        teather: teather === '0' ? null : teather,
                         promouter_id
                     }
                     dispatch(success(user));

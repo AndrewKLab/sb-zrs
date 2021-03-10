@@ -26,7 +26,7 @@ import {
     TabPanel
 } from '../_components';
 
-import { DialogDeleteUser, DialogChangeUser } from './';
+import { DialogDeleteUser, DialogChangeUser, UserAccordionPlane } from './';
 import { TeatherCourses } from '../TeatherPanelPage/TeatherCourses';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
@@ -109,7 +109,7 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <Paper square >
-                                    <div className='paper-header'>
+                                    <div className='paper-header mb-3'>
                                         <Typography component='h4' variant='h4' className={'paper-header-text'}>Ваши учителя и их ученики:</Typography>
                                     </div>
 
@@ -154,15 +154,20 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                                                         <Grid item xs={12} sm={6}>
                                                             <Divider className={'mt-0'} />
                                                             <Typography component='h5' variant='h5' className={'paper-header-text'}>Ученики:</Typography>
-                                                            <Divider />
-                                                            {users.students !== undefined ? users.students.filter(student => student.teather !== null && student.teather.id === teather.id).map((student, index) => (
-                                                                <UserPlane name={student.firstname + " " + student.lastname} avatar={student.avatar} status={student.status} />
-                                                            )) : 'Уданного учителя нет учеников.'}
+                                                            <Divider className={'mb-3'} />
+
+                                                            {users.students !== undefined ? users.students.filter(student => student.teather !== null && student.teather.id === teather.id).length === 0 ? <div className='p-3'>У данного учителя нет учеников.</div> : users.students.filter(student => student.teather !== null && student.teather.id === teather.id).map((student, index) => (
+                                                                <UserAccordionPlane edit={edit} remove={remove} user={student} />
+                                                            )) : 'У данного учителя нет учеников.'}
+
                                                         </Grid>
                                                         <Grid item xs={12} sm={6}>
                                                             <Divider className={'mt-0'} />
                                                             <Typography component='h5' variant='h5' className={'paper-header-text'}>Промоутеры:</Typography>
-                                                            <Divider />
+                                                            <Divider className={'mb-3'} />
+                                                            {users.promouters !== undefined ? users.promouters.filter(promouter => promouter.teather !== null && promouter.teather.id === teather.id).length === 0 ? <div className='p-3'>У данного учителя нет промоутеров.</div> : users.promouters.filter(promouter => promouter.teather !== null && promouter.teather.id === teather.id).map((promouter, index) => (
+                                                                <UserAccordionPlane edit={edit} remove={remove} user={promouter} />
+                                                            )) : 'У данного учителя нет учеников.'}
                                                         </Grid>
                                                     </Grid>
 
@@ -174,10 +179,12 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Paper square>
-                                    <div className='paper-header'>
+                                    <div className='paper-header mb-3'>
                                         <Typography component='h4' variant='h4' className={'paper-header-text'}>Ученики без учителя:</Typography>
                                     </div>
-
+                                    {users.students !== undefined ? users.students.filter(student => student.teather === null).length === 0 ? <div className='p-3'>Сейчас нет учеников без учителя.</div> : users.students.filter(student => student.teather === null).map((student, index) => (
+                                        <UserAccordionPlane edit={edit} remove={remove} user={student} />
+                                    )) : 'У данного учителя нет учеников.'}
                                 </Paper>
                             </Grid>
                         </Grid>

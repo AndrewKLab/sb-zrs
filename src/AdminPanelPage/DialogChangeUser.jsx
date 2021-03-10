@@ -54,8 +54,6 @@ const DialogChangeUser = ({ jwt, user, dispatch, open, close, userData, setUserD
         }
     }
 
-    console.log(adminId)
-
     const selectTeather = (e, teather) => {
         e.preventDefault();
         if (teather === undefined) {
@@ -88,8 +86,6 @@ const DialogChangeUser = ({ jwt, user, dispatch, open, close, userData, setUserD
             () => close()
         )
     }
-
-    console.log(roles)
 
     return (
         <Dialog onClose={() => close()} open={open}>

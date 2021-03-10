@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 
-export const Dropdown = ({ children, className, id, open, onClose }) => {
+export const Dropdown = ({ children, className, id, open, onClose, }) => {
     let styleClass = className !== undefined ? ' ' + className : '';
     const ref = useRef();
 
