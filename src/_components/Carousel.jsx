@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Slider from "react-slick";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import config from 'config';
 
 import ClampLines from 'react-clamp-lines';
 
@@ -102,7 +103,7 @@ export class Carousel extends Component {
                                         component="img"
                                         alt={course.name}
                                         height="140"
-                                        image="http://lifestudio-test.ru/assets/img/350x250.png"
+                                        image={`${config.url}/assets/img/350x250.png`}
                                         title="Contemplative Reptile"
                                     />
                                     <CardContent>

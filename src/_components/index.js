@@ -64,7 +64,9 @@ export * from './Table/Cell';
 
 //User
 export * from './User/UserPlane';
+export * from './User/UserAccordionPlane';
 export * from './User/UsersListPlane';
+export * from './User/UserCourseProgress';
 
 //Tabs
 export * from './Tabs/Tabs';

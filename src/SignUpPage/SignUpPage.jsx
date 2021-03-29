@@ -15,7 +15,8 @@ import {
     TextInput,
     IconButton,
     Grid
-} from '../_components'
+} from '../_components';
+import config from 'config';
 
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -271,7 +272,7 @@ class SignUpPage extends React.Component {
                 </Grid>
 
                 <Grid xs={12} sm={6}>
-                    <img src={"http://lifestudio-test.ru/assets/img/signup.png"} width='100%' alt="sign-up" />
+                    <img src={`${config.url}/assets/img/signup.png`} width='100%' alt="sign-up" />
                 </Grid>
             </Grid>
         );

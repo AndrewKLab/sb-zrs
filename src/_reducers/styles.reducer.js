@@ -19,7 +19,7 @@ const initialState = {
           'alert-danger-text-color': '97, 26, 21',
           'alert-danger-icon-color': '244, 67, 54',
 
-          'background-color-light' : '255, 255, 255'
+          'background-color-light' : '245, 245, 245'
         },
         dark: {
           'primary-light-color': '255, 205, 56',

@@ -6,6 +6,7 @@ import ClampLines from 'react-clamp-lines';
 import Moment from 'moment';
 import 'moment/locale/ru';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import config from 'config';
 
 import {
     Avatar,
@@ -278,7 +279,7 @@ class CoursePage extends React.Component {
                                                             component="img"
                                                             alt={lesson.name}
                                                             height="140"
-                                                            image="http://lifestudio-test.ru/assets/img/350x250.png"
+                                                            image={`${config.url}/assets/img/350x250.png`}
                                                             title="Contemplative Reptile"
                                                         />
                                                         <CardContent>

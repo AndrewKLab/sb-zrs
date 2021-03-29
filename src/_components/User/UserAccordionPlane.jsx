@@ -6,8 +6,9 @@ import {
     Divider,
     IconButton,
     UserPlane,
-    Typography
-} from '../_components';
+    Typography,
+    UserCourseProgress
+} from '../';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 
@@ -45,7 +46,9 @@ const UserAccordionPlane = ({ edit, remove, user, close, userData }) => {
                     <Divider className={'my-3'} />
                         <Typography component='h6' variant='h6' className={'m-0'}>Прогресс:</Typography>
                     <Divider className={'my-3'} />
-                    {user.courses !== null ? '123':'Этот пользователь еще не начал проходить курсы.'}
+                    {user.courses_passed !== null ? (
+                        <UserCourseProgress courses={user.courses_passed}/>
+                        ):'Этот пользователь еще не начал проходить курсы.'}
                 </div>
             </div>
         </Accordion>

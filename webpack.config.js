@@ -63,7 +63,7 @@ module.exports = {
                 headers: {
                     'X-ProxiedBy-Webpack': true
                 },
-                target: 'http://lifestudio-test.ru'
+                target: 'https://kniga-knig.info'
             }
         },
         historyApiFallback: true,
@@ -72,7 +72,8 @@ module.exports = {
     externals: {
         // global app config object
         config: JSON.stringify({
-            apiUrl: 'https://lifestudio-test.ru/api',
+            url: 'https://kniga-knig.info',
+            apiUrl: 'https://kniga-knig.info/api',
             GET: {
                 method: 'GET',
                 headers: {

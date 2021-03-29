@@ -8,16 +8,17 @@ import {
     Accordion
 } from '../';
 
-export const UserPlane = ({ className, student }) => {
-    let styleClass = className !== undefined ? ' ' + className : '';
+import { ProgressCircle } from '../../LessonPage';
 
+export const UserCourseProgress = ({ className, courses }) => {
+    let styleClass = className !== undefined ? ' ' + className : '';
     return (
         <Grid container spacing={2} className={styleClass}>
-            {student.courses.inprocess !== undefined ? (
-                <Grid item xs={12} sm={student.courses.finished !== undefined ? 6 : 0}>
+            {courses.inprocess !== undefined ? (
+                <Grid item xs={12}>
                     <Paper>
                         <Typography className='m-2' variant="h4" component="h4">Курсы в процессе прохождения:</Typography>
-                        {student.courses.inprocess.map((course, index) => (
+                        {courses.inprocess.map((course, index) => (
                             <Accordion key={index} labеl={course.course_name}>
                                 <div>
                                     {course.lessons !== null ? (
@@ -26,7 +27,7 @@ export const UserPlane = ({ className, student }) => {
                                                 <ListItem button >
                                                     <ListItemFirstAction>
                                                         <ProgressCircle status={lesson.status} number={lesson.number} />
-                                                        <Typography className={'pl-3 step-text'}>{lesson.name}</Typography>
+                                                        <Typography className={'pl-3 step-text text-align-left'}>{lesson.name}</Typography>
                                                     </ListItemFirstAction>
                                                 </ListItem>
                                                 {course.lessons.length !== Number(lesson.number) ? (<div className={'step-line'}></div>) : (null)}
@@ -39,11 +40,11 @@ export const UserPlane = ({ className, student }) => {
                     </Paper>
                 </Grid>
             ) : (null)}
-            {student.courses.finished !== undefined ? (
-                <Grid item xs={12} sm={student.courses.inprocess !== undefined ? 6 : 0}>
+            {courses.finished !== undefined ? (
+                <Grid item xs={12}>
                     <Paper>
                         <Typography className='m-2' variant="h4" component="h4">Пройденные курсы:</Typography>
-                        {student.courses.finished.map((course, index) => (
+                        {courses.finished.map((course, index) => (
                             <Accordion key={index} labеl={course.course_name}>
                                 <div>
                                     {course.lessons.map((lesson, index) => (
@@ -51,7 +52,7 @@ export const UserPlane = ({ className, student }) => {
                                             <ListItem button >
                                                 <ListItemFirstAction>
                                                     <ProgressCircle status={lesson.status} number={lesson.number} />
-                                                    <Typography className={'pl-3 step-text'}>{lesson.name}</Typography>
+                                                    <Typography className={'pl-3 step-text text-align-left'}>{lesson.name}</Typography>
                                                 </ListItemFirstAction>
                                             </ListItem>
                                             {course.lessons.length !== Number(lesson.number) ? (<div className={'step-line'}></div>) : (null)}

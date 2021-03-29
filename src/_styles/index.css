@@ -13,7 +13,7 @@
     --alert-info-color: 33, 150, 243;
     --alert-success-color: 76, 175, 80;
     --background-color: 255, 255, 255;
-    --background-color-light: 255, 255, 255;
+    --background-color-light: 245, 245, 245;
     --background-color-main: 255, 255, 255;
     --background-color-dark: 255, 255, 255;
     --text-light: 255, 255, 255;
@@ -1884,6 +1884,7 @@ footer {
     height: 44px;
     background-color: white !important;
     box-shadow: 0px 0px 2px 0px #424242;
+    z-index: 1;
 }
 
 .carousel-left-button svg {
@@ -1923,6 +1924,7 @@ footer {
     width: 100%;
     display: block;
     background-size: cover;
+    object-fit: cover;
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -2433,7 +2435,7 @@ div.text-input-group label {
 
 .active, .accordion:hover {
     background-color: rgba(var(--background-color-light), 1);
-    ;
+    
 }
 
 .panel {

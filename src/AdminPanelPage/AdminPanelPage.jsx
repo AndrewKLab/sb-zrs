@@ -6,6 +6,7 @@ import {
     Paper,
     Accordion,
     UserPlane,
+    UserAccordionPlane,
     IconButton,
     TableHeaderText,
     Button,
@@ -26,7 +27,7 @@ import {
     TabPanel
 } from '../_components';
 
-import { DialogDeleteUser, DialogChangeUser, UserAccordionPlane } from './';
+import { DialogDeleteUser, DialogChangeUser } from './';
 import { TeatherCourses } from '../TeatherPanelPage/TeatherCourses';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
@@ -157,7 +158,7 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                                                             <Divider className={'mb-3'} />
 
                                                             {users.students !== undefined ? users.students.filter(student => student.teather !== null && student.teather.id === teather.id).length === 0 ? <div className='p-3'>У данного учителя нет учеников.</div> : users.students.filter(student => student.teather !== null && student.teather.id === teather.id).map((student, index) => (
-                                                                <UserAccordionPlane edit={edit} remove={remove} user={student} />
+                                                                <UserAccordionPlane key={index} edit={edit} remove={remove} user={student} />
                                                             )) : 'У данного учителя нет учеников.'}
 
                                                         </Grid>
@@ -166,7 +167,7 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                                                             <Typography component='h5' variant='h5' className={'paper-header-text'}>Промоутеры:</Typography>
                                                             <Divider className={'mb-3'} />
                                                             {users.promouters !== undefined ? users.promouters.filter(promouter => promouter.teather !== null && promouter.teather.id === teather.id).length === 0 ? <div className='p-3'>У данного учителя нет промоутеров.</div> : users.promouters.filter(promouter => promouter.teather !== null && promouter.teather.id === teather.id).map((promouter, index) => (
-                                                                <UserAccordionPlane edit={edit} remove={remove} user={promouter} />
+                                                                <UserAccordionPlane key={index} edit={edit} remove={remove} user={promouter} />
                                                             )) : 'У данного учителя нет учеников.'}
                                                         </Grid>
                                                     </Grid>
@@ -182,12 +183,14 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                                     <div className='paper-header mb-3'>
                                         <Typography component='h4' variant='h4' className={'paper-header-text'}>Ученики без учителя:</Typography>
                                     </div>
-                                    {users.students !== undefined ? users.students.filter(student => student.teather === null).length === 0 ? <div className='p-3'>Сейчас нет учеников без учителя.</div> : users.students.filter(student => student.teather === null).map((student, index) => (
-                                        <UserAccordionPlane edit={edit} remove={remove} user={student} />
-                                    )) : 'У данного учителя нет учеников.'}
+                                    <div className='mx-3'>
+                                        {users.students !== undefined ? users.students.filter(student => student.teather === null).length === 0 ? <div className='p-3'>Сейчас нет учеников без учителя.</div> : users.students.filter(student => student.teather === null).map((student, index) => (
+                                            <UserAccordionPlane key={index} edit={edit} remove={remove} user={student} />
+                                        )) : 'Сейчас нет учеников без учителя.'}
+                                    </div>
                                 </Paper>
                             </Grid>
-                        </Grid>
+                        </Grid> 
                     </div>
 
                     <div className='mb-3'>

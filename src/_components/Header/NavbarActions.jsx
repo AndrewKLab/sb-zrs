@@ -1,7 +1,7 @@
 import React, { Component, createRef } from "react";
 import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
-
+import config from 'config';
 import Brightness2Icon from '@material-ui/icons/Brightness2';
 import HelpIcon from '@material-ui/icons/Help';
 import SearchIcon from '@material-ui/icons/Search';
@@ -203,7 +203,7 @@ class NavbarActions extends Component {
                         onClick={() => this.handleOpenDropdown()}
                         className="dropbtn"
                     >
-                        <Avatar alt="" src="http://lifestudio-test.ru/assets/img/unnamed.png" />
+                        <Avatar alt="" src={`${config.url}/assets/img/unnamed.png`} />
                     </IconButton>
                     <div id="myDropdown" className="dropdown-content">
                         {user ? (
@@ -221,7 +221,7 @@ class NavbarActions extends Component {
                                 <ListItem>
                                     <ListItemFirstAction>
                                         <ListItemIcon>
-                                            <Avatar alt="" src="http://lifestudio-test.ru/assets/img/unnamed.png" />
+                                            <Avatar alt="" src={`${config.url}/assets/img/unnamed.png`} />
                                         </ListItemIcon>
                                         <ListItemText title="Привет, посетитель!" />
                                     </ListItemFirstAction>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import config from 'config';
 
 import {
     Switch,
@@ -225,7 +226,7 @@ class HomePage extends React.Component {
                         <CardMedia
                             component="img"
                             height="140"
-                            image="http://lifestudio-test.ru/assets/img/350x250.png"
+                            image={`${config.url}/assets/img/350x250.png`}
                             title="Contemplative Reptile"
                         />
                         <CardContent>

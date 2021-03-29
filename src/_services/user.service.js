@@ -48,7 +48,7 @@ function signup(firstname, lastname, phonenumber, country, sity, password, teath
             status: "ИСКАТЕЛЬ",
             access: "limited",
             roles: "user",
-            avatar: "http://lifestudio-test.ru/assets/img/unnamed.png"
+            avatar: `${config.apiUrl}/assets/img/unnamed.png`
         })
     };
 

@@ -24,6 +24,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Formik, Form } from "formik";
 import * as yup from "yup";
 import "yup-phone";
+import config from 'config';
 
 const phoneRegex = RegExp(
     /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
@@ -85,7 +86,7 @@ class SignInPage extends React.Component {
             <div>
                 <Grid container>
                     <Grid item xs={12} sm={6}>
-                        <img src={"http://lifestudio-test.ru/assets/img/signin.png"} className='img' alt="sign-in" />
+                        <img src={`${config.url}/assets/img/signin.png`} className='img' alt="sign-in" />
                     </Grid>
 
                     <Grid item xs={12} sm={6} className='center'>

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { courseActions } from '../_actions'
 import ClampLines from 'react-clamp-lines';
+import config from 'config';
 
 import {
     Loading,
@@ -70,7 +71,7 @@ class CoursesPage extends React.Component {
                                             component="img"
                                             alt={course.name}
                                             height="140"
-                                            image="http://lifestudio-test.ru/assets/img/350x250.png"
+                                            image={`${config.url}/assets/img/350x250.png`}
                                             title="Contemplative Reptile"
                                         />
                                         <CardContent>
