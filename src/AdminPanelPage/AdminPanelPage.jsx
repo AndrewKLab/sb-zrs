@@ -24,7 +24,8 @@ import {
     Radio,
     Tabs,
     Tab,
-    TabPanel
+    TabPanel,
+    Chat
 } from '../_components';
 
 import { DialogDeleteUser, DialogChangeUser } from './';
@@ -78,6 +79,7 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                         <Tab index={0}>Статистика</Tab>
                         <Tab index={1}>Управление пользователями</Tab>
                         <Tab index={2}>Управление курсами</Tab>
+                        <Tab index={3}>Диалоги</Tab>
                     </Tabs>
                 </Paper>
 
@@ -302,6 +304,10 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                             </Paper>
                         </Grid>
                     </Grid>
+                </TabPanel>
+
+                <TabPanel tab={tab} index={3}>
+                    <Chat/>
                 </TabPanel>
 
 
