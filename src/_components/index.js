@@ -68,6 +68,12 @@ export * from './User/UserAccordionPlane';
 export * from './User/UsersListPlane';
 export * from './User/UserCourseProgress';
 
+//Chat
+export * from './Chat/Chat';
+export * from './Chat/ChatDialogs';
+export * from './Chat/ChatCurrentDialog';
+export * from './Chat/ChatDialogUser';
+
 //Tabs
 export * from './Tabs/Tabs';
 export * from './Tabs/Tab';

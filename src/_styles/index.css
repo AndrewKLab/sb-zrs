@@ -2435,7 +2435,6 @@ div.text-input-group label {
 
 .active, .accordion:hover {
     background-color: rgba(var(--background-color-light), 1);
-    
 }
 
 .panel {
@@ -3080,6 +3079,73 @@ tr.row th {
 .profile-avatar {
     width: 15%;
     height: 100%;
+}
+
+/* Chat */
+
+.chat {
+    display: flex;
+    min-height: 471px;
+}
+
+.chat-dialogs {
+    min-height: inherit;
+    width: 30%;
+}
+
+.chat-current-dialog {
+    min-height: inherit;
+    width: 70%;
+}
+
+.chat-dialog-user {
+    display: flex;
+    cursor: pointer;
+}
+
+.chat-dialog-user:hover {
+    display: flex;
+    background-color: rgb(var(--text-dark), 0.15);
+}
+
+.chat-dialog-user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin: 0.5rem;
+}
+
+.chat-dialog-user-data {
+    width: calc(100% - 50px - 1rem);
+    border-bottom: 1px solid rgb(var(--text-dark), 0.15);
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.chat-dialog-user-name {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.chat-dialog-user-last-message-time{
+    color: #888 !important;
+    opacity: .7;
+    font-size: 12.5px;
+}
+
+.chat-dialog-user-last-message-container {
+    max-width: 85%;
+    width: 85%;
+    white-space: nowrap;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 12.5px;
+    font-size: 13px;
+    line-height: 16px;
+    color: #999 !important;
 }
 
 /* CREATE COURSE*/
