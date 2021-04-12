@@ -6,3 +6,4 @@ export * from './course.constants';
 export * from './lesson.constants';
 export * from './question.constants';
 export * from './search.constants';
+export * from './chat.constants';

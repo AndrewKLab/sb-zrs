@@ -6,3 +6,4 @@ export * from './course.actions';
 export * from './lesson.actions';
 export * from './question.actions';
 export * from './search.actions';
+export * from './chat.actions';

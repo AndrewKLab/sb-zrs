@@ -8,6 +8,7 @@ import { categories } from './category.reducer';
 import { course } from './course.reducer';
 import { lesson } from './lesson.reducer';
 import { search } from './search.reducer';
+import { chat } from './chat.reducer';
 
 const rootReducer = combineReducers({
   authentication,
@@ -17,7 +18,8 @@ const rootReducer = combineReducers({
   categories,
   course,
   lesson,
-  search
+  search,
+  chat
 });
 
 export default rootReducer;
