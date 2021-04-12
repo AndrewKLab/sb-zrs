@@ -16,7 +16,7 @@ export const UserPlane = ({ name, avatar, status, button, onClick, className }) 
                 <ListItemIcon>
                     <Avatar alt={name} src={avatar} />
                 </ListItemIcon>
-                <ListItemText title={name} subtitle={"Статус: " + status} />
+                 <ListItemText title={name} subtitle={status && "Статус: " + status} />
             </ListItemFirstAction>
         </ListItem>
     )

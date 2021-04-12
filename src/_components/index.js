@@ -49,6 +49,10 @@ export * from './List/ListItemSubtitle'
 export * from './List/ListItemText'
 export * from './List/ListItemTitle'
 
+//List
+export * from './Slider/Slider'
+export * from './Slider/SliderItem'
+
 //Menu
 export * from './Menu/Menu'
 export * from './Menu/MenuItem'
