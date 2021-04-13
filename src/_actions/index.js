@@ -7,3 +7,4 @@ export * from './lesson.actions';
 export * from './question.actions';
 export * from './search.actions';
 export * from './chat.actions';
+export * from './message.actions';

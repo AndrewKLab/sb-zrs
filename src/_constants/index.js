@@ -7,3 +7,4 @@ export * from './lesson.constants';
 export * from './question.constants';
 export * from './search.constants';
 export * from './chat.constants';
+export * from './message.constants';

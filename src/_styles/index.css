@@ -909,6 +909,28 @@ h6, .h6 {
     background-color: rgba(var(--text-dark)) !important;
 }
 
+/* border */
+
+.b-none {
+    border: none !important;
+}
+
+.bl-none {
+    border-left: none !important;
+}
+
+.bt-none {
+    border-top: none !important;
+}
+
+.br-none {
+    border-right: none !important;
+}
+
+.bb-none {
+    border-bottom: none !important;
+}
+
 /* display */
 
 .d-flex {
@@ -2025,6 +2047,11 @@ footer {
     color: rgba(var(--primary-main-color));
 }
 
+.messages-loading {
+    min-height: inherit !important;
+    max-height: inherit !important;
+}
+
 /* TextInput */
 
 div.text-input-group {
@@ -3089,6 +3116,7 @@ tr.row th {
 .chat-dialogs {
     min-height: inherit;
     width: 30%;
+    border-right: 1px solid rgb(var(--text-dark), 0.15);
 }
 
 .chat-current-dialog {
@@ -3115,11 +3143,11 @@ tr.row th {
 
 .chat-dialog-user-data {
     width: calc(100% - 50px - 1rem);
-    border-bottom: 1px solid rgb(var(--text-dark), 0.15);
     padding: 0.5rem;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    border-bottom: 1px solid rgb(var(--text-dark), 0.15);
 }
 
 .chat-dialog-user-name {
@@ -3127,7 +3155,7 @@ tr.row th {
     font-weight: 500;
 }
 
-.chat-dialog-user-last-message-time{
+.chat-dialog-user-last-message-time {
     color: #888 !important;
     opacity: .7;
     font-size: 12.5px;
@@ -3144,6 +3172,58 @@ tr.row th {
     font-size: 13px;
     line-height: 16px;
     color: #999 !important;
+}
+
+.chat-header {
+    display: flex;
+}
+
+.chat-dialogs-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    border-bottom: 1px solid rgb(var(--text-dark), 0.15);
+    align-items: center;
+    max-height: 55px;
+}
+
+.chat-current-dialog-header {
+    border-bottom: 1px solid rgb(var(--text-dark), 0.15);
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    align-items: center;
+    max-height: 55px;
+}
+
+.chat-select-dialog-alert-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: inherit;
+}
+
+.chat-select-dialog-alert {
+    border: 1px solid rgba(var(--primary-main-color));
+    color: rgba(var(--primary-main-color));
+    padding: 8px;
+    border-radius: 16px;
+}
+
+/* messages */
+
+.messages {
+    width: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.message-left {
+    align-self: start;
+}
+
+.message-right {
+    align-self: end;
 }
 
 /* CREATE COURSE*/
