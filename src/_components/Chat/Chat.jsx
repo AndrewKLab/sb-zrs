@@ -3,7 +3,7 @@ import { ChatDialogs, ChatCurrentDialog, Loading, Paper, Grid } from "../";
 import { connect } from 'react-redux';
 import { chatActions } from "../../_actions";
 
-const Chat = ({ dispatch, jwt, className, chat_loading, chats, message_loading, messages }) => {
+const Chat = ({ dispatch, jwt, user, className, chat_loading, chats, message_loading, messages }) => {
     let styleClass = className !== undefined ? ' ' + className : '';
     const [selectedDialog, setSelectedDialog] = useState(null);
     useEffect(() => {
@@ -31,6 +31,7 @@ const Chat = ({ dispatch, jwt, className, chat_loading, chats, message_loading, 
                     setSelectedDialog={setSelectedDialog}
                 />
                 <ChatCurrentDialog
+                    user={user}
                     message_loading={message_loading}
                     messages={messages}
                     selectedDialog={selectedDialog}
@@ -43,11 +44,12 @@ const Chat = ({ dispatch, jwt, className, chat_loading, chats, message_loading, 
 function mapStateToProps(state) {
     const { message_loading, messages } = state.message;
     const { chat_loading, chats } = state.chat;
-    const { jwt } = state.authentication;
+    const { jwt, user } = state.authentication;
     return {
         chat_loading,
         chats,
         jwt,
+        user,
         message_loading,
         messages
     };
