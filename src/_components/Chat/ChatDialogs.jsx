@@ -1,21 +1,16 @@
 import React, { useState } from "react";
 import { Grid, ChatDialogUser } from "../";
-import { messageActions } from "../../_actions";
 
-export const ChatDialogs = ({ dispatch, jwt, className, chats, selectedDialog, setSelectedDialog }) => {
+export const ChatDialogs = ({className, chats, selectChat}) => {
     let styleClass = className !== undefined ? ' ' + className : '';
-    const [offset, setOffset] = useState(0);
 
-    const selectChat = (item) => {
-        dispatch(messageActions.getMessagesByChat(jwt, item.chat_id, offset))
-        setSelectedDialog(item)
-    }
 
     return (
         <Grid item xs={12} sm={4} className={`chat-dialogs${styleClass}`}>
             <div className="chat-dialogs-header">
                 <input />
             </div>
+            <div className={`chat-dialog-users`}>
             {chats.map((item, index) => (
                 <ChatDialogUser
                     key={index}
@@ -26,6 +21,7 @@ export const ChatDialogs = ({ dispatch, jwt, className, chats, selectedDialog, s
                     onClick={() => selectChat(item)}
                 />
             ))}
+            </div>
         </Grid>
     );
 };
