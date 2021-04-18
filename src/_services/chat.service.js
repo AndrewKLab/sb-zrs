@@ -1,7 +1,8 @@
 import config from 'config';
 
 export const chatService = {
-    getAllChatsByUser
+    getAllChatsByUser,
+    getMessagesByChat
 };
 
 function getAllChatsByUser(jwt) {
@@ -11,6 +12,15 @@ function getAllChatsByUser(jwt) {
     };
 
     return fetch(`/api/chat/read_all_chats_by_user.php`, requestOptions).then(handleResponse);
+}
+
+function getMessagesByChat(jwt, chat_id, offset) {
+    var requestOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` },
+    };
+
+    return fetch(`/api/message/read_messages_by_chat.php?c=${chat_id}&o=${offset}`, requestOptions).then(handleResponse);
 }
 
 

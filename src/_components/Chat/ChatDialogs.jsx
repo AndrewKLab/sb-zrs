@@ -1,27 +1,30 @@
 import React, { useState } from "react";
-import { Grid, ChatDialogUser } from "../";
+import { Loading, ChatDialogUser } from "../";
 
-export const ChatDialogs = ({className, chats, selectChat}) => {
+export const ChatDialogs = ({ className, chats, selectChat, chat_loading }) => {
     let styleClass = className !== undefined ? ' ' + className : '';
 
-
     return (
-        <Grid item xs={12} sm={4} className={`chat-dialogs${styleClass}`}>
+        <div className={`chat-dialogs${styleClass}`}>
             <div className="chat-dialogs-header">
                 <input />
             </div>
-            <div className={`chat-dialog-users`}>
-            {chats.map((item, index) => (
-                <ChatDialogUser
-                    key={index}
-                    name={item.chat_user_name}
-                    avatar={item.chat_user_avatar}
-                    lastmessage={item.chat_last_message}
-                    lastmessagetime={item.chat_last_message_time}
-                    onClick={() => selectChat(item)}
-                />
-            ))}
-            </div>
-        </Grid>
+            { chat_loading === true ?
+                <Loading className={`messages-loading`} />
+                :
+                <div className={`chat-dialog-users`}>
+                    {chats.map((item, index) => (
+                        <ChatDialogUser
+                            key={index}
+                            name={item.chat_user_name}
+                            avatar={item.chat_user_avatar}
+                            lastmessage={item.chat_last_message}
+                            lastmessagetime={item.chat_last_message_time}
+                            onClick={() => selectChat(item)}
+                        />
+                    ))}
+                </div>
+            }
+        </div>
     );
 };

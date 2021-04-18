@@ -11,7 +11,7 @@ import { ToAllButton } from './'
 
 
 class CategoriesPage extends React.Component {
-    componentDidMount() {       
+    componentDidMount() {
         const { dispatch, history, user } = this.props;
         if (user !== undefined) {
             console.log(user)
@@ -27,13 +27,11 @@ class CategoriesPage extends React.Component {
     }
     render() {
         const { loading, basic, special, social, national } = this.props;
-        
+
         if ((loading == true || loading == undefined) &&
             (basic == undefined, special == undefined, social == undefined, national == undefined)) {
             return <Loading />
         }
-
-
 
         return (
             <div className='pb-3'>
