@@ -4,7 +4,8 @@ import { chatService } from '../_services';
 export const chatActions = {
     getAllChatsByUser,
     getMessagesByChat,
-    getMoreMessagesByChat
+    getMoreMessagesByChat,
+    selectOpenChat
 };
 
 function getAllChatsByUser(jwt) {
@@ -52,3 +53,5 @@ function getMoreMessagesByChat(jwt, chat_id, offset) {
     function success(chat_id, messages) { return { type: chatConstants.GET_MORE_MESSAGES_BY_CHAT_SUCCESS, chat_id, messages } }
     function failure(error) { return { type: chatConstants.GET_MORE_MESSAGES_BY_CHAT_FAILURE, error } }
 }
+
+function selectOpenChat(chat_id) { return { type: chatConstants.SELECT_OPEN_CHAT, chat_id } }

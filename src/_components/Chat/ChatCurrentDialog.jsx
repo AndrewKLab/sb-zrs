@@ -1,7 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Grid, Loading } from "../";
+import { Form, Loading } from "../";
 import SearchIcon from '@material-ui/icons/Search';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import AttachFileIcon from '@material-ui/icons/AttachFile';
+import SentimentSatisfiedOutlinedIcon from '@material-ui/icons/SentimentSatisfiedOutlined';
+import SendIcon from '@material-ui/icons/Send';
 import moment from "moment";
 import { chatActions } from "../../_actions";
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -14,50 +17,56 @@ class ChatCurrentDialog extends React.Component {
         super(props);
         // Не вызывайте здесь this.setState()!
         this.state = { loading: true };
+        this.firstSelectChat;
+        this.selectOtherChat;
+        this.loadMoreChat;
     }
 
-    // componentDidMount() {
-    //     const { dispatch, jwt, selectedDialog, setOffset } = this.props
+    componentDidUpdate() {
 
-    //     dispatch(chatActions.getMessagesByChat(jwt, selectedDialog, 0)).then(() => {
-    //         setOffset(20)
-    //         this.setState({ loading: false })
-    //     })
-    // }
+        if (this.firstSelectChat) {
+            console.log('Первый выбор чата');
+            this.scrollToBottom();
+        } else if (this.selectOtherChat) {
+            console.log('Переключил чат')
+            this.scrollToBottom();
+        } else if (this.loadMoreChat) {
+            const { messageList } = this.refs;
+            const { chats, selected_chat } = this.props;
+            const numMessages = messageList.childNodes.length;
+            const numChat = chats.filter(chat => chat.chat_id === selected_chat);
+            const message = messageList.childNodes[numMessages - (numChat[0].offset - 20)]
 
-    UNSAFE_componentDidUpdate() {
-        console.log(123)
-        if (this.historyChanged) {
-            if (this.scrollAtBottom) {
-                this.scrollToBottom();
-            }
-            if (this.topMessage) {
-                ReactDOM.findDOMNode(this.topMessage).scrollIntoView();
-            }
+            var topPos = message.offsetTop;
+            //console.log(messageList.childNodes)
+            //messageList.scrollTop = topPos;
+            messageList.scroll({
+                top: topPos - 250
+            })
+            //this.topMessage = numMessages === 0 ? null : messageList.childNodes[0];
+            //messageList.parentNode.scrollTop = messageList.childNodes[numMessages - (numChat[0].offset - 20)].offsetTop; 
+            //message.scrollIntoView({ block: "start" })
+            //ReactDOM.findDOMNode(messageList).scrollTo({top: messageList.childNodes[19].offsetTop})
         }
+
     }
+
 
     UNSAFE_componentWillUpdate(nextProps) {
-        const { selected_chat, chats, message_loading } = this.props;
+        const { selected_chat, chats, message_loading, message_loadmore_loading, message_loadmore_error } = this.props;
         const { loading } = this.state;
-        console.log(selected_chat, chats, message_loading)
-        if (!loading) {
-            console.log(123)
-            this.historyChanged = chats.filter(chat => chat.chat_id === selected_chat).messages.length !== nextProps.chats.filter(chat => chat.chat_id === nextProps.selectedDialog).messages.length;
-            if (this.historyChanged) {
-                const { messageList } = this.refs;
-                const scrollPos = messageList.scrollTop;
-                const scrollBottom = (messageList.scrollHeight - messageList.clientHeight);
-                this.scrollAtBottom = (scrollBottom <= 0) || (scrollPos === scrollBottom);
-            }
-        }
+        console.log("props: " + selected_chat, message_loading, chats, message_loadmore_loading, message_loadmore_error);
+        console.log("nextProps: " + nextProps.selected_chat, nextProps.message_loading, nextProps.chats, nextProps.message_loadmore_loading, nextProps.message_loadmore_error)
+        this.firstSelectChat = selected_chat === undefined && selected_chat !== nextProps.selected_chat;
+        this.selectOtherChat = selected_chat !== undefined && selected_chat !== nextProps.selected_chat;
+        this.loadMoreChat = nextProps.selected_chat === selected_chat && message_loadmore_loading === true && nextProps.message_loadmore_loading === false && nextProps.message_loadmore_error !== "Сообщения не найдены."
     }
 
-    onScroll = () => {
-        const { refs, props } = this;
-        const scrollTop = refs.messageList.scrollTop;
+    onScroll = (list, current_chat) => {
+        const messages_list = list.target;
+        const scrollTop = messages_list.scrollTop;
         if (scrollTop === 0) {
-            this.loadMoreMessages(refs.messageList);
+            this.loadMoreMessages(messages_list, current_chat);
         }
     };
 
@@ -69,29 +78,30 @@ class ChatCurrentDialog extends React.Component {
         ReactDOM.findDOMNode(messageList).scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
     }
 
-    loadMoreMessages = (list) => {
+    loadMoreMessages = (list, current_chat) => {
         // const messages_list = list.target;
         // if (messages_list.scrollHeight - (messages_list.scrollTop * 2) > messages_list.offsetHeight) {
-        if (!loadmore && message_loadmore_loading === false && message_loadmore_error === null) {
-            setLoadMore(true)
-            dispatch(chatActions.getMoreMessagesByChat(jwt, selectedDialog, offset)).then(
-                () => {
-                    setOffset(offset + 20)
-                    setLoadMore(false)
-                }
-            )
+        const { dispatch, message_loadmore_loading, selected_chat, jwt, message_loadmore_error } = this.props;
+        if (message_loadmore_loading === false && message_loadmore_error === null) {
+            dispatch(chatActions.getMoreMessagesByChat(jwt, selected_chat, current_chat.offset))
         }
         // }
     }
 
+    onSubmit = (event) => {
+        console.log(document.getElementById('chat-input').value)
+        event.preventDefault();
+    }
+
     render() {
-        const { chats, message_loading, chat_id, message_loadmore_loading, user } = this.props;
+        const { chats, message_loading, selected_chat, message_loadmore_loading, user } = this.props;
         if (message_loading) {
             return <div className={`chat-current-dialog bl-none center`}><Loading className={`messages-loading`} /></div>
-        } else if (!message_loading && chat_id === null) {
+        } else if (!message_loading && selected_chat === undefined) {
             return <div className={`chat-current-dialog bl-none center`}><span className={`chat-select-dialog-alert`}>Выберите, кому бы выхотели написать</span></div>
         } else {
-            var current_chat = chats.filter((chat) => (chat.chat_id === chat_id));
+            console.log(selected_chat)
+            var current_chat = chats.filter((chat) => (chat.chat_id === selected_chat));
             var current_chat = current_chat[0]
             return (
                 <div className={`chat-current-dialog bl-none center`}>
@@ -105,12 +115,12 @@ class ChatCurrentDialog extends React.Component {
                                 <MoreHorizIcon />
                             </div>
                         </div>
-                        <div ref="messageList" className='messages' onScroll={this.onScroll} >
-                            {message_loadmore_loading === true ? (<div className={`loadmore-messages-loading`}><CircularProgress size={20} /></div>) : (<div className="min-height-block"> </div>)}
+                        <div ref="messageList" className='messages' onScroll={(list) => this.onScroll(list, current_chat)} >
+                            {message_loadmore_loading === true && (<div className={`loadmore-messages-loading`}><CircularProgress size={20} /></div>)}
                             {
                                 current_chat.messages.map((item, index) => {
                                     return (
-                                        <div key={index} className={`${user.id === item.send_from ? 'mine' : 'yours'} w-100`}>
+                                        <div key={item.message_id} className={`${user.id === item.send_from ? 'mine' : 'yours'} w-100`}>
                                             <div className={`${user.id === item.send_from ? 'mine' : 'yours'} message last`}>
                                                 {item.message}
                                                 <div className={`messagetime-container`}>
@@ -124,9 +134,14 @@ class ChatCurrentDialog extends React.Component {
                                 })
                             }
                         </div >
-                        <div className="message-input">
-                            <input />
-                        </div>
+                        <Form onSubmit={this.onSubmit}>
+                            <div className="message-input">
+                                <AttachFileIcon />
+                                <input id={'chat-input'} name={'chat-input'} type={'text'} className='messages-input-plane' placeholder={'Напишите сообщение...'} />
+                                <SentimentSatisfiedOutlinedIcon />
+                                <SendIcon onClick={this.onSubmit} />
+                            </div>
+                        </Form>
                     </div>
 
                 </div >
