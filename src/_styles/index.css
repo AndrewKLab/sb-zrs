@@ -3433,14 +3433,21 @@ tr.row th {
 
 /* messages */
 
-.messages {
+.messages-container {
     width: 100%;
+    height: calc(100vh - 254px);
+    overflow: auto;
+}
+
+.messages {
+
     display: flex;
     flex-direction: column;
     padding: 15px;
     gap: 8px;
-    height: calc(100vh - 254px);
-    overflow: auto;
+    float: left;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .loadmore-messages-loading {
@@ -3538,8 +3545,10 @@ tr.row th {
 
 .messagetime-container {
     float: right;
-    margin: 10px -5px -5px 10px;
+    margin: 10px -2.5px -2.5px 10px;
     position: relative;
+    align-items: flex-end;
+    display: flex;
 }
 
 .messagetime-wrap {
@@ -3549,10 +3558,17 @@ tr.row th {
     line-height: 15px;
     opacity: 0.4;
     white-space: nowrap;
+    align-items: center;
+    display: flex;
 }
 
 .messagetime {
     display: inline-block;
+}
+
+.messagetime svg{
+    height: 15px;
+    width: 15px;
 }
 
 .message-input {
@@ -3566,11 +3582,11 @@ tr.row th {
     color: rgba(var(--text-dark), 0.5);
 }
 
-.message-input svg{
+.message-input svg {
     cursor: pointer;
 }
 
-.message-input svg:hover{
+.message-input svg:hover {
     color: rgba(var(--text-dark), 0.8);
 }
 
@@ -3581,7 +3597,7 @@ tr.row th {
     padding: 8px;
     border: 1px solid rgba(var(--text-dark), 0.25);
     border-radius: 5px;
-    font-size: small;
+    font-size: smaller;
 }
 
 /* CREATE COURSE*/

@@ -2,7 +2,9 @@ import config from 'config';
 
 export const chatService = {
     getAllChatsByUser,
-    getMessagesByChat
+    getMessagesByChat,
+    sendMessage,
+    checkNewMessagesByChat
 };
 
 function getAllChatsByUser(jwt) {
@@ -22,6 +24,26 @@ function getMessagesByChat(jwt, chat_id, offset) {
 
     return fetch(`/api/message/read_messages_by_chat.php?c=${chat_id}&o=${offset}`, requestOptions).then(handleResponse);
 }
+
+function sendMessage(jwt, to, message) {
+    var requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` },
+        body: JSON.stringify({ message })
+    };
+
+    return fetch(`/api/message/send.php?to=${to}`, requestOptions).then(handleResponse);
+}
+
+function checkNewMessagesByChat(jwt, chat_id, send_from) {
+    var requestOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` },
+    };
+
+    return fetch(`/api/message/check_new_messages_by_chat.php?c=${chat_id}&sf=${send_from}`, requestOptions).then(handleResponse);
+}
+
 
 
 function handleResponse(response) {

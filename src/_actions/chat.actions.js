@@ -5,7 +5,9 @@ export const chatActions = {
     getAllChatsByUser,
     getMessagesByChat,
     getMoreMessagesByChat,
-    selectOpenChat
+    selectOpenChat,
+    sendMessage,
+    checkNewMessagesByChat
 };
 
 function getAllChatsByUser(jwt) {
@@ -55,3 +57,33 @@ function getMoreMessagesByChat(jwt, chat_id, offset) {
 }
 
 function selectOpenChat(chat_id) { return { type: chatConstants.SELECT_OPEN_CHAT, chat_id } }
+
+function sendMessage(jwt, to, message) {
+    return dispatch => {
+        dispatch(request(jwt, to, message));
+
+        return chatService.sendMessage(jwt, to, message)
+            .then(
+                done => dispatch(success(jwt, to, message, done)),
+                error => dispatch(failure(error))
+            );
+    };
+    function request(jwt, to, message) { return { type: chatConstants.SEND_MESSAGE_REQUEST, jwt, to, message } }
+    function success(jwt, to, message, done) { return { type: chatConstants.SEND_MESSAGE_SUCCESS, jwt, to, message, done } }
+    function failure(error) { return { type: chatConstants.SEND_MESSAGE_FAILURE, error } }
+}
+
+function checkNewMessagesByChat(jwt, chat_id, send_from) {
+    return dispatch => {
+        dispatch(request(jwt, chat_id, send_from));
+
+        return chatService.checkNewMessagesByChat(jwt, chat_id, send_from)
+            .then(
+                messages => dispatch(success(messages)),
+                error => dispatch(failure(error))
+            );
+    };
+    function request(jwt, chat_id, send_from) { return { type: chatConstants.SEND_MESSAGE_REQUEST, jwt, chat_id, send_from } }
+    function success(messages) { return { type: chatConstants.SEND_MESSAGE_SUCCESS, messages } }
+    function failure(error) { return { type: chatConstants.SEND_MESSAGE_FAILURE, error } }
+}

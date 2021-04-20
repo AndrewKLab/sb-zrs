@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Form, Loading } from "../";
+import { Form, Loading, ChatMessages } from "../";
 import SearchIcon from '@material-ui/icons/Search';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
@@ -7,7 +7,6 @@ import SentimentSatisfiedOutlinedIcon from '@material-ui/icons/SentimentSatisfie
 import SendIcon from '@material-ui/icons/Send';
 import moment from "moment";
 import { chatActions } from "../../_actions";
-import CircularProgress from '@material-ui/core/CircularProgress';
 import * as ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
@@ -20,6 +19,8 @@ class ChatCurrentDialog extends React.Component {
         this.firstSelectChat;
         this.selectOtherChat;
         this.loadMoreChat;
+        this.sendMessageChat;
+        this.timer
     }
 
     componentDidUpdate() {
@@ -33,10 +34,10 @@ class ChatCurrentDialog extends React.Component {
         } else if (this.loadMoreChat) {
             const { messageList } = this.refs;
             const { chats, selected_chat } = this.props;
-            const numMessages = messageList.childNodes.length;
-            const numChat = chats.filter(chat => chat.chat_id === selected_chat);
-            const message = messageList.childNodes[numMessages - (numChat[0].offset - 20)]
+            const numMessages = messageList.childNodes[0].childNodes.length;
 
+            const numChat = chats.filter(chat => chat.chat_id === selected_chat);
+            const message = messageList.childNodes[0].childNodes[numMessages - (numChat[0].offset - 20)]
             var topPos = message.offsetTop;
             //console.log(messageList.childNodes)
             //messageList.scrollTop = topPos;
@@ -47,19 +48,28 @@ class ChatCurrentDialog extends React.Component {
             //messageList.parentNode.scrollTop = messageList.childNodes[numMessages - (numChat[0].offset - 20)].offsetTop; 
             //message.scrollIntoView({ block: "start" })
             //ReactDOM.findDOMNode(messageList).scrollTo({top: messageList.childNodes[19].offsetTop})
+        } else if (this.sendMessageChat) {
+            console.log('Сообщение отправлено')
+            this.scrollToBottom();
         }
 
     }
 
 
     UNSAFE_componentWillUpdate(nextProps) {
-        const { selected_chat, chats, message_loading, message_loadmore_loading, message_loadmore_error } = this.props;
+        const { selected_chat, chats, message_loading, message_loadmore_loading, message_loadmore_error, send_message_loading, send_message_error } = this.props;
         const { loading } = this.state;
-        console.log("props: " + selected_chat, message_loading, chats, message_loadmore_loading, message_loadmore_error);
-        console.log("nextProps: " + nextProps.selected_chat, nextProps.message_loading, nextProps.chats, nextProps.message_loadmore_loading, nextProps.message_loadmore_error)
+        console.log("props: " + selected_chat, message_loading, chats, message_loadmore_loading, message_loadmore_error, send_message_loading, send_message_error);
+        console.log("nextProps: " + nextProps.selected_chat, nextProps.message_loading, nextProps.chats, nextProps.message_loadmore_loading, nextProps.message_loadmore_error, nextProps.send_message_loading, nextProps.send_message_error)
         this.firstSelectChat = selected_chat === undefined && selected_chat !== nextProps.selected_chat;
         this.selectOtherChat = selected_chat !== undefined && selected_chat !== nextProps.selected_chat;
         this.loadMoreChat = nextProps.selected_chat === selected_chat && message_loadmore_loading === true && nextProps.message_loadmore_loading === false && nextProps.message_loadmore_error !== "Сообщения не найдены."
+        this.sendMessageChat = (selected_chat !== undefined &&
+            selected_chat === nextProps.selected_chat) &&
+            send_message_loading &&
+            !nextProps.send_message_loading &&
+            nextProps.send_message_error === null &&
+            chats.filter((chat => chat.chat_id === selected_chat))[0].messages.length !== nextProps.chats.filter((chat => chat.chat_id === selected_chat))[0].messages.length;
     }
 
     onScroll = (list, current_chat) => {
@@ -88,8 +98,13 @@ class ChatCurrentDialog extends React.Component {
         // }
     }
 
-    onSubmit = (event) => {
-        console.log(document.getElementById('chat-input').value)
+    sendMessage = (event) => {
+        const { dispatch, jwt, chats, selected_chat } = this.props;
+        const chat = chats.filter(chat => chat.chat_id === selected_chat);
+        //console.log(document.getElementById('chat-input').value)
+        dispatch(chatActions.sendMessage(jwt, chat[0].chat_user_id, document.getElementById('chat-input').value)).then(() => {
+            document.getElementById('chat-input').value = ""
+        })
         event.preventDefault();
     }
 
@@ -115,31 +130,15 @@ class ChatCurrentDialog extends React.Component {
                                 <MoreHorizIcon />
                             </div>
                         </div>
-                        <div ref="messageList" className='messages' onScroll={(list) => this.onScroll(list, current_chat)} >
-                            {message_loadmore_loading === true && (<div className={`loadmore-messages-loading`}><CircularProgress size={20} /></div>)}
-                            {
-                                current_chat.messages.map((item, index) => {
-                                    return (
-                                        <div key={item.message_id} className={`${user.id === item.send_from ? 'mine' : 'yours'} w-100`}>
-                                            <div className={`${user.id === item.send_from ? 'mine' : 'yours'} message last`}>
-                                                {item.message}
-                                                <div className={`messagetime-container`}>
-                                                    <div className={`messagetime-wrap`}>
-                                                        <span className={`messagetime`}>{moment(item.created).format('HH:mm')}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )
-                                })
-                            }
+                        <div ref="messageList" className='messages-container' onScroll={(list) => this.onScroll(list, current_chat)} >
+                            <ChatMessages message_loadmore_loading={message_loadmore_loading} current_chat={current_chat} user={user} />
                         </div >
-                        <Form onSubmit={this.onSubmit}>
+                        <Form onSubmit={this.sendMessage}>
                             <div className="message-input">
                                 <AttachFileIcon />
-                                <input id={'chat-input'} name={'chat-input'} type={'text'} className='messages-input-plane' placeholder={'Напишите сообщение...'} />
+                                <input id={'chat-input'} name={'chat-input'} type={'text'} className='messages-input-plane' placeholder={'Напишите сообщение...'} autoComplete={"off"} />
                                 <SentimentSatisfiedOutlinedIcon />
-                                <SendIcon onClick={this.onSubmit} />
+                                <SendIcon onClick={this.sendMessage} />
                             </div>
                         </Form>
                     </div>
@@ -152,7 +151,7 @@ class ChatCurrentDialog extends React.Component {
 };
 
 function mapStateToProps(state) {
-    const { chat_loading, chats, message_loading, message_loadmore_loading, message_loadmore_error, selected_chat } = state.chat;
+    const { chat_loading, chats, message_loading, message_loadmore_loading, message_loadmore_error, selected_chat, send_message_loading, send_message_error } = state.chat;
     const { jwt, user } = state.authentication;
     return {
         chat_loading,
@@ -162,7 +161,9 @@ function mapStateToProps(state) {
         selected_chat,
         message_loading,
         message_loadmore_loading,
-        message_loadmore_error
+        message_loadmore_error,
+        send_message_loading,
+        send_message_error
     };
 }
 

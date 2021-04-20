@@ -3,7 +3,11 @@ import { chatConstants } from '../_constants';
 const initialState = {
     chat_loading: true,
     message_loadmore_loading: false,
-    message_loadmore_error: null
+    message_loadmore_error: null,
+    send_message_error: null,
+    send_message_loading: false,
+    check_new_messages_loading: false,
+    check_new_messages_error: null
 }
 
 export function chat(state = initialState, action) {
@@ -83,6 +87,44 @@ export function chat(state = initialState, action) {
                 ...state,
                 selected_chat: action.chat_id,
                 message_loadmore_error: null
+            };
+
+        //SEND MESSAGE
+        case chatConstants.SEND_MESSAGE_REQUEST:
+            return {
+                ...state,
+                send_message_loading: true
+            };
+        case chatConstants.SEND_MESSAGE_SUCCESS:
+            return {
+                ...state,
+                send_message_loading: false,
+                chats: state.chats.map((chat) => (chat.chat_id !== action.done.message_item.chat_id ? chat : ({ ...chat, messages: [...chat.messages, action.done.message_item,] }))),
+            };
+        case chatConstants.SEND_MESSAGE_FAILURE:
+            return {
+                ...state,
+                send_message_loading: false,
+                send_message_error: action.error
+            };
+
+        //SEND MESSAGE
+        case chatConstants.CHECK_NEW_MESSAGES_REQUEST:
+            return {
+                ...state,
+                check_new_messages_loading: true
+            };
+        case chatConstants.CHECK_NEW_MESSAGES_SUCCESS:
+            return {
+                ...state,
+                check_new_messages_loading: false,
+                chats: state.chats.map((chat) => (chat.chat_id !== action.done.message_item.chat_id ? chat : ({ ...chat, messages: [...chat.messages, ...action.messages,] }))),
+            };
+        case chatConstants.CHECK_NEW_MESSAGES_FAILURE:
+            return {
+                ...state,
+                check_new_messages_loading: false,
+                check_new_messages_error: action.error
             };
         default:
             return state

@@ -77,6 +77,8 @@ export * from './Chat/Chat';
 export * from './Chat/ChatDialogs';
 export * from './Chat/ChatCurrentDialog';
 export * from './Chat/ChatDialogUser';
+export * from './Chat/ChatMessages';
+
 
 //Tabs
 export * from './Tabs/Tabs';
