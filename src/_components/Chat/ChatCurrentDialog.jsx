@@ -1,14 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 import { Form, Loading, ChatMessages } from "../";
 import SearchIcon from '@material-ui/icons/Search';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import SentimentSatisfiedOutlinedIcon from '@material-ui/icons/SentimentSatisfiedOutlined';
 import SendIcon from '@material-ui/icons/Send';
-import moment from "moment";
-import { chatActions } from "../../_actions";
 import * as ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
+import { chatActions } from "../../_actions";
 
 
 class ChatCurrentDialog extends React.Component {
@@ -109,7 +108,7 @@ class ChatCurrentDialog extends React.Component {
     }
 
     render() {
-        const { chats, message_loading, selected_chat, message_loadmore_loading, user } = this.props;
+        const { chats, message_loading, selected_chat, message_loadmore_loading, check_new_messages_error, user, jwt, dispatch } = this.props;
         if (message_loading) {
             return <div className={`chat-current-dialog bl-none center`}><Loading className={`messages-loading`} /></div>
         } else if (!message_loading && selected_chat === undefined) {
@@ -131,7 +130,7 @@ class ChatCurrentDialog extends React.Component {
                             </div>
                         </div>
                         <div ref="messageList" className='messages-container' onScroll={(list) => this.onScroll(list, current_chat)} >
-                            <ChatMessages message_loadmore_loading={message_loadmore_loading} current_chat={current_chat} user={user} />
+                            <ChatMessages scrollToBottom={this.scrollToBottom} current_chat={current_chat} />
                         </div >
                         <Form onSubmit={this.sendMessage}>
                             <div className="message-input">
@@ -151,7 +150,7 @@ class ChatCurrentDialog extends React.Component {
 };
 
 function mapStateToProps(state) {
-    const { chat_loading, chats, message_loading, message_loadmore_loading, message_loadmore_error, selected_chat, send_message_loading, send_message_error } = state.chat;
+    const { chat_loading, chats, message_loading, message_loadmore_loading, message_loadmore_error, selected_chat, send_message_loading, send_message_error, check_new_messages_error } = state.chat;
     const { jwt, user } = state.authentication;
     return {
         chat_loading,
@@ -163,7 +162,8 @@ function mapStateToProps(state) {
         message_loadmore_loading,
         message_loadmore_error,
         send_message_loading,
-        send_message_error
+        send_message_error,
+        check_new_messages_error
     };
 }
 

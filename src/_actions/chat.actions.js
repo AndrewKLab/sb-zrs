@@ -79,11 +79,11 @@ function checkNewMessagesByChat(jwt, chat_id, send_from) {
 
         return chatService.checkNewMessagesByChat(jwt, chat_id, send_from)
             .then(
-                messages => dispatch(success(messages)),
+                messages => dispatch(success(chat_id, messages)),
                 error => dispatch(failure(error))
             );
     };
-    function request(jwt, chat_id, send_from) { return { type: chatConstants.SEND_MESSAGE_REQUEST, jwt, chat_id, send_from } }
-    function success(messages) { return { type: chatConstants.SEND_MESSAGE_SUCCESS, messages } }
-    function failure(error) { return { type: chatConstants.SEND_MESSAGE_FAILURE, error } }
+    function request(jwt, chat_id, send_from) { return { type: chatConstants.CHECK_NEW_MESSAGES_REQUEST, jwt, chat_id, send_from } }
+    function success(chat_id, messages) { return { type: chatConstants.CHECK_NEW_MESSAGES_SUCCESS, chat_id, messages } }
+    function failure(error) { return { type: chatConstants.CHECK_NEW_MESSAGES_FAILURE, error } }
 }

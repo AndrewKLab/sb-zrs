@@ -7,7 +7,7 @@ const initialState = {
     send_message_error: null,
     send_message_loading: false,
     check_new_messages_loading: false,
-    check_new_messages_error: null
+    check_new_messages_error: null,
 }
 
 export function chat(state = initialState, action) {
@@ -118,7 +118,8 @@ export function chat(state = initialState, action) {
             return {
                 ...state,
                 check_new_messages_loading: false,
-                chats: state.chats.map((chat) => (chat.chat_id !== action.done.message_item.chat_id ? chat : ({ ...chat, messages: [...chat.messages, ...action.messages,] }))),
+                check_new_messages_error: null,
+                chats: state.chats.map((chat) => (chat.chat_id !== action.chat_id ? chat : ({ ...chat, messages: [...chat.messages, ...action.messages,] }))),
             };
         case chatConstants.CHECK_NEW_MESSAGES_FAILURE:
             return {
