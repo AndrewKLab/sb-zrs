@@ -45,7 +45,7 @@ const PromouterPanelPage = ({ dispatch, history, jwt, user, users }) => {
                 />
                 <Typography className='mb-3' variant="h3" component="h3">Пользователи зарегистрировавшиеся по вашей ссылке промоутера:</Typography>
                 <List>
-                    {users.students.map((student, index) => {
+                    {users.students !== undefined ? users.students.map((student, index) => {
                         return (
                             <Paper key={index} className='mb-3'>
                                 <ListItem>
@@ -123,7 +123,7 @@ const PromouterPanelPage = ({ dispatch, history, jwt, user, users }) => {
                             </Paper>
                         )
                     }
-                    )}
+                    ) : 'У вас нет добавленных учеников'}
                 </List>
             </div>
         );

@@ -24,18 +24,12 @@ import {
     ListItemTitle,
     Menu,
     MenuItem,
-    Form,
-    FormControlLabel,
-    Radio,
-    IconButton
+    TextInput 
 } from '../_components';
 import { ProgressCircle } from '../LessonPage';
 import { TeatherCourses } from './';
-import { DeleteCourseDialog, UpdateUserAccessDialog, UpdateUserStatusDialog } from '../Dialogs';
+import { UpdateUserAccessDialog, UpdateUserStatusDialog } from '../Dialogs';
 
-import EventAvailableOutlinedIcon from '@material-ui/icons/EventAvailableOutlined';
-import EventBusyOutlinedIcon from '@material-ui/icons/EventBusyOutlined';
-import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 
 const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, students, promouters }) => {
     const [loading, setLoading] = useState(true);
@@ -67,6 +61,20 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, stud
     return (
         <div className={'py-3'}>
             <Grid container spacing={2}>
+            <Grid item xs={12}>
+            <TextInput
+                    value={`http://localhost:8081/sign-up/${user.id}`}
+                    id="course_name"
+                    name="course_name"
+                    label="Ваша ссылка промоутера"
+                    type={'text'}
+                    autoComplete={'off'}
+                    variant={'outlined'}
+                    onChange={() => { }}
+                    className='w-100 mb-3'
+                />
+                </Grid>
+
                 <Grid item xs={12}>
                     <Paper square>
                         <TeatherCourses create={true} user={user} courses={courses} course_error={course_error} history={history} panel={'teather-panel'} />
@@ -77,7 +85,7 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, stud
                     <UpdateUserStatusDialog open={statusDialog} close={closeStatusDialog} user={userData} />
                     <Typography component='h4' variant='h4'>Ваши ученики:</Typography>
                     <List>
-                        {students.map((student, index) => (
+                        {students !== undefined  ? students.map((student, index) => (
                             <div key={index}>
                                 <ListItem>
                                     <ListItemFirstAction>
@@ -103,7 +111,7 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, stud
                                     </ListItemSecondAction>
                                 </ListItem>
 
-                                {student.courses !== undefined ? (
+                                {student.courses !== undefined && student.courses !== null ? (
                                     <Grid container spacing={2}>
                                         {student.courses.inprocess !== undefined ? (
                                             <Grid item xs={12} sm={student.courses.finished !== undefined ? 6 : 0}>
@@ -151,7 +159,7 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, stud
                                                                 ))}
                                                             </div>
                                                         </Accordion>
-                                                    ))}
+                                                    )) }
                                                 </Paper>
                                             </Grid>
                                         ) : (null)}
@@ -160,13 +168,13 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, stud
                                 ) : (null)}
                                 <Divider />
                             </div>
-                        ))}
+                        )) : 'У вас нет учеников'}
                     </List>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <Typography component='h4' variant='h4'>Ваши промоутеры:</Typography>
                     <List>
-                        {promouters.map((student, index) => (
+                        { promouters !== undefined ? promouters.map((student, index) => (
                             <div key={index}>
                                 <ListItem>
                                     <ListItemFirstAction>
@@ -192,7 +200,7 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, stud
                                     </ListItemSecondAction>
                                 </ListItem>
 
-                                {student.courses !== undefined ? (
+                                {student.courses !== undefined && student.courses !== null ? (
                                     <Grid container spacing={2}>
                                         {student.courses.inprocess !== undefined ? (
                                             <Grid item xs={12} sm={student.courses.finished !== undefined ? 6 : 0}>
@@ -249,7 +257,7 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, stud
                                 ) : (null)}
                                 <Divider />
                             </div>
-                        ))}
+                        )) : 'У вас нет своих промоутеров'}
                     </List>
                 </Grid>
             </Grid>
