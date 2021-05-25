@@ -9,7 +9,8 @@ export const courseService = {
     createCoursePassed,
     updateCoursePassed,
     deleteCoursePassed,
-    getAllPassedCourseByUser
+    getAllPassedCourseByUser,
+    readAllCourses
 };
 
 function createCourse(jwt, name, autor_id, category_name, img, description) {
@@ -114,6 +115,15 @@ function deleteCoursePassed(passed_course_id) {
 function getAllPassedCourseByUser(user_id) {
     return fetch(`${config.apiUrl}/courses_passed/read_all_courses_passed_by_user.php?user_id=${user_id}`, config.GET).then(handleResponse);
 }
+
+function readAllCourses(jwt) {
+    const requestOptions = {
+        method: 'GET',
+        headers: {'Authorization': `Bearer ${jwt}` }
+    };
+    return fetch(`${config.apiUrl}/course/read_all_courses.php`, requestOptions).then(handleResponse);
+}
+
 
 
 function handleResponse(response) {

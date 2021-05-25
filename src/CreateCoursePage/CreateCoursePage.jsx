@@ -74,6 +74,7 @@ class CreateCoursePage extends React.Component {
                     () => this.setState({ loading: false })
                 )
             } else {
+                dispatch(lessonActions.clearCreatedLessonData())
                 this.setState({ loading: false })
             }
         }

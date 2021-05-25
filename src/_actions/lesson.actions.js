@@ -7,6 +7,7 @@ export const lessonActions = {
     updateLesson,
     deleteLesson,
     getAllLessonsByCourse,
+    clearCreatedLessonData,
 
     //passed_lesson
     createLessonPassed,
@@ -118,4 +119,8 @@ function deleteAllPassedLessonsByCourse(course_id, user_id) {
 
 function clearMessageAndError() {
     return { type: lessonConstants.CLEAR_MESSAGE_AND_ERROR };
+}
+
+function clearCreatedLessonData() {
+    return { type: lessonConstants.CLEAR_CREATED_LESSON_DATA };
 }

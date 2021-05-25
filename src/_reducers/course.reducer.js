@@ -146,6 +146,20 @@ export function course(state = {}, action) {
       return {
         error: action.error
       };
+    //GET ALL COURSES
+    case courseConstants.GET_ALL_COURSES_REQUEST:
+      return {
+        loading: true
+      };
+    case courseConstants.GET_ALL_COURSES_SUCCESS:
+      return {
+        loading: false,
+        courses: action.courses,
+      };
+    case courseConstants.GET_ALL_COURSES_FAILURE:
+      return {
+        course_error: action.error
+      };
 
     default:
       return state

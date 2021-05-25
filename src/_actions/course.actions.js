@@ -1,5 +1,5 @@
 import { courseConstants } from '../_constants';
-import { courseService } from '../_services';
+import { courseService, categoryService } from '../_services';
 
 export const courseActions = {
     createCourse,
@@ -10,7 +10,8 @@ export const courseActions = {
     createCoursePassed,
     updateCoursePassed,
     deleteCoursePassed,
-    getAllPassedCourseByUser
+    getAllPassedCourseByUser,
+    getAllCourses
 };
 
 function createCourse(jwt, name, autor_id, category_name, img, description) {
@@ -76,7 +77,7 @@ function getAllCoursesByCategoryName(category_name) {
     function failure(error) { return { type: courseConstants.GETALL_BY_CATEGORY_FAILURE, error } }
 }
 
-function getAllCoursesByAutor(autor_id){
+function getAllCoursesByAutor(autor_id) {
     return dispatch => {
         dispatch(request(autor_id));
 
@@ -133,8 +134,24 @@ function getAllPassedCourseByUser(user_id) {
             );
     };
 
-    function request(user_id) { return { type: courseConstants.GET_ALL_PASSED_COURSE_BY_USER_REQUEST, user_id} }
+    function request(user_id) { return { type: courseConstants.GET_ALL_PASSED_COURSE_BY_USER_REQUEST, user_id } }
     function success(courses) { return { type: courseConstants.GET_ALL_PASSED_COURSE_BY_USER_SUCCESS, courses } }
     function failure(error) { return { type: courseConstants.GET_ALL_PASSED_COURSE_BY_USER_FAILURE, error } }
+}
+
+function getAllCourses(jwt) {
+    return dispatch => {
+        dispatch(request());
+
+        return courseService.readAllCourses(jwt)
+            .then(
+                courses => dispatch(success(courses)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request() { return { type: courseConstants.GET_ALL_COURSES_REQUEST } }
+    function success(courses) { return { type: courseConstants.GET_ALL_COURSES_SUCCESS, courses } }
+    function failure(error) { return { type: courseConstants.GET_ALL_COURSES_FAILURE, error } }
 }
 

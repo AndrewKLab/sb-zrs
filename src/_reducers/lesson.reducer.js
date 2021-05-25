@@ -54,7 +54,7 @@ export function lesson(state = [], action) {
         message: action.data.message,
         data: {
           ...state.data,
-          lessons: state.data.lessons.map((item, index)=> item.id === action.data.lesson.id ? action.data.lesson : item)
+          lessons: state.data.lessons.map((item, index) => item.id === action.data.lesson.id ? action.data.lesson : item)
         }
       };
     case lessonConstants.UPDATE_LESSON_FAILURE:
@@ -244,6 +244,8 @@ export function lesson(state = [], action) {
         error: null
       };
 
+    case lessonConstants.CLEAR_CREATED_LESSON_DATA:
+      return []
     default:
       return state
   }

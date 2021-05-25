@@ -13,7 +13,7 @@ function getAllCategories() {
     return dispatch => {
         dispatch(request());
 
-        categoryService.getAllCategories()
+        return categoryService.getAllCategories()
             .then(
                 categories => dispatch(success(categories)),
                 error => dispatch(failure(error))

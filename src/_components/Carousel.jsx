@@ -58,7 +58,7 @@ export class Carousel extends Component {
             dots: false,
             infinite: true,
             speed: 500,
-            slidesToShow: 3,
+            slidesToShow: courses.length > 3 ? 3 : courses.length,
             slidesToScroll: 1,
             initialSlide: 0,
             nextArrow: <SampleNextArrow />,
@@ -67,7 +67,7 @@ export class Carousel extends Component {
                 {
                     breakpoint: 1024,
                     settings: {
-                        slidesToShow: 3,
+                        slidesToShow: courses.length > 3 ? 3 : courses.length,
                         slidesToScroll: 1,
                         infinite: true,
                         dots: false
@@ -76,7 +76,7 @@ export class Carousel extends Component {
                 {
                     breakpoint: 600,
                     settings: {
-                        slidesToShow: 2,
+                        slidesToShow: courses.length > 2 ? 2 : courses.length,
                         slidesToScroll: 1,
                         initialSlide: 2
                     }
@@ -84,7 +84,7 @@ export class Carousel extends Component {
                 {
                     breakpoint: 480,
                     settings: {
-                        slidesToShow: 1,
+                        slidesToShow: courses.length > 1 ? 1 : courses.length,
                         slidesToScroll: 1
                     }
                 }
@@ -95,7 +95,7 @@ export class Carousel extends Component {
         return (
             <Slider {...settings}>
                 {Object.values(courses).map((course, index) => 
-                    <div key={index}>
+                    <div key={index} className={`slider-width-400`}>
                         <Card>
                             <Link to={`/courses/${categoty_name}/${course.id}`}>
                                 <CardActionArea>
@@ -103,7 +103,7 @@ export class Carousel extends Component {
                                         component="img"
                                         alt={course.name}
                                         height="140"
-                                        image={`${config.url}/assets/img/350x250.png`}
+                                        image={course.img}
                                         title="Contemplative Reptile"
                                     />
                                     <CardContent>

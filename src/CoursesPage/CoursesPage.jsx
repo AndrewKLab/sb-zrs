@@ -71,7 +71,7 @@ class CoursesPage extends React.Component {
                                             component="img"
                                             alt={course.name}
                                             height="140"
-                                            image={`${config.url}/assets/img/350x250.png`}
+                                            image={course.img}
                                             title="Contemplative Reptile"
                                         />
                                         <CardContent>

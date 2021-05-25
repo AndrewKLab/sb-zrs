@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { connect } from 'react-redux';
-import { userActions, courseActions } from "../_actions";
+import { userActions, courseActions, categoryActions } from "../_actions";
 import {
     Avatar,
     Paper,
@@ -8,7 +8,7 @@ import {
     UserPlane,
     UserAccordionPlane,
     IconButton,
-    TableHeaderText,
+    TextEditor,
     Button,
     Loading,
     Grid,
@@ -27,6 +27,8 @@ import {
     TabPanel,
     Chat
 } from '../_components';
+
+import JoditEditor from "jodit-react";
 
 import { DialogDeleteUser, DialogChangeUser } from './';
 import { TeatherCourses } from '../TeatherPanelPage/TeatherCourses';
@@ -49,8 +51,22 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
     useEffect(() => {
         if (user.roles === 'ROLE_ADMIN' || user.roles === 'ROLE_SUPER_ADMIN') {
             dispatch(userActions.readAll(jwt)).then(
-                () => dispatch(courseActions.getAllCoursesByAutor(user.id)).then(
-                    () => setLoading(false)))
+                () => {
+                    switch (user.roles) {
+                        case 'ROLE_ADMIN':
+                            dispatch(courseActions.getAllCoursesByAutor(user.id)).then(
+                                () => setLoading(false))
+                            break;
+                        case 'ROLE_SUPER_ADMIN':
+                            dispatch(courseActions.getAllCourses(jwt)).then(
+                                () => setLoading(false))
+                            break;
+
+                        default:
+                            history.push('/');
+                            break;
+                    }
+                })
         } else {
             history.push('/');
         }
@@ -192,7 +208,7 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                                     </div>
                                 </Paper>
                             </Grid>
-                        </Grid> 
+                        </Grid>
                     </div>
 
                     <div className='mb-3'>
@@ -307,7 +323,7 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                 </TabPanel>
 
                 <TabPanel tab={tab} index={3}>
-                    <Chat/>
+                    <Chat />
                 </TabPanel>
 
 

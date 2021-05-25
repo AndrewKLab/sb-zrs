@@ -62,7 +62,7 @@ class CreateTestPlane extends React.Component {
         }
     }
 
-    
+
     //выбрать вопрос для измененния
     selectQestion(question) { this.setState({ editQuestion: question, addQuestion: false }) }
 
@@ -981,8 +981,12 @@ class CreateTestPlane extends React.Component {
 
                         <Divider />
                     </div>
-                    : <Button onPress={() => this.setState({ addQuestion: true, editQuestion: '', question_id: getRandomInt(10000, 100000) })}>{'Добавить вопрос'}</Button>}
-
+                    :
+                    <div>
+                        <Button onPress={() => this.setState({ addQuestion: true, editQuestion: '', question_id: getRandomInt(10000, 100000) })}>{'Добавить вопрос'}</Button>
+                        <Divider className='mv-3' />
+                    </div>
+                }
             </div >
         );
     }

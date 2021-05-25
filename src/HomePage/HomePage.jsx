@@ -40,17 +40,17 @@ class HomePage extends React.Component {
         }
     }
 
-    handleToggleChange() {
-        this.setState({
-            switch: !this.state.switch
-        })
-    }
+    // handleToggleChange() {
+    //     this.setState({
+    //         switch: !this.state.switch
+    //     })
+    // }
 
-    handleToggleChangeTwo() {
-        this.setState({
-            switchInList: !this.state.switchInList
-        })
-    }
+    // handleToggleChangeTwo() {
+    //     this.setState({
+    //         switchInList: !this.state.switchInList
+    //     })
+    // }
 
     render() {
         const { user } = this.props;
@@ -87,7 +87,7 @@ class HomePage extends React.Component {
                 <Grid container spacing={2} className="mt-3">
 
                     <Grid item sm={6} xs={12}>
-                        <Paper className={'d-flex'}>
+                        <Paper className={'d-flex h-100'}>
                             <CardActionArea>
                                 <CardMedia
                                     component="img"
@@ -116,7 +116,7 @@ class HomePage extends React.Component {
                         </Paper>
                     </Grid>
                     <Grid item sm={6} xs={12}>
-                        <Paper >
+                        <Paper className={'h-100'}>
 
                             <CardContent >
                                 <Typography variant="h5" component="h2">Отзывы</Typography>
@@ -127,7 +127,7 @@ class HomePage extends React.Component {
                         </Paper>
                     </Grid>
                     <Grid item sm={6} xs={12}>
-                        <Paper className={'d-flex'}>
+                        <Paper className={'d-flex h-100'}>
                             <CardActionArea>
                                 <CardMedia
                                     component="img"
