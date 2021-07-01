@@ -21,6 +21,7 @@ export * from './Carousel'
 export * from './Paper'
 export * from './Accordion'
 export * from './Dropdown'
+export * from './Error404'
 
 //Dialog
 export * from './Dialog/Dialog'

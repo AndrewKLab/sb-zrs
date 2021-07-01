@@ -217,21 +217,21 @@ class CoursePage extends React.Component {
                                 <Typography variant="h5" component="h5">{data.lessons.length}</Typography>
                             </div>
                             {user.teather_id === "0" ? user.roles === 'user' ? 'В скором времени мы запишем вас в группу к учителю!' : '' :
-                            (
-                                <div>
-                                    <Typography variant="h6" >Учитель: </Typography>
-                                    <Paper variant="outlined" square >
-                                        <ListItem>
-                                            <ListItemFirstAction>
-                                                <ListItemIcon>
-                                                    <Avatar alt={user_data.firstname+" "+user_data.lastname} src={user_data.avatar} />
-                                                </ListItemIcon>
-                                                <ListItemText title={user_data.firstname+" "+user_data.lastname} subtitle={"Регалии: " + user_data.status} />
-                                            </ListItemFirstAction>
-                                        </ListItem>
-                                    </Paper>
-                                </div>
-                            )}
+                                (
+                                    <div>
+                                        <Typography variant="h6" >Учитель: </Typography>
+                                        <Paper variant="outlined" square >
+                                            <ListItem>
+                                                <ListItemFirstAction>
+                                                    <ListItemIcon>
+                                                        <Avatar alt={user_data.firstname + " " + user_data.lastname} src={user_data.avatar} />
+                                                    </ListItemIcon>
+                                                    <ListItemText title={user_data.firstname + " " + user_data.lastname} subtitle={"Регалии: " + user_data.status} />
+                                                </ListItemFirstAction>
+                                            </ListItem>
+                                        </Paper>
+                                    </div>
+                                )}
                             {data.passed_course_status === "finished" ?
                                 (
                                     <div>
@@ -287,7 +287,7 @@ class CoursePage extends React.Component {
                                                                 {lesson.name}
                                                             </Typography>
                                                             <ClampLines
-                                                                text={lesson.description}
+                                                                text={lesson.description.replace(/<\/?[^>]+>/g,'')}
                                                                 id="really-unique-id"
                                                                 lines={3}
                                                                 ellipsis="..."

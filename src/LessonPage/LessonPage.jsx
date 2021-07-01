@@ -65,7 +65,7 @@ class LessonPage extends React.Component {
                                             <div className={'mt-3'}>
                                                 <Typography variant="h4" component='h4' >{lesson_item.name}</Typography>
                                                 {/* <Typography>Описание урока:</Typography> */}
-                                                <Typography>{lesson_item.description}</Typography>
+                                                <div dangerouslySetInnerHTML={{ __html: lesson_item.description }}/>
                                                 <Typography variant="h4" component='h4' className={'mt-3'} >Текст урока:</Typography>
                                                 <LessonText text={lesson_item.text}/>
                                                 <Divider />
