@@ -38,9 +38,9 @@ class App extends React.Component {
             <Router history={history}>
                 <div>
                     <Header history={history} />
-                    <Container className='content'>
+                    <div className='content container-content'>
                         <MainRouter />
-                    </Container>
+                    </div>
                     <Footer />
                 </div>
             </Router>
@@ -58,4 +58,4 @@ function mapStateToProps(state) {
     };
 }
 const connectedApp = connect(mapStateToProps)(App);
-export { connectedApp as App }; 
+export { connectedApp as App };

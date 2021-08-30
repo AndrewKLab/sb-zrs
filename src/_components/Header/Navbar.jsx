@@ -10,11 +10,12 @@ class Navbar extends Component {
     render() {
         const { history, user } = this.props;
         return (
-            <div>
                 <Container>
                     <div className="navbar">
                         <nav className="stroke">
-                            <a href='/'><h3 className='text-light m-0'>ШБ ЗРС</h3></a>
+                            <a href="/">
+                                <img className="logo" height="50px" width="112.5px" src="https://kniga-knig.info/assets/img/logo.png"/>
+                            </a>
                             <ul>
                                 <Nav link={'/'}>Главная</Nav>
                                 {user === undefined ? (null) : (
@@ -33,8 +34,6 @@ class Navbar extends Component {
                         <NavbarActions history={history} />
                     </div>
                 </Container>
-            </div>
-
         );
     }
 }

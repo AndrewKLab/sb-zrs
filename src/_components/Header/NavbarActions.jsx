@@ -133,8 +133,8 @@ class NavbarActions extends Component {
         return (
             <div className='navbar-actions'>
                 <form role="search" className="search-input-root m-3">
-                    <div><SearchIcon /></div>
                     <input type="search" className='search-input' placeholder="Поиск..." onChange={(event) => this.handleChange(event)} />
+                    <div><SearchIcon /></div>
                 </form>
                 {openSearch === true ?
                     <Dropdown id={"search"} open={openSearch} onClose={() => this.handleClose()}>
@@ -194,7 +194,7 @@ class NavbarActions extends Component {
 
                     : null}
 
-                <IconButton className='text-light'>
+                <IconButton className={"navbar-icon"}>
                     <NotificationsIcon />
                 </IconButton>
 
@@ -203,7 +203,7 @@ class NavbarActions extends Component {
                         onClick={() => this.handleOpenDropdown()}
                         className="dropbtn"
                     >
-                        <Avatar alt="" src={`${config.url}/assets/img/unnamed.png`} />
+                        <Avatar alt="" className="dropbtn-img" src={`${config.url}/assets/img/unnamed.png`} />
                     </IconButton>
                     <div id="myDropdown" className="dropdown-content">
                         {user ? (

@@ -95,18 +95,18 @@ export class Carousel extends Component {
         return (
             <Slider {...settings}>
                 {Object.values(courses).map((course, index) => 
-                    <div key={index} className={`slider-width-400`}>
-                        <Card>
+                    <div key={index} className={`slider-width-400 h-100`}>
+                        <Card className="h-100">
                             <Link to={`/courses/${categoty_name}/${course.id}`}>
-                                <CardActionArea>
+                                <CardActionArea className="h-100">
                                     <CardMedia
                                         component="img"
                                         alt={course.name}
-                                        height="140"
+                                        height="163,88335"
                                         image={course.img}
                                         title="Contemplative Reptile"
                                     />
-                                    <CardContent>
+                                    <CardContent className="h-100">
                                         <Typography gutterBottom variant="h5" component="h2">
                                             {course.name}
                                         </Typography>

@@ -4,7 +4,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "webpack-dev-server --open",
+    "start": "webpack-dev-server --open Chrome.exe",
     "build": "webpack"
   },
   "dependencies": {
@@ -48,6 +48,7 @@
     "styled-theming": "^2.2.0",
     "suneditor": "^2.39.0",
     "suneditor-react": "^3.1.1",
+    "webpack-cli": "^4.8.0",
     "yup": "^0.32.8",
     "yup-phone": "^1.2.17"
   },
@@ -69,7 +70,6 @@
     "style-loader": "^2.0.0",
     "url-loader": "^4.1.1",
     "webpack": "^4.15.0",
-    "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.1.3"
   }
 }

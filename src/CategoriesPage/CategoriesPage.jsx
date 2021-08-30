@@ -4,7 +4,7 @@ import { categoryActions } from '../_actions'
 
 import {
     Loading,
-    Button,
+    Typography,
     Carousel
 } from '../_components';
 import { ToAllButton } from './'
@@ -34,27 +34,39 @@ class CategoriesPage extends React.Component {
         }
 
         return (
-            <div className='pb-3'>
+            <div className='pb-3 pt-3'>
                 <div>
-                    <h2> Основные курсы </h2>
+                    <Typography variant="h3" component="h1" className={"text-align-center courses-category-title"} >{'Основные курсы'}</Typography>
+                    <div className="title-underline-container mb-3">
+                        <div className="title-underline courses-category-title-underline"></div>
+                    </div>
                     <Carousel element="carousel-class-to-inject" courses={basic} categoty_name={'basic'} />
                     <ToAllButton categoty_name={'basic'}>Все основные курсы</ToAllButton>
                 </div>
 
                 <div >
-                    <h2  > Специальные курсы </h2>
+                    <Typography variant="h3" component="h1" className={"text-align-center courses-category-title"} >{'Специальные курсы'}</Typography>
+                    <div className="title-underline-container mb-3">
+                        <div className="title-underline courses-category-title-underline"></div>
+                    </div>
                     <Carousel element="carousel-class-to-inject" courses={special} categoty_name={'special'} />
                     <ToAllButton categoty_name={'special'}>Все специальные курсы</ToAllButton>
                 </div>
 
                 <div>
-                    <h2  > Социальные курсы </h2>
+                    <Typography variant="h3" component="h1" className={"text-align-center courses-category-title"} >{'Социальные курсы'}</Typography>
+                    <div className="title-underline-container mb-3">
+                        <div className="title-underline courses-category-title-underline"></div>
+                    </div>
                     <Carousel element="carousel-class-to-inject" courses={social} categoty_name={'social'} />
                     <ToAllButton categoty_name={'social'}>Все социальные курсы</ToAllButton>
                 </div>
 
                 <div>
-                    <h2  > Национальные курсы </h2>
+                    <Typography variant="h3" component="h1" className={"text-align-center courses-category-title"} >{'Национальные курсы'}</Typography>
+                    <div className="title-underline-container mb-3">
+                        <div className="title-underline courses-category-title-underline"></div>
+                    </div>
                     <Carousel element="carousel-class-to-inject" courses={national} categoty_name={'national'} />
                     <ToAllButton categoty_name={'national'}>Все национальные курсы</ToAllButton>
                 </div>

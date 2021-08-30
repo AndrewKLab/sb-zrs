@@ -54,8 +54,11 @@ class CoursesPage extends React.Component {
             return <Loading />
         }
         return (
-            <div className='pb-3'>
-                <Typography variant='h2' component='h1'>{title}</Typography>
+            <div className='pb-3 pt-3'>
+                <Typography variant="h3" component="h1" className={"text-align-center courses-category-title"} >{title}</Typography>
+                <div className="title-underline-container mb-3">
+                    <div className="title-underline courses-category-title-underline"></div>
+                </div>
                 <Grid
                     container
                     direction={"row"}
@@ -64,17 +67,17 @@ class CoursesPage extends React.Component {
                     spacing={1}>
                     {Object.values(courses).map((course, index) => (
                         <Grid item xs key={index}>
-                            <Card>
+                            <Card className="h-100">
                                 <Link to={`/courses/${this.props.match.params.category_name}/${course.id}`} >
-                                    <CardActionArea>
+                                    <CardActionArea className="h-100">
                                         <CardMedia
                                             component="img"
                                             alt={course.name}
-                                            height="140"
+                                            height="163,88335"
                                             image={course.img}
                                             title="Contemplative Reptile"
                                         />
-                                        <CardContent>
+                                        <CardContent className="h-100">
                                             <Typography variant="h6" component="h6">
                                                 {course.name}
                                             </Typography>
