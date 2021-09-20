@@ -83,7 +83,11 @@ class CreateLessonPlane extends React.Component {
     }
 
     setChange() {
-        this.setState({ changed: true });
+        this.setState({
+            create: [],
+            update: [],
+            del: [],
+        });
     }
 
     changeEditorValue(setter, editor, value) {
@@ -97,6 +101,10 @@ class CreateLessonPlane extends React.Component {
         }
         setter(value, e);
         // this.setChange();
+    }
+
+    clenupTest() {
+        this.setState({ changed: true })
     }
 
 
@@ -155,18 +163,18 @@ class CreateLessonPlane extends React.Component {
                         const { lessonCreated, create, update, del } = this.state;
                         const { lesson_name, lesson_videolink, lesson_text, lesson_description, lesson_questions } = values;
                         if (lessonCreated === false) {
-                            dispatch(lessonActions.createLesson(
-                                jwt,
-                                course_id,
-                                lessons !== null ? Number(data.lessons.length) + 1 : data !== undefined ? Number(data.lessons.length) + 1 : 1,
-                                lesson_name,
-                                lesson_videolink,
-                                lesson_description,
-                                lesson_text,
-                                lesson_questions
-                            )).then(
-                                () => changeLesson(), this.setState({ changed: error === undefined ? false : true, lessonCreated: error === undefined ? true : false })
-                            )
+                                dispatch(lessonActions.createLesson(
+                                    jwt,
+                                    course_id,
+                                    lessons !== null && data !== undefined ? Number(data.lessons.length) + 1 : data !== undefined ? Number(data.lessons.length) + 1 : 1,
+                                    lesson_name,
+                                    lesson_videolink,
+                                    lesson_description,
+                                    lesson_text,
+                                    lesson_questions
+                                )).then(
+                                    () => changeLesson(), clenupTest(), this.setState({ changed: error === undefined ? false : true, lessonCreated: error === undefined ? true : false })
+                                )
                         } else {
                             console.log(lesson)
                             var questions;

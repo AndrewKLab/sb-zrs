@@ -5,13 +5,17 @@ export const courseActions = {
     createCourse,
     updateCourse,
     deleteCourse,
+    readOneCourseById,
     getAllCoursesByCategoryName,
     getAllCoursesByAutor,
     createCoursePassed,
     updateCoursePassed,
     deleteCoursePassed,
     getAllPassedCourseByUser,
-    getAllCourses
+    getAllCourses,
+    setCourseEditingStatus,
+    setLessonEditingStatus,
+    selectLesson
 };
 
 function createCourse(jwt, name, autor_id, category_name, img, description) {
@@ -59,6 +63,34 @@ function deleteCourse(jwt, course_id) {
     function request() { return { type: courseConstants.DELETE_COURSE_REQUEST, jwt, course_id } }
     function success(courses) { return { type: courseConstants.DELETE_COURSE_SUCCESS, courses, course_id } }
     function failure(error) { return { type: courseConstants.DELETE_COURSE_FAILURE, error } }
+}
+
+function readOneCourseById(course_id) {
+    return dispatch => {
+        dispatch(request(course_id));
+
+        return courseService.readOneCourseById(course_id)
+            .then(
+                course => dispatch(success(course)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request(course_id) { return { type: courseConstants.GETONE_COURSE_BY_ID_REQUEST, course_id } }
+    function success(course) { return { type: courseConstants.GETONE_COURSE_BY_ID_SUCCESS, course } }
+    function failure(error) { return { type: courseConstants.GETONE_COURSE_BY_ID_FAILURE, error } }
+}
+
+function setCourseEditingStatus(status) {
+    return { type: courseConstants.SET_COURSE_EDITING_STATUS, status }
+}
+
+function setLessonEditingStatus(status) {
+    return { type: courseConstants.SET_LESSON_EDITING_STATUS, status }
+}
+
+function selectLesson(lesson){
+    return { type: courseConstants.SELECT_LESSON, lesson }
 }
 
 function getAllCoursesByCategoryName(category_name) {

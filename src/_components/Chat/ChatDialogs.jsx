@@ -7,7 +7,7 @@ export const ChatDialogs = ({ className, chats, selectChat, chat_loading }) => {
     return (
         <div className={`chat-dialogs${styleClass}`}>
             <div className="chat-dialogs-header">
-                <input />
+            <input id={'chat-search-dialog-input'} name={'chat-search-dialog-input'} type={'text'} className='messages-input-plane' placeholder={'Поиск...'} autoComplete={"off"} />
             </div>
             { chat_loading === true ?
                 <Loading className={`messages-loading`} />

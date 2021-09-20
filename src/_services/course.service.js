@@ -4,6 +4,7 @@ export const courseService = {
     createCourse,
     updateCourse,
     deleteCourse,
+    readOneCourseById,
     getAllCoursesByCategoryName,
     getAllCoursesByAutor,
     createCoursePassed,
@@ -73,6 +74,10 @@ function deleteCourse(jwt, course_id) {
     return fetch(`${config.apiUrl}/course/delete.php?course_id=${course_id}`, requestOptions).then(handleResponse);
 }
 
+
+function readOneCourseById(course_id) {
+    return fetch(`${config.apiUrl}/course/read_one_course.php?course_id=${course_id}`, config.GET).then(handleResponse);
+}
 
 function getAllCoursesByCategoryName(category_name) {
     return fetch(`${config.apiUrl}/course/read_all_courses_by_category_name.php?category_name=${category_name}`, config.GET).then(handleResponse);

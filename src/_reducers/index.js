@@ -10,6 +10,7 @@ import { lesson } from './lesson.reducer';
 import { search } from './search.reducer';
 import { chat } from './chat.reducer';
 import { message } from './message.reducer';
+import { course_constructor } from './course_constructor.reducer';
 
 const rootReducer = combineReducers({
   authentication,
@@ -21,7 +22,8 @@ const rootReducer = combineReducers({
   lesson,
   search,
   chat,
-  message
+  message,
+  course_constructor
 });
 
 export default rootReducer;

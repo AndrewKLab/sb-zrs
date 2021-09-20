@@ -809,7 +809,6 @@ class CreateTestPlane extends React.Component {
                                                                 <tr key={index}>
                                                                     <td>
                                                                         <FormControlLabel
-                                                                            className='w-max'
                                                                             control={
                                                                                 <Checkbox
                                                                                     type="checkbox"
@@ -830,7 +829,6 @@ class CreateTestPlane extends React.Component {
                                                                 <tr key={index}>
                                                                     <td>
                                                                         <FormControlLabel
-                                                                            className='w-max'
                                                                             control={
                                                                                 <Radio
                                                                                     name={answer.answer_name}

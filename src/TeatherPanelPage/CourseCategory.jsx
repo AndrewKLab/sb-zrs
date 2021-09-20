@@ -54,8 +54,9 @@ export const CourseCategory = ({ history, user, name, category, deleteDialog, up
                                         </div>
                                         <Button onPress={() => history.push({
                                             pathname: `/${panel}/create-course`,
-                                            state: { course: item }
-                                        })} variant='outlined' color="primary">Изменить курс</Button>
+                                            state: { course_id: item.id, course_autor_id: item.autor_id}
+                                        }
+                                        )} variant='outlined' color="primary">Изменить курс</Button>
                                     </ListItemSecondAction>
                                 </ListItem>
                                 <Divider />

@@ -176,6 +176,7 @@ class CreateCoursePage extends React.Component {
         if (loading) {
             return <Loading />
         }
+
         return (
             <div className={'py-3 d-flex gap-10'}>
                 <div className={'create-course-body'}>
@@ -207,7 +208,7 @@ class CreateCoursePage extends React.Component {
                                         course_data !== undefined ? (course_data.autor_id === undefined ? this.props.location.state.course.autor_id : course_data.autor_id) : (this.props.location.state.course.autor_id),
                                         course_category_name,
                                         image,
-                                        course_descrigtion
+                                        course_descrigtion,
                                     )).then(
                                         (data) => { if (data.error === undefined) { this.setState({ changed: false }) } }
                                     )

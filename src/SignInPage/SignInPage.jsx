@@ -119,7 +119,7 @@ class SignInPage extends React.Component {
 
                                         <Grid item xs={12}>
                                             {message && (
-                                                <Alert className='error' severity="error">{message}</Alert>
+                                                <Alert className='error mb-3' severity="error">{message}</Alert>
                                             )}
 
                                             <TextInput

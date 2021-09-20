@@ -2,6 +2,7 @@ import { chatConstants } from '../_constants';
 
 const initialState = {
     chat_loading: true,
+    chat_error: null,
     message_loadmore_loading: false,
     message_loadmore_error: null,
     send_message_error: null,
@@ -33,7 +34,7 @@ export function chat(state = initialState, action) {
                 ...state,
                 chat_loading: false,
                 message_loadmore_error: null,
-                error: action.error,
+                chat_error: action.error,
                 selected_chat: undefined,
             };
 

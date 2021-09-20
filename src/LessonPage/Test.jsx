@@ -5,13 +5,13 @@ import {
     Button
 } from '../_components';
 import { lessonActions, userActions, courseActions } from '../_actions'
-import { LessonFinishedPlane, Answer, LessonControlButton } from './';
+import { LessonFinishedPlane, Question, LessonControlButton } from './';
 import { useForm } from "react-hook-form"
 import Moment from 'moment';
 import 'moment/locale/ru';
 
 export const Test = ({ dispatch, history, jwt, user, category_name, course, passed_course_id, course_status, passed_course_assessment, passed_course_start_time, passed_course_finish_time, lessons, finishedLessonsLenght, lesson_id, number, status, lesson_passed_id, assessment, finish_time, questions }) => {
-    const [selected, setSelected] = useState('');
+    
     const { register, handleSubmit, errors } = useForm();
     const onSubmit = (data) => {
         if (status === "finished") {
@@ -150,12 +150,7 @@ export const Test = ({ dispatch, history, jwt, user, category_name, course, pass
                 <div>
                     {questions.length !== 0 ? (<Typography component="h4" variant="h4" className='mb-2' >Тест:</Typography>) : (null)}
                     {questions.map((question, index) => (
-                        <div key={index} className='d-flex grid-direction-xs-column'>
-                            <Typography component="h5" variant="h5" className='mb-2' >{question.question}</Typography>
-                            {question.answers.map((answer, index) =>
-                                <Answer question_type={question.question_type} answer={answer} key={index} register={register} selected={selected} setSelected={setSelected} />
-                            )}
-                        </div>
+                        <Question question={question} key={index} register={register} />
                     ))}
                 </div>
             ) : (

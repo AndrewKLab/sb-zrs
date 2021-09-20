@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { ChatDialogs, ChatCurrentDialog, Loading, Paper, Grid } from "../";
+import { ChatDialogs, ChatCurrentDialog, Loading, Paper, Grid, Alert } from "../";
 import { connect } from 'react-redux';
 import { chatActions } from "../../_actions";
 
-const Chat = ({ dispatch, jwt, user, className, chat_loading, chats, message_loading, messages, message_loadmore_loading, message_loadmore_error, selected_chat }) => {
+const Chat = ({ dispatch, jwt, user, className, chat_loading, chat_error, chats, message_loading, messages, message_loadmore_loading, message_loadmore_error, selected_chat }) => {
     let styleClass = className !== undefined ? ' ' + className : '';
     const [loading, setLoading] = useState(false);
     useEffect(() => {
@@ -33,9 +33,8 @@ const Chat = ({ dispatch, jwt, user, className, chat_loading, chats, message_loa
         }
     }
 
-    if(loading){
-        return <Loading />
-    }
+    if(loading) return <Loading />
+    if(chat_error) return <Alert>{chat_error}</Alert>
 
     return (
         <Paper square>
@@ -52,10 +51,11 @@ const Chat = ({ dispatch, jwt, user, className, chat_loading, chats, message_loa
 };
 
 function mapStateToProps(state) {
-    const { chat_loading, chats, message_loading, message_loadmore_loading, message_loadmore_error, selected_chat } = state.chat;
+    const { chat_loading, chat_error, chats, message_loading, message_loadmore_loading, message_loadmore_error, selected_chat } = state.chat;
     const { jwt, user } = state.authentication;
     return {
         chat_loading,
+        chat_error,
         chats,
         jwt,
         user,

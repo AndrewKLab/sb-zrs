@@ -10,6 +10,7 @@ import config from 'config';
 
 import {
     Avatar,
+    Alert,
     Loading,
     Paper,
     Button,
@@ -195,125 +196,120 @@ class CoursePage extends React.Component {
     }
 
     render() {
-        const { data, user, user_data } = this.props;
+        const { data, user, user_data, lesson_error } = this.props;
         const { loading } = this.state;
-        var lessons;
-        if (loading) {
-            return <Loading />
-        } else {
-            lessons = data;
-            return (
-                <div className='py-3'>
-                    <Paper variant="outlined" square className='d-flex'>
-                        <div className='w-70 p-relative'>
-                            <img className='w-100' src={data.img} alt={data.course_name} height="350" />
-                            <div className='wrap-area'>
-                                <Typography variant="h2" component="h1">{data.course_name}</Typography>
-                            </div>
+        var lessons = data !== undefined ? data : {};
+
+        if (loading) return <Loading />
+        if (lesson_error) return <div className="alert-screen-center"><Alert severity="error" className="mt-3 mb-3">{lesson_error}</Alert></div>
+        return (
+            <div className='py-3'>
+                <Paper variant="outlined" square className='d-flex'>
+                    <div className='w-70 p-relative'>
+                        <img className='w-100' src={data.img} alt={data.course_name} height="350" />
+                        <div className='wrap-area'>
+                            <Typography variant="h2" component="h1">{data.course_name}</Typography>
                         </div>
-                        <div className='course-info-area'>
-                            <div className='course-info-text'>
-                                <Typography variant="h5" component="h5">Количество уроков:</Typography>
-                                <Typography variant="h5" component="h5">{data.lessons.length}</Typography>
-                            </div>
-                            {user.teather_id === "0" ? user.roles === 'user' ? 'В скором времени мы запишем вас в группу к учителю!' : '' :
-                                (
-                                    <div>
-                                        <Typography variant="h6" >Учитель: </Typography>
-                                        <Paper variant="outlined" square >
-                                            <ListItem>
-                                                <ListItemFirstAction>
-                                                    <ListItemIcon>
-                                                        <Avatar alt={user_data.firstname + " " + user_data.lastname} src={user_data.avatar} />
-                                                    </ListItemIcon>
-                                                    <ListItemText title={user_data.firstname + " " + user_data.lastname} subtitle={"Регалии: " + user_data.status} />
-                                                </ListItemFirstAction>
-                                            </ListItem>
-                                        </Paper>
-                                    </div>
-                                )}
-                            {data.passed_course_status === "finished" ?
-                                (
-                                    <div>
-                                        <div className='done-area-title'>
-                                            <Typography variant="h5" component="h5">Курс пройден</Typography>
-                                            <CheckCircleOutlineIcon className='done-area-title-icon' fontSize="large" />
-                                        </div>
-                                        <Typography variant="body" component="body">Оценка: {data.assessment}</Typography>
-                                        <Typography variant="body" component="body">Дата и время прохождения: {Moment(lessons.finish_time).locale('ru').format('Do MMMM YYYY, hh:mm:ss')}</Typography>
-                                    </div>
-                                ) : (null)
-                            }
-                            <div className='course-info-button'>
-                                {this.renderCourseButton(
-                                    data.course_id,
-                                    data.category_name,
-                                    data.passed_course_status,
-                                    data.passed_course_id,
-                                    data.assessment,
-                                    data.finish_time,
-                                    user,
-                                    data.lessons
-                                )}
-                            </div>
+                    </div>
+                    <div className='course-info-area'>
+                        <div className='course-info-text'>
+                            <Typography variant="h5" component="h5">Количество уроков:</Typography>
+                            <Typography variant="h5" component="h5">{data.lessons.length}</Typography>
                         </div>
-                    </Paper>
-                    <Typography variant="h5" component="h5">О курсе:</Typography>
-                    <Typography>{data.description}</Typography>
-                    {data.passed_course_status === "inprocess" || data.passed_course_status === "finished" ? (
-                        <div>
-                            <h5>Уроки:</h5>
-                            <Grid
-                                container
-                                direction={"row"}
-                                justify={"space-around"}
-                                alignItems={"flex-start"}
-                                spacing={1}>
-                                {data.lessons.map((lesson, index) => (
-                                    <Grid item xs key={index}>
-                                        <Paper >
-                                            <Card>
-                                                <Link to={`/courses/${data.category_name}/${data.course_id}/${lesson.id}`}>
-                                                    <CardActionArea>
-                                                        <CardMedia
-                                                            component="img"
-                                                            alt={lesson.name}
-                                                            height="140"
-                                                            image={`${config.url}/assets/img/350x250.png`}
-                                                            title="Contemplative Reptile"
+                        {user.teather_id === "0" ? user.roles === 'user' ? 'В скором времени мы запишем вас в группу к учителю!' : '' :
+                            (
+                                <div>
+                                    <Typography variant="h6" >Учитель: </Typography>
+                                    <Paper variant="outlined" square >
+                                        <ListItem>
+                                            <ListItemFirstAction>
+                                                <ListItemIcon>
+                                                    <Avatar alt={user_data.firstname + " " + user_data.lastname} src={user_data.avatar} />
+                                                </ListItemIcon>
+                                                <ListItemText title={user_data.firstname + " " + user_data.lastname} subtitle={"Регалии: " + user_data.status} />
+                                            </ListItemFirstAction>
+                                        </ListItem>
+                                    </Paper>
+                                </div>
+                            )}
+                        {data.passed_course_status === "finished" ?
+                            (
+                                <div>
+                                    <div className='done-area-title'>
+                                        <Typography variant="h5" component="h5">Курс пройден</Typography>
+                                        <CheckCircleOutlineIcon className='done-area-title-icon' fontSize="large" />
+                                    </div>
+                                    <Typography variant="body" component="body">Оценка: {data.assessment}</Typography>
+                                    <Typography variant="body" component="body">Дата и время прохождения: {Moment(data.finish_time).locale('ru').format('Do MMMM YYYY, hh:mm:ss')}</Typography>
+                                </div>
+                            ) : (null)
+                        }
+                        <div className='course-info-button'>
+                            {this.renderCourseButton(
+                                data.course_id,
+                                data.category_name,
+                                data.passed_course_status,
+                                data.passed_course_id,
+                                data.assessment,
+                                data.finish_time,
+                                user,
+                                data.lessons
+                            )}
+                        </div>
+                    </div>
+                </Paper>
+                <Typography variant="h5" component="h5">О курсе:</Typography>
+                <Typography>{data.description}</Typography>
+
+                {/*
+                data.passed_course_status === "inprocess" || data.passed_course_status === "finished" ? (
+                    <div>
+                        <h5>Уроки:</h5>
+                        <Grid
+                            container
+                            direction={"row"}
+                            justify={"space-around"}
+                            alignItems={"flex-start"}
+                            spacing={1}>
+                            {data.lessons.map((lesson, index) => (
+                                <Grid item xs key={index}>
+                                    <Paper >
+                                        <Card>
+                                            <Link to={`/courses/${data.category_name}/${data.course_id}/${lesson.id}`}>
+                                                <CardActionArea>
+
+                                                    <CardContent>
+                                                        <Typography gutterBottom variant="h6" component="h6">
+                                                            {lesson.name}
+                                                        </Typography>
+                                                        <ClampLines
+                                                            text={lesson.description.replace(/<\/?[^>]+>/g, '')}
+                                                            id="really-unique-id"
+                                                            lines={3}
+                                                            ellipsis="..."
+                                                            buttons={false}
+                                                            innerElement="p"
                                                         />
-                                                        <CardContent>
-                                                            <Typography gutterBottom variant="h6" component="h6">
-                                                                {lesson.name}
-                                                            </Typography>
-                                                            <ClampLines
-                                                                text={lesson.description.replace(/<\/?[^>]+>/g,'')}
-                                                                id="really-unique-id"
-                                                                lines={3}
-                                                                ellipsis="..."
-                                                                buttons={false}
-                                                                innerElement="p"
-                                                            />
-                                                        </CardContent>
-                                                    </CardActionArea>
-                                                </Link>
-                                            </Card>
-                                        </Paper>
-                                    </Grid>
-                                )
-                                )}
-                            </Grid>
-                        </div>
-                    ) : (null)}
-                </div>
-            );
-        }
+                                                    </CardContent>
+                                                </CardActionArea>
+                                            </Link>
+                                        </Card>
+                                    </Paper>
+                                </Grid>
+                            )
+                            )}
+                        </Grid>
+                    </div>
+                ) : (null)
+*/ }
+            </div>
+        );
     }
 }
 
 function mapStateToProps(state) {
     const { lesson, authentication, users } = state;
-    const { loading, data } = lesson;
+    const { loading, data, lesson_error } = lesson;
     const { user, jwt } = authentication;
     const { user_data } = users;
     return {
@@ -321,7 +317,8 @@ function mapStateToProps(state) {
         user,
         data,
         user_data,
-        loading
+        loading,
+        lesson_error
     };
 }
 

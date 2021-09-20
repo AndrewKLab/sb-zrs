@@ -4,7 +4,7 @@ export const Dialog = ({ open, children, className, onClose }) => {
     let styleClass = className == undefined ? '' : ' ' + className;
     var body = document.body;
     const ref = useRef(null);
-var cont = document.getElementsByClassName('container');
+    var cont = document.getElementsByClassName('container');
     const handleClick = (e) => {
         if (ref && ref.current && ref.current.contains(e.target)) {
             // inside click
@@ -27,7 +27,7 @@ var cont = document.getElementsByClassName('container');
 
     if (open === true) {
         body.classList.add('stop-scrolling');
-        
+
         // for (let i = 0; i < cont.length; i++) {
         //     let w = Number(getComputedStyle(cont[i]).maxWidth.replace(/\D/g,'')) + 17
         //     console.log(w)
@@ -41,12 +41,7 @@ var cont = document.getElementsByClassName('container');
             </div>
         )
     } else {
-        if (ref.current !== null) {
-            body.classList.remove('stop-scrolling');
-            // for (let i = 0; i < cont.length; i++) {
-            //     cont[i].style.maxWidth = null;
-            // }
-        }
+        body.classList.remove('stop-scrolling');
         return null
     }
 }
