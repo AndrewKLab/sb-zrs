@@ -8,6 +8,8 @@ export const lessonActions = {
     deleteLesson,
     getAllLessonsByCourse,
     clearCreatedLessonData,
+    readOneLessonById,
+    setLessonEditingData,
 
     //passed_lesson
     createLessonPassed,
@@ -79,6 +81,36 @@ function getAllLessonsByCourse(course_id, user_id, teather_id) {
     function request(course_id, user_id, teather_id) { return { type: lessonConstants.GETALL_BY_COURSE_REQUEST, course_id, user_id, teather_id } }
     function success(data) { return { type: lessonConstants.GETALL_BY_COURSE_SUCCESS, data } }
     function failure(error) { return { type: lessonConstants.GETALL_BY_COURSE_FAILURE, error } }
+}
+
+function readOneLessonById(lesson_id) {
+    return dispatch => {
+        dispatch(request(lesson_id));
+        return lessonService.readOneLessonById(lesson_id)
+            .then(
+                lesson => dispatch(success(lesson)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request(lesson_id) { return { type: lessonConstants.READ_ONE_LESSON_BY_ID_REQUEST, lesson_id } }
+    function success(lesson) { return { type: lessonConstants.READ_ONE_LESSON_BY_ID_SUCCESS, lesson } }
+    function failure(error) { return { type: lessonConstants.READ_ONE_LESSON_BY_ID_FAILURE, error } }
+}
+
+function setLessonEditingData() {
+    return dispatch => {
+
+        dispatch(request());
+        async function f() {
+            return 1;
+        }
+        return f().then(() => dispatch(success()));
+    };
+
+    function request() { return { type: lessonConstants.SET_LESSON_EDITING_DATA_REQUEST } }
+    function success() { return { type: lessonConstants.SET_LESSON_EDITING_DATA_SUCCESS } }
+    function failure() { return { type: lessonConstants.SET_LESSON_EDITING_DATA_FAILURE } }
 }
 
 function createLessonPassed(course_id, lesson_id, user_id) {

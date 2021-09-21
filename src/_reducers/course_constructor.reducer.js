@@ -19,14 +19,27 @@ const initialState = {
     delete_course_error: null,
 
     course_editing_status: 'create',
-    lesson_editing_status: 'create',
-    selected_lesson: null,
+
 
     //lesson
+    lesson_editing_status: 'create',
+    selected_lesson_id: null,
+
+    //create
+    set_lesson_editing_data_loading: false,
+    selected_lesson: null,
+    set_lesson_editing_data_error: null,
+
+    //update
+    selected_lesson_loading: false,
+    selected_lesson: null,
+    selected_lesson_error: null,
 
     delete_lesson_loading: false,
     delete_lesson_success_message: null,
     delete_lesson_error: null,
+
+
 }
 
 export function course_constructor(state = initialState, action) {
@@ -140,22 +153,65 @@ export function course_constructor(state = initialState, action) {
                 error: action.error
             };
 
+        //LESSON PART
+
         //SET_LESSON_EDITING_STATUS (CREATE LESSON)
         case courseConstants.SET_LESSON_EDITING_STATUS:
             return {
                 ...state,
                 lesson_editing_status: action.status,
-                selected_lesson: {},
+                selected_lesson_id: "",
+
+            };
+
+        case lessonConstants.SET_LESSON_EDITING_DATA_REQUEST:
+            return {
+                ...state,
+                set_lesson_editing_data_loading: true,
+                set_lesson_editing_data_error: null,
+            };
+        case lessonConstants.SET_LESSON_EDITING_DATA_SUCCESS:
+            return {
+                ...state,
+                set_lesson_editing_data_loading: false,
+                selected_lesson: "",
+                set_lesson_editing_data_error: null,
+            };
+        case lessonConstants.SET_LESSON_EDITING_DATA_FAILURE:
+            return {
+                ...state,
+                selected_lesson_loading: false,
+                selected_lesson_error: null,
             };
 
         //SELECT_LESSON (UPDATE LESSON)
         case courseConstants.SELECT_LESSON:
             return {
                 ...state,
-                selected_lesson: action.lesson,
+                selected_lesson_id: action.lesson.lesson_id,
                 lesson_editing_status: 'update'
             }
 
+        //READ_ONE_LESSON
+        case lessonConstants.READ_ONE_LESSON_BY_ID_REQUEST:
+            return {
+                ...state,
+                selected_lesson_loading: true,
+                selected_lesson_error: null,
+            };
+        case lessonConstants.READ_ONE_LESSON_BY_ID_SUCCESS:
+            return {
+                ...state,
+                selected_lesson_loading: false,
+                selected_lesson: action.lesson,
+                selected_lesson_error: null,
+            };
+        case lessonConstants.READ_ONE_LESSON_BY_ID_FAILURE:
+            return {
+                ...state,
+                selected_lesson_loading: false,
+                selected_lesson_error: null,
+            };
 
 
         //DELETE LESSON
@@ -168,8 +224,10 @@ export function course_constructor(state = initialState, action) {
             };
         case lessonConstants.DELETE_LESSON_SUCCESS:
             return {
+                ...state,
                 delete_lesson_loading: false,
-                delete_lesson_success_message: null,
+                delete_lesson_success_message: action.data.message,
+                course: { ...state.course, lessons: state.course.lessons.filter(l => l.lesson_id !== action.lesson_id) },
                 delete_lesson_error: null,
             };
         case lessonConstants.DELETE_LESSON_FAILURE:

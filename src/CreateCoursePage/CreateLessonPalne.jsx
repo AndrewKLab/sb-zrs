@@ -7,6 +7,7 @@ import { Formik, Form } from "formik";
 import * as yup from "yup";
 import "yup-phone";
 
+
 import { Editor } from '@tinymce/tinymce-react';
 
 import {
@@ -38,7 +39,6 @@ let SignupSchema = yup.object().shape({
     lesson_text: yup
         .string()
         .required("Это поле является обязательным для заполнения."),
-
 });
 
 class CreateLessonPlane extends React.Component {
@@ -264,7 +264,7 @@ class CreateLessonPlane extends React.Component {
                                         content_style: '.light{ color: color: rgba(66, 66, 66, 1)} .dark{ color: rgba(255, 255, 255, 1)}',
                                     }}
                                 />
-                                {errors.lesson_description ? <span class="text-input-helper text-input-danger">{errors.lesson_description}</span> : null}
+                                {errors.lesson_description ? <span className="text-input-helper text-input-danger">{errors.lesson_description}</span> : null}
                             </div>
 
                             <div className={errors.lesson_text ? "text-input-danger" : ""}>
@@ -295,7 +295,7 @@ class CreateLessonPlane extends React.Component {
                                         content_style: '.light{ color: color: rgba(66, 66, 66, 1)} .dark{ color: rgba(255, 255, 255, 1)}',
                                     }}
                                 />
-                                {errors.lesson_text ? <span class="text-input-helper text-input-danger">{errors.lesson_text}</span> : null}
+                                {errors.lesson_text ? <span className="text-input-helper text-input-danger">{errors.lesson_text}</span> : null}
                             </div>
                             <Divider className='mv-3' />
                             <div className='d-flex grid-justify-xs-space-between ph-3'>

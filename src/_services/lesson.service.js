@@ -6,6 +6,7 @@ export const lessonService = {
     updateLesson,
     deleteLesson,
     getAllLessonsByCourse,
+    readOneLessonById,
 
     //lessons_passed
     createLessonPassed,
@@ -75,6 +76,11 @@ function deleteLesson(jwt, lesson_id) {
 //прочитать все уроку в конкретном курсе
 function getAllLessonsByCourse(course_id, user_id, teather_id) {
     return fetch(`${config.apiUrl}/lesson/read_by_course.php?courses_id=${course_id}&user_id=${user_id}&teather_id=${teather_id}`, config.GET).then(handleResponse);
+}
+
+//Получить один урок по id
+function readOneLessonById(lesson_id) {
+    return fetch(`${config.apiUrl}/lesson/read_one.php?lesson_id=${lesson_id}`, config.GET).then(handleResponse);
 }
 
 // !!!-----!!!///

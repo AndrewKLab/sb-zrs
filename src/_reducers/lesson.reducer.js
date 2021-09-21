@@ -63,26 +63,26 @@ export function lesson(state = [], action) {
       };
 
     //DELETE LESSON
-    case lessonConstants.DELETE_LESSON_REQUEST:
-      return {
-        ...state,
-        loading: true,
-        data: state.data
-      };
-    case lessonConstants.DELETE_LESSON_SUCCESS:
-      return {
-        loading: false,
-        data: {
-          ...state.data,
-          lessons: state.data.lessons.filter(n => n.id !== action.lesson_id)
-        }
-      };
-    case lessonConstants.DELETE_LESSON_FAILURE:
-      return {
-        ...state,
-        data: state.data,
-        error: action.error
-      };
+    // case lessonConstants.DELETE_LESSON_REQUEST:
+    //   return {
+    //     ...state,
+    //     loading: true,
+    //     data: state.data
+    //   };
+    // case lessonConstants.DELETE_LESSON_SUCCESS:
+    //   return {
+    //     loading: false,
+    //     data: {
+    //       ...state.data,
+    //       lessons: state.data.lessons.filter(n => n.id !== action.lesson_id)
+    //     }
+    //   };
+    // case lessonConstants.DELETE_LESSON_FAILURE:
+    //   return {
+    //     ...state,
+    //     data: state.data,
+    //     error: action.error
+    //   };
 
     //GET ONE CATEGORY BY CATEGORY
     case lessonConstants.GETALL_BY_COURSE_REQUEST:

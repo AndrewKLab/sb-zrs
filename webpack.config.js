@@ -1,12 +1,14 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var path = require('path');
+require("babel-core/register");
+require("babel-polyfill");
 
 module.exports = {
     mode: 'development',
     resolve: {
         extensions: ['.js', '.jsx', '.css']
     },
-    entry: './src/index.jsx',
+    entry: ['babel-polyfill', './src/index.jsx'],
     output:{
         path: path.resolve(__dirname, './public'),     // путь к каталогу выходных файлов - папка public
         publicPath: '/',

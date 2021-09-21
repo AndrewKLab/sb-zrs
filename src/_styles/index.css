@@ -2944,7 +2944,7 @@ tr.row th {
     height: 25px;
 }
 
-.toggle-switch input[type="checkbox"] {
+.toggle-switch .toggle-switch-input {
     display: none;
 }
 
@@ -2972,12 +2972,12 @@ tr.row th {
     transition: transform 0.3s ease;
 }
 
-.toggle-switch input[type="checkbox"]:checked+.switch::before {
+.toggle-switch .toggle-switch-input:checked+.switch::before {
     transform: translateX(25px);
     background-color: #ffffff;
 }
 
-.toggle-switch input[type="checkbox"]:checked+.switch {
+.toggle-switch .toggle-switch-input:checked+.switch {
     background-color: rgba(var(--primary-main-color));
 }
 
@@ -4029,6 +4029,10 @@ tr.row th {
 
 .create-course-helper-list {
     border-bottom: 1px solid rgba(var(--text-dark), 0.12);
+}
+
+.jodit-container:not(.jodit_inline){
+    border-radius: var(--rounding-angle) !important;
 }
 
 /* COURSES_PAGE */
