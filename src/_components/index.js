@@ -86,7 +86,7 @@ export * from './Tabs/Tabs';
 export * from './Tabs/Tab';
 export * from './Tabs/TabPanel'; 
 
-export * from './TextEditor.jsx'; 
+export * from './TextEditor'; 
 export * from './LessonText.jsx'; 
 
 

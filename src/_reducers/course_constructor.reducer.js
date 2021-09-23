@@ -35,11 +35,22 @@ const initialState = {
     selected_lesson: null,
     selected_lesson_error: null,
 
+    create_lesson_loading: false,
+    create_lesson_success_message: null,
+    create_lesson_error: null,
+
+    update_lesson_loading: false,
+    update_lesson_success_message: null,
+    update_lesson_error: null,
+
     delete_lesson_loading: false,
     delete_lesson_success_message: null,
     delete_lesson_error: null,
 
+    //test
+    lesson_test_editing_status: false,
 
+    selected_question: null
 }
 
 export function course_constructor(state = initialState, action) {
@@ -63,6 +74,9 @@ export function course_constructor(state = initialState, action) {
                 update_course_error: null,
                 delete_course_success_message: null,
                 delete_course_error: null,
+
+                selected_lesson_id: null,
+                selected_lesson: null
             };
         case courseConstants.GETONE_COURSE_BY_ID_FAILURE:
             return {
@@ -74,7 +88,10 @@ export function course_constructor(state = initialState, action) {
         case courseConstants.SET_COURSE_EDITING_STATUS:
             return {
                 ...state,
-                course_editing_status: action.status
+                course_editing_status: action.status,
+                selected_lesson_id: null,
+                selected_lesson: null,
+                course: null
             };
 
         //CREATE COURSE
@@ -204,6 +221,7 @@ export function course_constructor(state = initialState, action) {
                 ...state,
                 selected_lesson_loading: false,
                 selected_lesson: action.lesson,
+                lesson_test_editing_status: action.lesson.lesson_questions !== null,
                 selected_lesson_error: null,
             };
         case lessonConstants.READ_ONE_LESSON_BY_ID_FAILURE:
@@ -238,6 +256,19 @@ export function course_constructor(state = initialState, action) {
                 delete_lesson_error: action.error,
             };
 
+        //LESON TEST
+        case lessonConstants.CHANGE_LESSON_TEST_EDITING_STATUS:
+            return {
+                ...state,
+                lesson_test_editing_status: action.status
+            }
+
+        case lessonConstants.SELECT_LESSON_TEST_QUESTION:
+            return {
+                ...state,
+                selected_question: action.question 
+            }
+            
 
 
         default:

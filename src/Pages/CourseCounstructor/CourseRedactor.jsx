@@ -216,7 +216,7 @@ const CourseRedactor = ({
                                 <Alert severity="success">{create_course_success_message || update_course_success_message}</Alert>
                             )}
                             <Button className="h-min" type='submit'>{course_editing_status === 'create' ? 'Создать курс' : 'Сохранить'}</Button>
-                            <RenderConfermCreateDialog dialog_title={course_editing_status === 'create' ? `Создать курс` : `Сохранить курс`} dialog_body={course_editing_status === 'create' ? `Создать курс с именем "${values.course_name}"` : `Сохранить курс с именем "${values.course_name}"`} dialogAction={() => course_editing_status === 'create' ? createCourse(values) : updateCourse(values)} />
+                            <RenderConfermCreateDialog  dialog_title={course_editing_status === 'create' ? `Создать курс` : `Сохранить курс`} dialog_body={course_editing_status === 'create' ? `Создать курс с именем "${values.course_name}"` : `Сохранить курс с именем "${values.course_name}"`} dialogAction={() => course_editing_status === 'create' ? createCourse(values) : updateCourse(values)} />
                         </div>
 
                     </Form>

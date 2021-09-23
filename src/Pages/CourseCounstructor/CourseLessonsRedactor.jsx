@@ -1,25 +1,44 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux';
 import { courseActions, lessonActions } from '../../_actions';
-import { Alert, Loading, Paper, TextInput, Switch, SelectItem, Button, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Divider } from '../../_components';
+import { Alert, Loading, Paper, TextInput, Switch, SelectItem, Button, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Divider, TextEditor } from '../../_components';
 import Dropzone from "react-dropzone";
 import Thumb from "../../_components/Thumb";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
-import JoditEditor from "jodit-react";
+
 
 //icons
 import AddPhotoAlternateOutlinedIcon from '@material-ui/icons/AddPhotoAlternateOutlined';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { CreateCoursePage } from '../../CreateCoursePage';
+import { CourseLessonsTestRedactor } from '.';
 
 const CourseLessonsRedactor = ({
     ...props, className, dispatch,
     jwt, user,
-    lesson_editing_status, selected_lesson_id, selected_lesson_loading, selected_lesson, selected_lesson_error, set_lesson_editing_data_loading, set_lesson_editing_data_error
+    lesson_editing_status,
+    selected_lesson_id,
+
+    selected_lesson_loading,
+    selected_lesson,
+    selected_lesson_error,
+
+    set_lesson_editing_data_loading,
+    set_lesson_editing_data_error,
+
+    lesson_test_editing_status,
+
+    create_lesson_loading,
+    create_lesson_success_message,
+    create_lesson_error,
+
+    update_lesson_loading,
+    update_lesson_success_message,
+    update_lesson_error,
 }) => {
     const DiscriptionEditor = useRef(null);
-    const TextEditor = useRef(null);
+    //const TextEditor = useRef(null);
     const [loading, setLoading] = useState(true);
     const [addTest, setAddTest] = useState(false);
     let styleClass = className !== undefined ? ' ' + className : '';
@@ -37,10 +56,17 @@ const CourseLessonsRedactor = ({
             .string()
             .required("Это поле является обязательным для заполнения."),
     });
-    const config = {
+    const configDiscription = {
         readonly: false, // all options from https://xdsoft.net/jodit/doc/
         language: 'ru',
         placeholder: 'Введите текст...',
+        height: 200
+    }
+    const configText = {
+        readonly: false, // all options from https://xdsoft.net/jodit/doc/
+        language: 'ru',
+        placeholder: 'Введите текст...',
+        height: 300
     }
 
     useEffect(() => {
@@ -57,7 +83,7 @@ const CourseLessonsRedactor = ({
     }, [selected_lesson_id]);
 
     const toggleLessonTest = (e) => {
-        
+
         setAddTest(!addTest)
     }
 
@@ -84,6 +110,7 @@ const CourseLessonsRedactor = ({
                 validationSchema={SignupSchema}
                 onSubmit={(values) => {
                     const { lesson_name, lesson_videolink, lesson_text, lesson_description, lesson_questions } = values;
+                    console.log(lesson_name, lesson_videolink, lesson_text, lesson_description, lesson_questions)
                     //if (lessonCreated === false) {
                     //     dispatch(lessonActions.createLesson(
                     //         jwt,
@@ -154,37 +181,50 @@ const CourseLessonsRedactor = ({
                             className='w-100 mb-3'
                         />
                         <Divider />
-                        {/* <div className={errors.lesson_description ? "text-input-danger" : ""}>
+                        <div className={errors.lesson_description ? "text-input-danger" : ""}>
                             <Typography component='body' variant='body'>Описание урока:</Typography>
-                            <JoditEditor
-                                ref={DiscriptionEditor}
+                            <TextEditor
+                                placeholder={'Введите описание урока'}
                                 value={values.lesson_description}
-                                config={config}
-                                tabIndex={1} // tabIndex of textarea
-                                onBlur={val => setFieldValue("lesson_description", val)} // preferred to use only this option to update the content for performance reasons
+                                config={configDiscription}
+                                className={'lesson-discription-editor'}
                                 onChange={val => setFieldValue("lesson_description", val)}
                             />
                             {errors.lesson_description ? <span className="text-input-helper text-input-danger">{errors.lesson_description}</span> : null}
-                        </div> */}
+                        </div>
 
                         <div className={errors.lesson_text ? "text-input-danger" : ""}>
                             <Typography component='body' variant='body' className={`mt-3`}>Текст урока:</Typography>
-                            <JoditEditor
+                            <TextEditor
                                 ref={TextEditor}
+                                placeholder={'Введите текст урока'}
                                 value={values.lesson_text}
-                                config={config}
-                                tabIndex={1} // tabIndex of textarea
-                                onBlur={val => setFieldValue("lesson_text", val)} // preferred to use only this option to update the content for performance reasons
+                                config={configText}
+                                className={'lesson-text-editor'}
                                 onChange={val => setFieldValue("lesson_text", val)}
                             />
-                            {errors.lesson_text ? <span class="text-input-helper text-input-danger">{errors.lesson_text}</span> : null}
+                            {errors.lesson_text ? <span className="text-input-helper text-input-danger">{errors.lesson_text}</span> : null}
                         </div>
                         <Divider className='mv-3' />
                         <div className='d-flex grid-justify-xs-space-between ph-3'>
                             <Typography component='body' variant='body' className='m-0 f-initial'>Добавить тест к уроку?</Typography>
-                            <Switch className='m-0' isToggled={addTest} onToggle={toggleLessonTest} />
+                            <Switch className='m-0' isToggled={lesson_test_editing_status} onToggle={() => dispatch(lessonActions.changeLessonTestEditingStatus(!lesson_test_editing_status))} />
                         </div>
+                        <div className='d-flex grid-justify-xs-center ph-3'>
+                        </div>
+
+                        <CourseLessonsTestRedactor />
+
                         <Divider className='mv-3' />
+                        <div className={`d-flex grid-align-items-xs-center grid-justify-xs-${create_lesson_success_message !== null || create_lesson_error !== null || update_lesson_success_message !== null || update_lesson_error !== null ? 'space-between' : 'flex-end'}`}>
+                            {(create_lesson_error || update_lesson_error) && (
+                                <Alert className='error' severity="error">{create_lesson_error || update_lesson_error}</Alert>
+                            )}
+                            {(create_lesson_success_message || update_lesson_success_message) && (
+                                <Alert severity="success">{create_lesson_success_message || update_lesson_success_message}</Alert>
+                            )}
+                            <Button type='submit'>{lesson_editing_status === 'create' ? 'Создать урок' : 'Сохранить'}</Button>
+                        </div>
                     </Form>
                 )}
             </Formik>
@@ -195,11 +235,51 @@ const CourseLessonsRedactor = ({
 
 function mapStateToProps(state) {
     const { jwt, user } = state.authentication;
-    const { lesson_editing_status, selected_lesson_id, selected_lesson_loading, selected_lesson, selected_lesson_error, set_lesson_editing_data_loading, set_lesson_editing_data_error } = state.course_constructor;
+    const {
+        lesson_editing_status,
+        selected_lesson_id,
+
+        selected_lesson_loading,
+        selected_lesson,
+        selected_lesson_error,
+
+        set_lesson_editing_data_loading,
+        set_lesson_editing_data_error,
+
+        lesson_test_editing_status,
+
+        create_lesson_loading,
+        create_lesson_success_message,
+        create_lesson_error,
+
+        update_lesson_loading,
+        update_lesson_success_message,
+        update_lesson_error,
+
+    } = state.course_constructor;
 
     return {
         jwt, user,
-        lesson_editing_status, selected_lesson_id, selected_lesson_loading, selected_lesson, selected_lesson_error, set_lesson_editing_data_loading, set_lesson_editing_data_error
+
+        lesson_editing_status,
+        selected_lesson_id,
+
+        selected_lesson_loading,
+        selected_lesson,
+        selected_lesson_error,
+
+        set_lesson_editing_data_loading,
+        set_lesson_editing_data_error,
+
+        lesson_test_editing_status,
+
+        create_lesson_loading,
+        create_lesson_success_message,
+        create_lesson_error,
+
+        update_lesson_loading,
+        update_lesson_success_message,
+        update_lesson_error,
     };
 }
 

@@ -35,6 +35,7 @@ const CourseCountructor = ({
                 <CourseLessonsRedactor/>
             </div>
             <CourseLessonsList />
+            
         </div>
     )
 }

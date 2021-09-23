@@ -2944,7 +2944,7 @@ tr.row th {
     height: 25px;
 }
 
-.toggle-switch .toggle-switch-input {
+.toggle-switch input[type="checkbox"] {
     display: none;
 }
 
@@ -2977,7 +2977,7 @@ tr.row th {
     background-color: #ffffff;
 }
 
-.toggle-switch .toggle-switch-input:checked+.switch {
+.toggle-switch input[type="checkbox"]:checked+.switch {
     background-color: rgba(var(--primary-main-color));
 }
 
@@ -4031,8 +4031,16 @@ tr.row th {
     border-bottom: 1px solid rgba(var(--text-dark), 0.12);
 }
 
-.jodit-container:not(.jodit_inline){
-    border-radius: var(--rounding-angle) !important;
+#fr-logo{
+    display: none !important;
+}
+
+.fr-toolbar{
+    border-radius: 0px !important;
+}
+
+.fr-wrapper{
+    border-bottom: 0 !important;
 }
 
 /* COURSES_PAGE */

@@ -11,6 +11,10 @@ export const lessonActions = {
     readOneLessonById,
     setLessonEditingData,
 
+    //lesson test
+    changeLessonTestEditingStatus,
+    selectLessonTestQuestion,
+
     //passed_lesson
     createLessonPassed,
     updateLessonPassed,
@@ -112,6 +116,20 @@ function setLessonEditingData() {
     function success() { return { type: lessonConstants.SET_LESSON_EDITING_DATA_SUCCESS } }
     function failure() { return { type: lessonConstants.SET_LESSON_EDITING_DATA_FAILURE } }
 }
+
+//==========//
+
+//Lesson Test
+function changeLessonTestEditingStatus(status){
+    return { type: lessonConstants.CHANGE_LESSON_TEST_EDITING_STATUS, status }
+}
+
+function selectLessonTestQuestion(question){
+    return { type: lessonConstants.SELECT_LESSON_TEST_QUESTION, question }
+}
+
+
+//==========//
 
 function createLessonPassed(course_id, lesson_id, user_id) {
     return dispatch => {
