@@ -74,7 +74,6 @@ const CourseLessonsTestRedactor = ({
         setSelectedQuestionState({
             ...selectedQuestionState,
             question_answers: [...selectedQuestionState.question_answers, {
-                answer_number: selectedQuestionState.question_answers.length + 1,
                 answer_name: null,
                 answer_answer: "",
                 answer_current: "0",
@@ -82,10 +81,10 @@ const CourseLessonsTestRedactor = ({
         })
     }
 
-    const deleteAnswer = (answer_number) => {
+    const deleteAnswer = (answer_index) => {
         setSelectedQuestionState({
             ...selectedQuestionState,
-            question_answers: selectedQuestionState.question_answers.map(())
+            question_answers: selectedQuestionState.question_answers.filter((answer, index) => index !== answer_index)
         })
     }
 
@@ -256,7 +255,7 @@ const CourseLessonsTestRedactor = ({
                                                 variant={'outlined'}
                                                 onChange={(val) => setSelectedQuestionState({
                                                     ...selectedQuestionState,
-                                                    question_answers: selectedQuestionState.question_answers.map((item, index) => item.answer_number === answer.answer_number ? {...item, answer_answer: val.target.value} : item )
+                                                    question_answers: selectedQuestionState.question_answers.map((item, inx) => inx === index ? {...item, answer_answer: val.target.value} : item )
                                                 })}
                                                 // helperText={
                                                 //     question_answers_error !== undefined && question_answers_error.length !== 0
@@ -275,7 +274,7 @@ const CourseLessonsTestRedactor = ({
                                             }
                                         </td>
                                         <td className='text-align-end'>
-                                            <IconButton onClick={() => deleteAnswer(answer.answer_number)}>
+                                            <IconButton onClick={() => deleteAnswer(index)}>
                                                 <DeleteForeverOutlinedIcon className='danger-area-title-icon' />
                                             </IconButton>
                                         </td>
