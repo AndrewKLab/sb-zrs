@@ -17,6 +17,7 @@ import { CourseLessonsTestRedactor } from '.';
 const CourseLessonsRedactor = ({
     ...props, className, dispatch,
     jwt, user,
+    course,
     lesson_editing_status,
     selected_lesson_id,
 
@@ -99,18 +100,29 @@ const CourseLessonsRedactor = ({
                             lesson_videolink: '',
                             lesson_text: '',
                             lesson_description: '',
-                            lesson_questions: []
                         }) : ({
                             lesson_name: selected_lesson.lesson_name,
                             lesson_videolink: selected_lesson.lesson_videolink,
                             lesson_text: selected_lesson.lesson_text,
                             lesson_description: selected_lesson.lesson_description,
-                            lesson_questions: selected_lesson.lesson_questions
                         })}
                 validationSchema={SignupSchema}
                 onSubmit={(values) => {
-                    const { lesson_name, lesson_videolink, lesson_text, lesson_description, lesson_questions } = values;
-                    console.log(lesson_name, lesson_videolink, lesson_text, lesson_description, lesson_questions)
+                    const { lesson_name, lesson_videolink, lesson_text, lesson_description } = values;
+                    console.log(lesson_name, lesson_videolink, lesson_text, lesson_description, selected_lesson.lesson_questions !== undefined ? selected_lesson.lesson_questions : [])
+                    if (lesson_editing_status === "create") {
+                        dispatch(lessonActions.createLesson(
+                            jwt,
+                            course.course_id,
+                            course.lessons !== null ? Number(course.lessons.length) + 1 : 1,
+                            lesson_name,
+                            lesson_videolink,
+                            lesson_description,
+                            lesson_text,
+                            selected_lesson.lesson_questions !== undefined ? selected_lesson.lesson_questions : []
+                        ))
+                    }
+
                     //if (lessonCreated === false) {
                     //     dispatch(lessonActions.createLesson(
                     //         jwt,
@@ -236,6 +248,7 @@ const CourseLessonsRedactor = ({
 function mapStateToProps(state) {
     const { jwt, user } = state.authentication;
     const {
+        course,
         lesson_editing_status,
         selected_lesson_id,
 
@@ -260,6 +273,7 @@ function mapStateToProps(state) {
 
     return {
         jwt, user,
+        course,
 
         lesson_editing_status,
         selected_lesson_id,

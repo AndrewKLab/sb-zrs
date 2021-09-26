@@ -15,22 +15,21 @@ export const lessonService = {
 };
 
 //создать урок
-function createLesson(jwt, course_id, number, name, videolink, description, text, questions) {
+function createLesson(jwt, course_id, lesson_number, lesson_name, lesson_videolink, lesson_description, lesson_text, lesson_questions) {
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` },
         body: JSON.stringify({
-            jwt,
-            number,
-            name,
-            videolink,
-            description,
-            text,
-            questions
+            lesson_number,
+            lesson_name,
+            lesson_videolink,
+            lesson_description,
+            lesson_text,
+            lesson_questions
         })
     };
 
-    return fetch(`${config.apiUrl}/lesson/create.php?course_id=${course_id}`, requestOptions).then(handleResponse);
+    return fetch(`/api/lesson/create.php?course_id=${course_id}`, requestOptions).then(handleResponse);
 }
 
 //обновить урок

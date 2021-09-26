@@ -14,6 +14,7 @@ export const lessonActions = {
     //lesson test
     changeLessonTestEditingStatus,
     selectLessonTestQuestion,
+    createLessonTestQuestion,
 
     //passed_lesson
     createLessonPassed,
@@ -28,13 +29,13 @@ function createLesson(jwt, course_id, number, name, videolink, descrigtion, text
         dispatch(request(jwt, course_id, number, name, videolink, descrigtion, text, questions));
         return lessonService.createLesson(jwt, course_id, number, name, videolink, descrigtion, text, questions)
             .then(
-                data => dispatch(success(data)),
+                lesson => dispatch(success(lesson)),
                 error => dispatch(failure(error))
             );
     };
 
     function request(jwt, course_id, number, name, videolink, descrigtion, text) { return { type: lessonConstants.CREATE_LESSON_REQUEST, jwt, course_id, number, name, videolink, descrigtion, text, questions } }
-    function success(data) { return { type: lessonConstants.CREATE_LESSON_SUCCESS, data } }
+    function success(lesson) { return { type: lessonConstants.CREATE_LESSON_SUCCESS, lesson } }
     function failure(error) { return { type: lessonConstants.CREATE_LESSON_FAILURE, error } }
 }
 
@@ -126,6 +127,10 @@ function changeLessonTestEditingStatus(status){
 
 function selectLessonTestQuestion(question){
     return { type: lessonConstants.SELECT_LESSON_TEST_QUESTION, question }
+}
+
+function createLessonTestQuestion(question){
+    return { type: lessonConstants.CREATE_LESSON_TEST_QUESTION, question }
 }
 
 

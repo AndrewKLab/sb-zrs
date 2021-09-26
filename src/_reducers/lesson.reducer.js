@@ -3,41 +3,41 @@ import { lessonConstants, courseConstants, questionConstants } from '../_constan
 export function lesson(state = [], action) {
   switch (action.type) {
     // CREATE LESSON
-    case lessonConstants.CREATE_LESSON_REQUEST:
-      return {
-        ...state,
-        loading: true,
-        lesson_error: undefined,
-        data: state.data !== undefined ?
-          {
-            ...state.data,
-            lessons: state.data.lessons !== undefined ? state.data.lessons : []
-          } : {
-            lessons: []
-          }
-      };
-    case lessonConstants.CREATE_LESSON_SUCCESS:
-      const { id, number, name, videolink, description, text, questions } = action.data.lesson;
-      var new_lessons_arr = state.data.lessons
-      new_lessons_arr.push({ id, number, name, videolink, description, text, questions })
-      return {
-        ...state,
-        loading: false,
-        lesson_error: undefined,
-        message: action.data.message,
-        data: {
-          ...state.data,
-          lessons: new_lessons_arr
-        }
-      };
-    case lessonConstants.CREATE_LESSON_FAILURE:
-      return {
-        lesson_error: action.error,
-        data: {
-          ...state.data,
-          lessons: state.data.lessons
-        }
-      };
+    // case lessonConstants.CREATE_LESSON_REQUEST:
+    //   return {
+    //     ...state,
+    //     loading: true,
+    //     lesson_error: undefined,
+    //     data: state.data !== undefined ?
+    //       {
+    //         ...state.data,
+    //         lessons: state.data.lessons !== undefined ? state.data.lessons : []
+    //       } : {
+    //         lessons: []
+    //       }
+    //   };
+    // case lessonConstants.CREATE_LESSON_SUCCESS:
+    //   const { id, number, name, videolink, description, text, questions } = action.data.lesson;
+    //   var new_lessons_arr = state.data.lessons
+    //   new_lessons_arr.push({ id, number, name, videolink, description, text, questions })
+    //   return {
+    //     ...state,
+    //     loading: false,
+    //     lesson_error: undefined,
+    //     message: action.data.message,
+    //     data: {
+    //       ...state.data,
+    //       lessons: new_lessons_arr
+    //     }
+    //   };
+    // case lessonConstants.CREATE_LESSON_FAILURE:
+    //   return {
+    //     lesson_error: action.error,
+    //     data: {
+    //       ...state.data,
+    //       lessons: state.data.lessons
+    //     }
+    //   };
 
     // UPDATE LESSON
     case lessonConstants.UPDATE_LESSON_REQUEST:

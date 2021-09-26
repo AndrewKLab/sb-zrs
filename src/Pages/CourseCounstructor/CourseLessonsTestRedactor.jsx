@@ -35,7 +35,7 @@ const CourseLessonsTestRedactor = ({
         question_answers: [],
 
         //errors
-        question_text_error: ""
+        question_text_error: "",
     }
     const [selectedQuestionState, setSelectedQuestionState] = useState(InitialselectedQuestionState);
     // const [loading, setLoading] = useState(true);
@@ -63,10 +63,20 @@ const CourseLessonsTestRedactor = ({
     const saveQestion = () => {
         //dispatch(lessonActions.selectLessonTestQuestion(""))
         if (selectedQuestionState.question_text) {
-            console.log(selectedQuestionState)
+            if (selectedQuestionState.question_answers.filter(item => item.answer_answer === "").length > 0) {
+                setSelectedQuestionState({ ...selectedQuestionState, question_answers: selectedQuestionState.question_answers.map((answer, i) => answer.answer_answer === "" ? { ...answer, answer_error: 'Это поле является обязательным для заполнения.' } : answer) })
+            } else {
+                dispatch(lessonActions.createLessonTestQuestion(selectedQuestionState))
+                console.log(selectedQuestionState)
+            }
         } else {
             setSelectedQuestionState({ ...selectedQuestionState, question_text_error: 'Это поле является обязательным для заполнения.' })
         }
+    }
+
+    const cancelQestion = () => {
+        dispatch(lessonActions.selectLessonTestQuestion(null))
+        setSelectedQuestionState(InitialselectedQuestionState)
     }
 
     //ANSWERS
@@ -77,6 +87,7 @@ const CourseLessonsTestRedactor = ({
                 answer_name: null,
                 answer_answer: "",
                 answer_current: "0",
+                answer_error: "",
             }]
         })
     }
@@ -88,6 +99,24 @@ const CourseLessonsTestRedactor = ({
         })
     }
 
+    const setCurrentAnswer = (answer_index) => {
+        setSelectedQuestionState({
+            ...selectedQuestionState,
+            question_answers: selectedQuestionState.question_answers.map((answer, index) => {
+                switch (selectedQuestionState.question_type) {
+                    case "checkbox":
+                        return index !== answer_index ? answer : { ...answer, answer_current: answer.answer_current === "1" ? "0" : "1" }
+                    case "radio":
+                        return index !== answer_index ? { ...answer, answer_current: "0" } : { ...answer, answer_current: "1" }
+                    case "text":
+                        return { ...answer, answer_current: "1" }
+                    default:
+                        return index !== answer_index ? { ...answer, answer_current: "0" } : { ...answer, answer_current: "1" }
+                }
+            })
+
+        })
+    }
 
     if (!lesson_test_editing_status) return null
     return (
@@ -221,7 +250,13 @@ const CourseLessonsTestRedactor = ({
                         name="question_type"
                         label="Тип ответа"
                         variant={'outlined'}
-                        onChange={(val) => setSelectedQuestionState({ ...selectedQuestionState, question_type: val.target.value })}
+                        onChange={(val) =>
+                            setSelectedQuestionState({
+                                ...selectedQuestionState,
+                                question_type: val.target.value,
+                                question_answers: selectedQuestionState.question_answers.map((answer, index) => { return ({ ...answer, answer_current: "0" }) })
+                            })
+                        }
                         InputProps={{
                             endAdornment: (
                                 <ExpandMoreIcon />
@@ -255,20 +290,17 @@ const CourseLessonsTestRedactor = ({
                                                 variant={'outlined'}
                                                 onChange={(val) => setSelectedQuestionState({
                                                     ...selectedQuestionState,
-                                                    question_answers: selectedQuestionState.question_answers.map((item, inx) => inx === index ? {...item, answer_answer: val.target.value} : item )
+                                                    question_answers: selectedQuestionState.question_answers.map((item, inx) => inx === index ? { ...item, answer_answer: val.target.value, answer_error: "" } : item)
                                                 })}
-                                                // helperText={
-                                                //     question_answers_error !== undefined && question_answers_error.length !== 0
-                                                //         ? question_answers_error[index]
-                                                //         : null
-                                                // }
+                                                helperText={answer.answer_error !== "" ? answer.answer_error : null
+                                                }
                                             />
                                         </td>
                                         <td className='text-align-end'>
                                             {question_type === 'text' ?
                                                 answer.answer_answer
                                                 :
-                                                <IconButton onClick={() => { this.changedQuestionCurrentAnswer(event, answer) }}>
+                                                <IconButton onClick={() => setCurrentAnswer(index)}>
                                                     {answer.answer_current !== '0' ? (<DoneIcon className='done-area-title-icon' />) : (<CloseIcon className='danger-area-title-icon' />)}
                                                 </IconButton>
                                             }
@@ -282,30 +314,31 @@ const CourseLessonsTestRedactor = ({
                                 ))}
                             </tbody>
                         </table>}
-                    <Button fullWidth onPress={createAnswer}>{'Добавить ответ'}</Button>
+                    {selectedQuestionState.question_type === 'text' && selectedQuestionState.question_answers.length > 0 ? null : <Button fullWidth onPress={createAnswer}>{'Добавить ответ'}</Button>}
                 </div>
             }
             <Divider />
-            {selected_question === null ?
-                <div className='d-flex grid-justify-xs-flex-end '>
-                    <Button onPress={createQestion}>{'Добавить вопрос'}</Button>
-                </div>
-                :
-                <div className='d-flex grid-justify-xs-space-between grid-align-items-xs-center'>
-                    <div>
-                        {/* {answers_error !== '' && (
+            {
+                selected_question === null ?
+                    <div className='d-flex grid-justify-xs-flex-end '>
+                        <Button onPress={createQestion}>{'Добавить вопрос'}</Button>
+                    </div>
+                    :
+                    <div className='d-flex grid-justify-xs-space-between grid-align-items-xs-center'>
+                        <div>
+                            {/* {answers_error !== '' && (
                                             <Alert className='error' severity="error">{answers_error}</Alert>
                                         )} */}
+                        </div>
+                        <div className='d-flex grid-justify-xs-flex-end '>
+                            <Button onPress={saveQestion} className='mr-3'>{'Добавить вопрос'}</Button>
+                            <Button onPress={cancelQestion}>{'Отмена'}</Button>
+                        </div>
                     </div>
-                    <div className='d-flex grid-justify-xs-flex-end '>
-                        <Button onPress={saveQestion} className='mr-3'>{'Добавить вопрос'}</Button>
-                        <Button onPress={() => this.setState({ editQuestion: '', addQuestion: false })}>{'Отмена'}</Button>
-                    </div>
-                </div>
             }
 
 
-        </div>
+        </div >
     )
 }
 

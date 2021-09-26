@@ -231,6 +231,31 @@ export function course_constructor(state = initialState, action) {
                 selected_lesson_error: null,
             };
 
+        //CREATE LESSON
+        case lessonConstants.CREATE_LESSON_REQUEST:
+            return {
+                ...state,
+                create_lesson_loading: true,
+                create_lesson_success_message: null,
+                create_lesson_error: null,
+            };
+        case lessonConstants.CREATE_LESSON_SUCCESS:
+            return {
+                ...state,
+                create_lesson_loading: false,
+                create_lesson_success_message: action.lesson.message,
+                course: { ...state.course, lessons: [...state.course.lessons, action.lesson.lesson] },
+                create_lesson_error: null,
+                selected_lesson_id: action.lesson.lesson.lesson_id,
+                lesson_editing_status: 'update'
+            };
+        case lessonConstants.CREATE_LESSON_FAILURE:
+            return {
+                ...state,
+                create_lesson_loading: false,
+                create_lesson_success_message: null,
+                create_lesson_error: action.error,
+            };
 
         //DELETE LESSON
         case lessonConstants.DELETE_LESSON_REQUEST:
@@ -266,9 +291,16 @@ export function course_constructor(state = initialState, action) {
         case lessonConstants.SELECT_LESSON_TEST_QUESTION:
             return {
                 ...state,
-                selected_question: action.question 
+                selected_question: action.question
             }
-            
+
+        case lessonConstants.CREATE_LESSON_TEST_QUESTION:
+            return {
+                ...state,
+                selected_lesson: state.lesson_editing_status === 'create' ? state.selected_lesson !== "" ? { ...state.selected_lesson, lesson_questions: [...state.selected_lesson.lesson_questions, action.question] } : { lesson_questions: [action.question] } : { ...state.selected_lesson, lesson_questions: [...state.selected_lesson.lesson_questions, action.question] },
+                selected_question: null
+            }
+
 
 
         default:
