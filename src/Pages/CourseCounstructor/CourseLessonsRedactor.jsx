@@ -109,7 +109,7 @@ const CourseLessonsRedactor = ({
                 validationSchema={SignupSchema}
                 onSubmit={(values) => {
                     const { lesson_name, lesson_videolink, lesson_text, lesson_description } = values;
-                    console.log(lesson_name, lesson_videolink, lesson_text, lesson_description, selected_lesson.lesson_questions !== undefined ? selected_lesson.lesson_questions : [])
+                    //console.log( selected_lesson.lesson_questions !== undefined ? selected_lesson.lesson_questions : [])
                     if (lesson_editing_status === "create") {
                         dispatch(lessonActions.createLesson(
                             jwt,
@@ -119,43 +119,21 @@ const CourseLessonsRedactor = ({
                             lesson_videolink,
                             lesson_description,
                             lesson_text,
-                            selected_lesson.lesson_questions !== undefined ? selected_lesson.lesson_questions : []
+                            lesson_test_editing_status ? selected_lesson.lesson_questions !== undefined ? selected_lesson.lesson_questions : [] : []
+                        ))
+
+                    } else {
+                        dispatch(lessonActions.updateLesson(
+                            jwt,
+                            selected_lesson.lesson_id,
+                            selected_lesson.lesson_number,
+                            lesson_name,
+                            lesson_videolink,
+                            lesson_description,
+                            lesson_text,
+                            lesson_test_editing_status ? selected_lesson.lesson_questions : []
                         ))
                     }
-
-                    //if (lessonCreated === false) {
-                    //     dispatch(lessonActions.createLesson(
-                    //         jwt,
-                    //         course_id,
-                    //         lessons !== null && data !== undefined ? Number(data.lessons.length) + 1 : data !== undefined ? Number(data.lessons.length) + 1 : 1,
-                    //         lesson_name,
-                    //         lesson_videolink,
-                    //         lesson_description,
-                    //         lesson_text,
-                    //         lesson_questions
-                    //     )).then(
-                    //         () => changeLesson(), clenupTest(), this.setState({ changed: error === undefined ? false : true, lessonCreated: error === undefined ? true : false })
-                    //     )
-                    // } else {
-                    //     var questions;
-                    //     dispatch(lessonActions.updateLesson(
-                    //         jwt,
-                    //         lesson.id,
-                    //         lesson.number,
-                    //         lesson_name,
-                    //         course_id,
-                    //         lesson_videolink,
-                    //         lesson_description,
-                    //         lesson_text,
-                    //         questions = {
-                    //             delete: del,
-                    //             update: update,
-                    //             create: create
-                    //         }
-                    //     )).then(
-                    //         () => this.setState({ changed: error === undefined ? false : true })
-                    //     )
-                    // }
                 }
                 }
             >
@@ -193,7 +171,7 @@ const CourseLessonsRedactor = ({
                             className='w-100 mb-3'
                         />
                         <Divider />
-                        <div className={errors.lesson_description ? "text-input-danger" : ""}>
+                        <div className={errors.lesson_description && touched.lesson_description ? "text-input-danger" : ""}>
                             <Typography component='body' variant='body'>Описание урока:</Typography>
                             <TextEditor
                                 placeholder={'Введите описание урока'}
@@ -202,10 +180,10 @@ const CourseLessonsRedactor = ({
                                 className={'lesson-discription-editor'}
                                 onChange={val => setFieldValue("lesson_description", val)}
                             />
-                            {errors.lesson_description ? <span className="text-input-helper text-input-danger">{errors.lesson_description}</span> : null}
+                            {errors.lesson_description && touched.lesson_description  ? <span className="text-input-helper text-input-danger">{errors.lesson_description}</span> : null}
                         </div>
 
-                        <div className={errors.lesson_text ? "text-input-danger" : ""}>
+                        <div className={errors.lesson_text && touched.lesson_text ? "text-input-danger" : ""}>
                             <Typography component='body' variant='body' className={`mt-3`}>Текст урока:</Typography>
                             <TextEditor
                                 ref={TextEditor}
@@ -215,7 +193,7 @@ const CourseLessonsRedactor = ({
                                 className={'lesson-text-editor'}
                                 onChange={val => setFieldValue("lesson_text", val)}
                             />
-                            {errors.lesson_text ? <span className="text-input-helper text-input-danger">{errors.lesson_text}</span> : null}
+                            {errors.lesson_text && touched.lesson_text ? <span className="text-input-helper text-input-danger">{errors.lesson_text}</span> : null}
                         </div>
                         <Divider className='mv-3' />
                         <div className='d-flex grid-justify-xs-space-between ph-3'>

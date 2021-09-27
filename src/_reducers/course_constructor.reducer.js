@@ -50,7 +50,8 @@ const initialState = {
     //test
     lesson_test_editing_status: false,
 
-    selected_question: null
+    selected_question: null,
+
 }
 
 export function course_constructor(state = initialState, action) {
@@ -193,6 +194,7 @@ export function course_constructor(state = initialState, action) {
                 set_lesson_editing_data_loading: false,
                 selected_lesson: "",
                 set_lesson_editing_data_error: null,
+                lesson_test_editing_status: false
             };
         case lessonConstants.SET_LESSON_EDITING_DATA_FAILURE:
             return {
@@ -206,7 +208,10 @@ export function course_constructor(state = initialState, action) {
             return {
                 ...state,
                 selected_lesson_id: action.lesson.lesson_id,
-                lesson_editing_status: 'update'
+                lesson_editing_status: 'update',
+                create_lesson_success_message: null,
+                update_lesson_success_message: null,
+                delete_lesson_success_message: null
             }
 
         //READ_ONE_LESSON
@@ -257,6 +262,29 @@ export function course_constructor(state = initialState, action) {
                 create_lesson_error: action.error,
             };
 
+        //UPDATE LESSON
+        case lessonConstants.UPDATE_LESSON_REQUEST:
+            return {
+                ...state,
+                update_lesson_loading: true,
+                update_lesson_success_message: null,
+                update_lesson_error: null,
+            };
+        case lessonConstants.UPDATE_LESSON_SUCCESS:
+            return {
+                ...state,
+                update_lesson_loading: false,
+                update_lesson_success_message: action.lesson.message,
+                course: { ...state.course, lessons: state.course.lessons.map((lesson, index) => lesson.lesson_id === action.lesson.lesson.lesson_id ? action.lesson.lesson : lesson) },
+                update_lesson_error: null,
+            };
+        case lessonConstants.UPDATE_LESSON_FAILURE:
+            return {
+                update_lesson_loading: false,
+                update_lesson_success_message: null,
+                update_lesson_error: action.error,
+            };
+
         //DELETE LESSON
         case lessonConstants.DELETE_LESSON_REQUEST:
             return {
@@ -269,8 +297,9 @@ export function course_constructor(state = initialState, action) {
             return {
                 ...state,
                 delete_lesson_loading: false,
-                delete_lesson_success_message: action.data.message,
-                course: { ...state.course, lessons: state.course.lessons.filter(l => l.lesson_id !== action.lesson_id) },
+                delete_lesson_success_message: action.lesson.message,
+                course: { ...state.course, lessons: action.lesson.lessons },
+                selected_lesson: state.selected_lesson !== null && state.selected_lesson.lesson_id === action.lesson_id ? null : state.selected_lesson,
                 delete_lesson_error: null,
             };
         case lessonConstants.DELETE_LESSON_FAILURE:
@@ -291,7 +320,7 @@ export function course_constructor(state = initialState, action) {
         case lessonConstants.SELECT_LESSON_TEST_QUESTION:
             return {
                 ...state,
-                selected_question: action.question
+                selected_question: action.question === "" || action.question === null ? action.question : { ...action.question, question_index: action.index }
             }
 
         case lessonConstants.CREATE_LESSON_TEST_QUESTION:
@@ -299,6 +328,19 @@ export function course_constructor(state = initialState, action) {
                 ...state,
                 selected_lesson: state.lesson_editing_status === 'create' ? state.selected_lesson !== "" ? { ...state.selected_lesson, lesson_questions: [...state.selected_lesson.lesson_questions, action.question] } : { lesson_questions: [action.question] } : { ...state.selected_lesson, lesson_questions: [...state.selected_lesson.lesson_questions, action.question] },
                 selected_question: null
+            }
+
+        case lessonConstants.UPDATE_LESSON_TEST_QUESTION:
+            return {
+                ...state,
+                selected_lesson: { ...state.selected_lesson, lesson_questions: state.selected_lesson.lesson_questions.map((item, index) => item.question_id === action.question.question_id ? action.question : item) },
+                selected_question: null
+            }
+
+        case lessonConstants.DELETE_LESSON_TEST_QUESTION:
+            return {
+                ...state,
+                selected_lesson: { ...state.selected_lesson, lesson_questions: state.selected_lesson.lesson_questions.filter((item, index) => index !== action.question) }
             }
 
 

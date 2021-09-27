@@ -15,6 +15,8 @@ export const lessonActions = {
     changeLessonTestEditingStatus,
     selectLessonTestQuestion,
     createLessonTestQuestion,
+    updateLessonTestQuestion,
+    deleteLessonTestQuestion,
 
     //passed_lesson
     createLessonPassed,
@@ -40,34 +42,34 @@ function createLesson(jwt, course_id, number, name, videolink, descrigtion, text
 }
 
 //обновть урок
-function updateLesson(jwt, lesson_id, number, name, courses_id, videolink, description, text, questions) {
+function updateLesson(jwt, lesson_id, number, name, videolink, description, text, questions) {
     return dispatch => {
-        dispatch(request(jwt, lesson_id, number, name, courses_id, videolink, description, text, questions));
-        return lessonService.updateLesson(jwt, lesson_id, number, name, courses_id, videolink, description, text, questions)
+        dispatch(request(jwt, lesson_id, number, name, videolink, description, text, questions));
+        return lessonService.updateLesson(jwt, lesson_id, number, name, videolink, description, text, questions)
             .then(
-                data => dispatch(success(data)),
+                lesson => dispatch(success(lesson)),
                 error => dispatch(failure(error))
             );
     };
 
-    function request(jwt, lesson_id, number, name, courses_id, videolink, description, text, questions) { return { type: lessonConstants.UPDATE_LESSON_REQUEST, jwt, lesson_id, number, name, courses_id, videolink, description, text, questions } }
-    function success(data) { return { type: lessonConstants.UPDATE_LESSON_SUCCESS, data } }
+    function request(jwt, lesson_id, number, name, videolink, description, text, questions) { return { type: lessonConstants.UPDATE_LESSON_REQUEST, jwt, lesson_id, number, name, videolink, description, text, questions } }
+    function success(lesson) { return { type: lessonConstants.UPDATE_LESSON_SUCCESS, lesson } }
     function failure(error) { return { type: lessonConstants.UPDATE_LESSON_FAILURE, error } }
 }
 
 //удалить урок
-function deleteLesson(jwt, lesson_id) {
+function deleteLesson(jwt, lesson_id, course_id) {
     return dispatch => {
-        dispatch(request(jwt, lesson_id));
-        return lessonService.deleteLesson(jwt, lesson_id)
+        dispatch(request(jwt, lesson_id, course_id));
+        return lessonService.deleteLesson(jwt, lesson_id, course_id)
             .then(
-                data => dispatch(success(data)),
+                lesson => dispatch(success(lesson)),
                 error => dispatch(failure(error))
             );
     };
 
-    function request() { return { type: lessonConstants.DELETE_LESSON_REQUEST, jwt, lesson_id } }
-    function success(data) { return { type: lessonConstants.DELETE_LESSON_SUCCESS, data, lesson_id } }
+    function request(jwt, lesson_id, course_id) { return { type: lessonConstants.DELETE_LESSON_REQUEST, jwt, lesson_id, course_id } }
+    function success(lesson) { return { type: lessonConstants.DELETE_LESSON_SUCCESS, lesson, lesson_id } }
     function failure(error) { return { type: lessonConstants.DELETE_LESSON_FAILURE, error } }
 }
 
@@ -121,18 +123,25 @@ function setLessonEditingData() {
 //==========//
 
 //Lesson Test
-function changeLessonTestEditingStatus(status){
+function changeLessonTestEditingStatus(status) {
     return { type: lessonConstants.CHANGE_LESSON_TEST_EDITING_STATUS, status }
 }
 
-function selectLessonTestQuestion(question){
-    return { type: lessonConstants.SELECT_LESSON_TEST_QUESTION, question }
+function selectLessonTestQuestion(question, index) {
+    return { type: lessonConstants.SELECT_LESSON_TEST_QUESTION, question, index }
 }
 
-function createLessonTestQuestion(question){
+function createLessonTestQuestion(question) {
     return { type: lessonConstants.CREATE_LESSON_TEST_QUESTION, question }
 }
 
+function updateLessonTestQuestion(question) {
+    return { type: lessonConstants.UPDATE_LESSON_TEST_QUESTION, question }
+}
+
+function deleteLessonTestQuestion(question) {
+    return { type: lessonConstants.DELETE_LESSON_TEST_QUESTION, question }
+}
 
 //==========//
 

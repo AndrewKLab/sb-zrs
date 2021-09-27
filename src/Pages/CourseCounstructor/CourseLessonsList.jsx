@@ -17,7 +17,7 @@ const CourseLessonsList = ({
     const openDialog = (lesson) => { setVisableDialog(true), setLessonState(lesson) };
     const closeDialog = () => setVisableDialog(false);
 
-    const deleteLesson = () => dispatch(lessonActions.deleteLesson(jwt, lessonState.lesson_id)).then(() => closeDialog());
+    const deleteLesson = () => dispatch(lessonActions.deleteLesson(jwt, lessonState.lesson_id, course.course_id)).then(() => closeDialog());
 
     const RenderConfermDialog = ({ dialog_title, dialog_body, dialogAction }) => {
         return (

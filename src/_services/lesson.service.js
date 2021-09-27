@@ -33,43 +33,32 @@ function createLesson(jwt, course_id, lesson_number, lesson_name, lesson_videoli
 }
 
 //обновить урок
-function updateLesson(jwt, lesson_id, number, name, courses_id, videolink, description, text, questions) {
+function updateLesson(jwt, lesson_id, lesson_number, lesson_name, lesson_videolink, lesson_description, lesson_text, lesson_questions) {
 
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` },
         body: JSON.stringify({
-            jwt,
-            number,
-            name,
-            courses_id,
-            videolink,
-            description,
-            text,
-            questions
+            lesson_number,
+            lesson_name,
+            lesson_videolink,
+            lesson_description,
+            lesson_text,
+            lesson_questions
         })
     };
 
-    return fetch(`${config.apiUrl}/lesson/update.php?lesson_id=${lesson_id}`, requestOptions).then(handleResponse);
+    return fetch(`/api/lesson/update.php?lesson_id=${lesson_id}`, requestOptions).then(handleResponse);
 }
 
 //удалить урок
-function deleteLesson(jwt, lesson_id) {
-    const formData = new FormData();
-
-    formData.append('jwt', jwt);
-
+function deleteLesson(jwt, lesson_id, course_id) {
     const requestOptions = {
         method: 'POST',
-        headers: {
-            'Accept': 'application/json, text/plain, */*',
-            'Accept-Encoding': 'gzip, deflate',
-            'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
-        },
-        body: formData
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` },
     };
 
-    return fetch(`${config.apiUrl}/lesson/delete.php?lesson_id=${lesson_id}`, requestOptions).then(handleResponse);
+    return fetch(`/api/lesson/delete.php?course_id=${course_id}&lesson_id=${lesson_id}`, requestOptions).then(handleResponse);
 }
 
 //прочитать все уроку в конкретном курсе

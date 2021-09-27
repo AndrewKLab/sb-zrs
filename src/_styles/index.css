@@ -2358,7 +2358,7 @@ div.text-input-group label {
     font-size: 1rem;
     color: rgba(var(--text-dark), 0.73);
     transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-    background-color: rgba(var(--background-color), 1);
+    background-color: transparent;
     z-index: 0;
     cursor: text;
     width: auto;
