@@ -16,7 +16,7 @@ import { CourseLessonsTestRedactor } from '.';
 
 const CourseLessonsRedactor = ({
     ...props, className, dispatch,
-    jwt, user,
+    jwt, user, currentTheme,
     course,
     lesson_editing_status,
     selected_lesson_id,
@@ -176,9 +176,10 @@ const CourseLessonsRedactor = ({
                             <TextEditor
                                 placeholder={'Введите описание урока'}
                                 value={values.lesson_description}
-                                config={configDiscription}
-                                className={'lesson-discription-editor'}
-                                onChange={val => setFieldValue("lesson_description", val)}
+                                height={250}
+                                currentTheme={currentTheme}
+                                handleChange={handleChange}
+                                onChange={(val) => setFieldValue('lesson_description', val)}
                             />
                             {errors.lesson_description && touched.lesson_description  ? <span className="text-input-helper text-input-danger">{errors.lesson_description}</span> : null}
                         </div>
@@ -189,9 +190,10 @@ const CourseLessonsRedactor = ({
                                 ref={TextEditor}
                                 placeholder={'Введите текст урока'}
                                 value={values.lesson_text}
-                                config={configText}
-                                className={'lesson-text-editor'}
-                                onChange={val => setFieldValue("lesson_text", val)}
+                                height={400}
+                                currentTheme={currentTheme}
+                                handleChange={handleChange}
+                                onChange={(val) => setFieldValue('lesson_text', val)}
                             />
                             {errors.lesson_text && touched.lesson_text ? <span className="text-input-helper text-input-danger">{errors.lesson_text}</span> : null}
                         </div>
@@ -225,6 +227,7 @@ const CourseLessonsRedactor = ({
 
 function mapStateToProps(state) {
     const { jwt, user } = state.authentication;
+    const { currentTheme } = state.style;
     const {
         course,
         lesson_editing_status,
@@ -250,7 +253,7 @@ function mapStateToProps(state) {
     } = state.course_constructor;
 
     return {
-        jwt, user,
+        jwt, user, currentTheme,
         course,
 
         lesson_editing_status,

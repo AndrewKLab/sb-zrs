@@ -179,7 +179,6 @@ export function course_constructor(state = initialState, action) {
                 ...state,
                 lesson_editing_status: action.status,
                 selected_lesson_id: "",
-
             };
 
         case lessonConstants.SET_LESSON_EDITING_DATA_REQUEST:
@@ -191,10 +190,24 @@ export function course_constructor(state = initialState, action) {
         case lessonConstants.SET_LESSON_EDITING_DATA_SUCCESS:
             return {
                 ...state,
-                set_lesson_editing_data_loading: false,
+
                 selected_lesson: "",
+                lesson_test_editing_status: false,
+
+                set_lesson_editing_data_loading: false,
                 set_lesson_editing_data_error: null,
-                lesson_test_editing_status: false
+
+                create_lesson_loading: false,
+                create_lesson_success_message: null,
+                create_lesson_error: null,
+            
+                update_lesson_loading: false,
+                update_lesson_success_message: null,
+                update_lesson_error: null,
+            
+                delete_lesson_loading: false,
+                delete_lesson_success_message: null,
+                delete_lesson_error: null,
             };
         case lessonConstants.SET_LESSON_EDITING_DATA_FAILURE:
             return {
@@ -249,7 +262,7 @@ export function course_constructor(state = initialState, action) {
                 ...state,
                 create_lesson_loading: false,
                 create_lesson_success_message: action.lesson.message,
-                course: { ...state.course, lessons: [...state.course.lessons, action.lesson.lesson] },
+                course: { ...state.course, lessons: state.course.lessons !== null ?  [...state.course.lessons, action.lesson.lesson] : [action.lesson.lesson]  },
                 create_lesson_error: null,
                 selected_lesson_id: action.lesson.lesson.lesson_id,
                 lesson_editing_status: 'update'
@@ -326,7 +339,11 @@ export function course_constructor(state = initialState, action) {
         case lessonConstants.CREATE_LESSON_TEST_QUESTION:
             return {
                 ...state,
-                selected_lesson: state.lesson_editing_status === 'create' ? state.selected_lesson !== "" ? { ...state.selected_lesson, lesson_questions: [...state.selected_lesson.lesson_questions, action.question] } : { lesson_questions: [action.question] } : { ...state.selected_lesson, lesson_questions: [...state.selected_lesson.lesson_questions, action.question] },
+                selected_lesson:
+                    state.lesson_editing_status === 'create' ?
+                        state.selected_lesson !== "" ? { ...state.selected_lesson, lesson_questions: [...state.selected_lesson.lesson_questions, action.question] } : { lesson_questions: [action.question] }
+                        :
+                        state.selected_lesson.lesson_questions !== null ? { ...state.selected_lesson, lesson_questions: [...state.selected_lesson.lesson_questions, action.question] } : { ...state.selected_lesson, lesson_questions: [action.question] },
                 selected_question: null
             }
 

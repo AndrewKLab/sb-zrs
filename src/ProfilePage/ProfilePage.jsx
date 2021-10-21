@@ -23,23 +23,27 @@ class ProfilePage extends React.Component {
         return (
             <div className={'py-3'}>
                 <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <Paper className={'profile p-3'}>
-                            <Avatar className={'profile-avatar'} src={user.avatar} alt={user.firstname + ' ' + user.lastname} />
-                            <div className='p-3'>
-                                <Typography variant="h4" component="h4">{user.firstname + ' ' + user.lastname}</Typography>
-                                <Typography variant="h6" component="h6"><strong>Статус:</strong> {user.status}</Typography>
-                            </div>
+                    <Grid item sm={12} md={6} xs={6}>
+                        <Paper className={'profile p-3 h-100'}>
+                            <Grid item sm={3} md={3} xs={3}>
+                                <Avatar className={'profile-avatar'} src={user.avatar} alt={user.firstname + ' ' + user.lastname} />
+                            </Grid>
+                            <Grid item sm={9} md={9} xs={9}>
+                                <div className='p-3'>
+                                    <Typography variant="h4" component="h4">{user.firstname + ' ' + user.lastname}</Typography>
+                                    <Typography variant="h6" component="h6"><strong>Статус:</strong> {user.status}</Typography>
+                                </div>
+                            </Grid>
                         </Paper>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <Paper className={'p-3'}>
+                    <Grid item  sm={12} md={6} xs={6}>
+                        <Paper className={'p-3 h-100'}>
                             <Typography variant="body" component="body"> {user.sity && <div><strong>Номер телефона: </strong>{user.phonenumber}</div>}</Typography>
                             <Typography variant="body" component="body"> {user.country && <div><strong>Страна: </strong>{user.country}</div>}</Typography>
                             <Typography variant="body" component="body"> {user.sity && <div><strong>Город: </strong>{user.sity}</div>}</Typography>
                         </Paper>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item md={12}>
                         {courses !== undefined ? (
                             <Grid container spacing={2}>
                                 {courses.inprocess !== undefined ? (

@@ -28,8 +28,6 @@ import {
     Chat
 } from '../_components';
 
-import JoditEditor from "jodit-react";
-
 import { DialogDeleteUser, DialogChangeUser } from './';
 import { TeatherCourses } from '../TeatherPanelPage/TeatherCourses';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
