@@ -27,7 +27,7 @@ export const TeatherCourses = ({ history, panel, courses, course_error, user, cr
             <DeleteCourseDialog open={deleteCourseDialog} close={closeDeleteCourseDialog} course={courseData} />
             <UpdateCoursePublishDialog open={updateCoursePublishDialog} close={closeUpdateCoursePublishDialog} course={courseData} />
             <div className={`mx-3 mb-3 ${course_error && 'paper-body'}`}>
-                {course_error === undefined ? (
+                {course_error === undefined && Object.keys(courses).length > 0 ? (
                     <React.Fragment>
                         <CourseCategory name={'Основные курсы'} category={courses.basic} deleteDialog={openDeleteCourseDialog} updateDialog={openUpdateCoursePublishDialog} history={history} panel={panel} user={user} />
                         <CourseCategory name={'Специальные курсы'} category={courses.special} deleteDialog={openDeleteCourseDialog} updateDialog={openUpdateCoursePublishDialog} history={history} panel={panel} user={user} />
@@ -39,7 +39,7 @@ export const TeatherCourses = ({ history, panel, courses, course_error, user, cr
                             <div className={'large-alert'}>
                                 <InfoOutlinedIcon style={{ fontSize: 80 }} />
                             </div>
-                            <div>{course_error}</div>
+                            <div>{course_error ? course_error : 'У вас нет своих курсов.'}</div>
                         </div>
                     )}
             </div>

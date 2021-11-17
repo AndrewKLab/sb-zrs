@@ -157,10 +157,14 @@ class CoursePage extends React.Component {
 
     // условный рендеринг кнопки контроля курса.
     renderCourseButton(course_id, category_name, passed_course_status, passed_course_id, assessment, finish_time, user, lessons) {
+        const { history } = this.props
         if (passed_course_status === "finished") {
             return <Button variant="contained" color="inherit" onPress={() => this.enroll(course_id, category_name, passed_course_status, passed_course_id, assessment, finish_time, user.id, lessons)}>Пройти еще раз</Button>
         } else if (passed_course_status === "inprocess") {
-            return <Button variant='contained' onPress={() => this.enroll(course_id, category_name, passed_course_status, passed_course_id, assessment, finish_time, user.id, lessons)}>Прекратить прохождение курса</Button>
+            return <div className="pagination w-100 gap-3 grid-wrap-xs-wrap">
+                <Button variant='contained' onPress={() => history.push(`/courses/${category_name}/${course_id}/${lessons[0].id}`)}>Перейти к курсу</Button>
+                <Button variant='contained' onPress={() => this.enroll(course_id, category_name, passed_course_status, passed_course_id, assessment, finish_time, user.id, lessons)}>Прекратить прохождение курса</Button>
+            </div>
         } else if (Number(user.teather_id) === 0 && user.roles === "user") {
             return <Button disabled={true} variant="contained" color="secondary">Записаться на курс</Button>
         } else {
@@ -205,58 +209,64 @@ class CoursePage extends React.Component {
         return (
             <div className='py-3'>
                 <Paper variant="outlined" square className='d-flex'>
-                    <div className='w-70 p-relative'>
-                        <img className='w-100' src={data.img} alt={data.course_name} height="350" />
-                        <div className='wrap-area'>
-                            <Typography variant="h2" component="h1">{data.course_name}</Typography>
-                        </div>
-                    </div>
-                    <div className='course-info-area'>
-                        <div className='course-info-text'>
-                            <Typography variant="h5" component="h5">Количество уроков:</Typography>
-                            <Typography variant="h5" component="h5">{data.lessons.length}</Typography>
-                        </div>
-                        {user.teather_id === "0" ? user.roles === 'user' ? 'В скором времени мы запишем вас в группу к учителю!' : '' :
-                            (
-                                <div>
-                                    <Typography variant="h6" >Учитель: </Typography>
-                                    <Paper variant="outlined" square >
-                                        <ListItem>
-                                            <ListItemFirstAction>
-                                                <ListItemIcon>
-                                                    <Avatar alt={user_data.firstname + " " + user_data.lastname} src={user_data.avatar} />
-                                                </ListItemIcon>
-                                                <ListItemText title={user_data.firstname + " " + user_data.lastname} subtitle={"Регалии: " + user_data.status} />
-                                            </ListItemFirstAction>
-                                        </ListItem>
-                                    </Paper>
+                    <Grid container spacing={0}>
+                        <Grid item xs={12} sm={12} md={7}>
+                            <div className='p-relative'>
+                                <img className='w-100' src={data.img} alt={data.course_name} height="350" />
+                                <div className='wrap-area'>
+                                    <Typography variant="h2" component="h1">{data.course_name}</Typography>
                                 </div>
-                            )}
-                        {data.passed_course_status === "finished" ?
-                            (
-                                <div>
-                                    <div className='done-area-title'>
-                                        <Typography variant="h5" component="h5">Курс пройден</Typography>
-                                        <CheckCircleOutlineIcon className='done-area-title-icon' fontSize="large" />
-                                    </div>
-                                    <Typography variant="body" component="body">Оценка: {data.assessment}</Typography>
-                                    <Typography variant="body" component="body">Дата и время прохождения: {Moment(data.finish_time).locale('ru').format('Do MMMM YYYY, hh:mm:ss')}</Typography>
+                            </div>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={5}>
+                            <div className='course-info-area'>
+                                <div className='course-info-text'>
+                                    <Typography variant="h5" component="h5">Количество уроков:</Typography>
+                                    <Typography variant="h5" component="h5">{data.lessons.length}</Typography>
                                 </div>
-                            ) : (null)
-                        }
-                        <div className='course-info-button'>
-                            {this.renderCourseButton(
-                                data.course_id,
-                                data.category_name,
-                                data.passed_course_status,
-                                data.passed_course_id,
-                                data.assessment,
-                                data.finish_time,
-                                user,
-                                data.lessons
-                            )}
-                        </div>
-                    </div>
+                                {user.teather_id === "0" ? user.roles === 'user' ? 'В скором времени мы запишем вас в группу к учителю!' : '' :
+                                    (
+                                        <div>
+                                            <Typography variant="h6" >Учитель: </Typography>
+                                            <Paper variant="outlined" square >
+                                                <ListItem>
+                                                    <ListItemFirstAction>
+                                                        <ListItemIcon>
+                                                            <Avatar alt={user_data.firstname + " " + user_data.lastname} src={user_data.avatar} />
+                                                        </ListItemIcon>
+                                                        <ListItemText title={user_data.firstname + " " + user_data.lastname} subtitle={"Регалии: " + user_data.status} />
+                                                    </ListItemFirstAction>
+                                                </ListItem>
+                                            </Paper>
+                                        </div>
+                                    )}
+                                {data.passed_course_status === "finished" ?
+                                    (
+                                        <div>
+                                            <div className='done-area-title'>
+                                                <Typography variant="h5" component="h5">Курс пройден</Typography>
+                                                <CheckCircleOutlineIcon className='done-area-title-icon' fontSize="large" />
+                                            </div>
+                                            <Typography variant="body" component="body">Оценка: {data.assessment}</Typography>
+                                            <Typography variant="body" component="body">Дата и время прохождения: {Moment(data.finish_time).locale('ru').format('Do MMMM YYYY, hh:mm:ss')}</Typography>
+                                        </div>
+                                    ) : (null)
+                                }
+                                <div className='course-info-button'>
+                                    {this.renderCourseButton(
+                                        data.course_id,
+                                        data.category_name,
+                                        data.passed_course_status,
+                                        data.passed_course_id,
+                                        data.assessment,
+                                        data.finish_time,
+                                        user,
+                                        data.lessons
+                                    )}
+                                </div>
+                            </div>
+                        </Grid>
+                    </Grid>
                 </Paper>
                 <Typography variant="h5" component="h5">О курсе:</Typography>
                 <Typography>{data.description}</Typography>

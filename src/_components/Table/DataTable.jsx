@@ -11,7 +11,7 @@ import LastPageOutlinedIcon from '@material-ui/icons/LastPageOutlined';
 
 import { IconButton } from '../'
 
-export const DataTable = ({ columns, data, edit, remove, more }) => {
+export const DataTable = ({ columns, data, edit, remove, more, ititSortBy, ititSortType }) => {
     // Use the state and functions returned from useTable to build your UI
     const {
         getTableProps,
@@ -35,7 +35,16 @@ export const DataTable = ({ columns, data, edit, remove, more }) => {
         {
             columns,
             data,
-            initialState: { pageIndex: 0, pageSize: 5 },
+            initialState: { 
+                pageIndex: 0, 
+                pageSize: 5,
+                sortBy: [
+                    {
+                        id: ititSortBy,
+                        desc: ititSortType === 'asc' ? false : true
+                    }
+                ]
+            },
         },
         useSortBy,
         usePagination

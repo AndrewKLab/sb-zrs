@@ -34,7 +34,7 @@ class CategoriesPage extends React.Component {
         }
 
         return (
-            <div className='pb-3 pt-3'>
+            <div className='p-3'>
                 <div>
                     <Typography variant="h3" component="h1" className={"text-align-center courses-category-title"} >{'Основные курсы'}</Typography>
                     <div className="title-underline-container mb-3">

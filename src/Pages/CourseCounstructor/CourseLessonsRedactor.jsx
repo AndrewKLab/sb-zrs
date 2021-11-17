@@ -109,7 +109,7 @@ const CourseLessonsRedactor = ({
                 validationSchema={SignupSchema}
                 onSubmit={(values) => {
                     const { lesson_name, lesson_videolink, lesson_text, lesson_description } = values;
-                    //console.log( selected_lesson.lesson_questions !== undefined ? selected_lesson.lesson_questions : [])
+
                     if (lesson_editing_status === "create") {
                         dispatch(lessonActions.createLesson(
                             jwt,

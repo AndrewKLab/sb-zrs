@@ -11,10 +11,10 @@ export const TableActions = ({ children, className, user, edit, remove }) => {
 
     return (
         <div className={styleClass}>
-            <IconButton onClick={() => edit(user)}>
+            <IconButton onClick={() => edit(user)} className="p-0">
                 <EditOutlinedIcon />
             </IconButton>
-            <IconButton onClick={() => remove(user)}>
+            <IconButton onClick={() => remove(user)} className="p-0">
                 <DeleteForeverOutlinedIcon className='danger-area-title-icon'/>
             </IconButton>
         </div>

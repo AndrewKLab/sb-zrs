@@ -54,7 +54,7 @@ class CoursesPage extends React.Component {
             return <Loading />
         }
         return (
-            <div className='pb-3 pt-3'>
+            <div className='p-3'>
                 <Typography variant="h3" component="h1" className={"text-align-center courses-category-title"} >{title}</Typography>
                 <div className="title-underline-container mb-3">
                     <div className="title-underline courses-category-title-underline"></div>
@@ -66,7 +66,7 @@ class CoursesPage extends React.Component {
                     alignItems={"flex-start"}
                     spacing={1}>
                     {Object.values(courses).map((course, index) => (
-                        <Grid item xs key={index}>
+                        <Grid item xs={12} sm={12}  md={6}  key={index}>
                             <Card className="h-100">
                                 <Link to={`/courses/${this.props.match.params.category_name}/${course.id}`} >
                                     <CardActionArea className="h-100">

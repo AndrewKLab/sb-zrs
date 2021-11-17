@@ -6,7 +6,7 @@ export const Grid = ({ children, container, item,sm, md, xs, lg, spacing, classN
     let gridContainer = container ? 'grid-container' : '';
     let gridItem = item ? ' grid-item' : '';
 
-    let gridLg = lg ? ' grid-xs-'+lg : '';
+    let gridLg = lg ? ' grid-lg-'+lg : '';
     let gridXs = xs ? ' grid-xs-'+xs : '';
     let gridMd = md ? ' grid-md-'+md : '';
     let gridSm = sm ? ' grid-sm-'+sm : '';
@@ -15,7 +15,7 @@ export const Grid = ({ children, container, item,sm, md, xs, lg, spacing, classN
     let gridJustify = justify ? ' grid-justify-xs-'+justify : ''
 
     return (
-        <div className={gridContainer+gridItem+gridXs+gridSm+gridSpacing+styleClass+gridJustify+gridMd} style={style}>
+        <div className={gridContainer+gridItem+gridSm+gridMd+gridXs+gridLg+gridSpacing+styleClass+gridJustify} style={style}>
             {children}
         </div>
     );

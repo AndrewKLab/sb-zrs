@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { TweenMax } from "gsap";
 
-export const Tab = ({ children, index, setWidthF, tab,  setTabActive, status, onClick }) => {
+export const Tab = ({ children, index, setWidthF, setLeftF, tab,  setTabActive, status, onClick }) => {
     const [width, setWidth] = useState(0);
     const [height, setHeight] = useState(0);
     const ref = useRef('ripple');

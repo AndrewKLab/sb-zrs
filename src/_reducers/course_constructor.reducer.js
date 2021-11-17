@@ -106,6 +106,7 @@ export function course_constructor(state = initialState, action) {
         case courseConstants.CREATE_COURSE_SUCCESS:
             return {
                 ...state,
+                course: action.courses.course,
                 create_course_loading: false,
                 create_course_success_message: action.courses.message,
                 create_course_error: null,
@@ -143,33 +144,33 @@ export function course_constructor(state = initialState, action) {
             };
 
         //DELETE COURSE
-        case courseConstants.DELETE_COURSE_REQUEST:
-            return {
-                ...state,
-                loading: true,
-                courses: state.courses
-            };
-        case courseConstants.DELETE_COURSE_SUCCESS:
-            var category_item = [];
-            var courses_new = {};
-            var category_valuses = Object.values(state.courses);
-            var category_keys = Object.keys(state.courses);
-            for (let i = 0; i < category_keys.length; i++) {
-                category_item = category_valuses[i].filter(n => n.id !== action.course_id);
-                if (category_item.length > 0) {
-                    courses_new[category_keys[i]] = category_item;
-                }
-            }
-            return {
-                loading: false,
-                courses: courses_new
-            };
-        case courseConstants.DELETE_COURSE_FAILURE:
-            return {
-                ...state,
-                courses: state.courses,
-                error: action.error
-            };
+        // case courseConstants.DELETE_COURSE_REQUEST:
+        //     return {
+        //         ...state,
+        //         loading: true,
+        //         courses: state.courses
+        //     };
+        // case courseConstants.DELETE_COURSE_SUCCESS:
+        //     var category_item = [];
+        //     var courses_new = {};
+        //     var category_valuses = Object.values(state.courses);
+        //     var category_keys = Object.keys(state.courses);
+        //     for (let i = 0; i < category_keys.length; i++) {
+        //         category_item = category_valuses[i].filter(n => n.id !== action.course_id);
+        //         if (category_item.length > 0) {
+        //             courses_new[category_keys[i]] = category_item;
+        //         }
+        //     }
+        //     return {
+        //         loading: false,
+        //         courses: courses_new
+        //     };
+        // case courseConstants.DELETE_COURSE_FAILURE:
+        //     return {
+        //         ...state,
+        //         courses: state.courses,
+        //         error: action.error
+          //  };
 
         //LESSON PART
 

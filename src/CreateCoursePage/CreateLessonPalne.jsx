@@ -110,7 +110,7 @@ class CreateLessonPlane extends React.Component {
 
 
     render() {
-        const { dispatch, className, jwt, lesson, error, message, data, lesson_error, currentTheme, lessons, changeLesson } = this.props;
+        const { dispatch, className, jwt, lesson, error, message, data, lesson_error, currentTheme, lessons, changeLesson, course_data } = this.props;
         const { loading, changed, content, lessonCreated, addTest } = this.state;
         let styleClass = className == undefined ? '' : ' ' + className;
         if (parent.frames["lesson_description_ifr"] !== undefined) {
@@ -336,17 +336,19 @@ class CreateLessonPlane extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { authentication, lesson, style } = state;
+    const { authentication, lesson, style, course } = state;
     const { currentTheme } = style;
     const { user, jwt } = authentication;
     const { message, lesson_error, data } = lesson
+    const { course_data } = course
     return {
         user,
         jwt,
         message,
         lesson_error,
         data,
-        currentTheme
+        currentTheme,
+        course_data
     };
 }
 

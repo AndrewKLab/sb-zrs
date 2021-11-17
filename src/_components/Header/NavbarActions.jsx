@@ -241,7 +241,7 @@ class NavbarActions extends Component {
                             </ListItemSecondAction>
                         </ListItem>
 
-                        <ListItem>
+                        {/* <ListItem>
                             <ListItemFirstAction>
                                 <ListItemIcon>
                                     <SettingsIcon />
@@ -258,7 +258,7 @@ class NavbarActions extends Component {
                                 </ListItemIcon>
                                 <ListItemText title="Справка" />
                             </ListItemFirstAction>
-                        </ListItem>
+                        </ListItem> */}
 
                         <Divider />
                         {user ? (

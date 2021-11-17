@@ -90,21 +90,21 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
             <div className='pb-3'>
                 <Paper square className='mb-3'>
                     <Tabs onChange={selectTab} tab={tab}>
-                        <Tab index={0}>Статистика</Tab>
-                        <Tab index={1}>Управление пользователями</Tab>
-                        <Tab index={2}>Управление курсами</Tab>
-                        <Tab index={3}>Диалоги</Tab>
+                        {/* <Tab index={0}>Статистика</Tab> */}
+                        <Tab index={0}>Управление пользователями</Tab>
+                        <Tab index={1}>Управление курсами</Tab>
+                        <Tab index={2}>Диалоги</Tab>
                     </Tabs>
                 </Paper>
 
-                <TabPanel tab={tab} index={0}>
+                {/* <TabPanel tab={tab} index={0}>
                     <Paper square className='p-3'>
                         Вкладка статистики !--(Уточнить какие данные нужно собирать)--!
                         </Paper>
-                </TabPanel>
+                </TabPanel> */}
 
 
-                <TabPanel tab={tab} index={1}>
+                <TabPanel tab={tab} index={0}>
                     <DialogChangeUser
                         open={editDialog}
                         close={editClose}
@@ -226,6 +226,8 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                             data={users.students !== undefined ? users.students : []}
                             edit={edit}
                             remove={remove}
+                            ititSortBy={'lastname'}
+                            ititSortType={'asc'}
                         />
                     </div>
 
@@ -246,6 +248,8 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                             data={users.promouters !== undefined ? users.promouters : []}
                             edit={edit}
                             remove={remove}
+                            ititSortBy={'lastname'}
+                            ititSortType={'asc'}
                         />
                     </div>
 
@@ -266,6 +270,8 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                             data={users.teathers !== undefined ? user.roles === "ROLE_SUPER_ADMIN" ? users.teathers : users.teathers.filter(t => t.admin_id === user.id) : []}
                             edit={edit}
                             remove={remove}
+                            ititSortBy={'lastname'}
+                            ititSortType={'asc'}
                         />
                     </div>
 
@@ -288,13 +294,15 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                                 data={users.admins !== undefined ? users.admins.filter(t => t.roles === 'ROLE_ADMIN') : []}
                                 edit={edit}
                                 remove={remove}
+                                ititSortBy={'lastname'}
+                                ititSortType={'asc'}
                             />
                         </div>
                     }
 
                 </TabPanel>
 
-                <TabPanel tab={tab} index={2}>
+                <TabPanel tab={tab} index={1}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                             <Paper square >
@@ -320,7 +328,7 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                     </Grid>
                 </TabPanel>
 
-                <TabPanel tab={tab} index={3}>
+                <TabPanel tab={tab} index={2}>
                     <Chat />
                 </TabPanel>
 

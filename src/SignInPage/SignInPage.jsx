@@ -85,11 +85,11 @@ class SignInPage extends React.Component {
         return (
             <div>
                 <Grid container>
-                    <Grid item xs={12} sm={6}>
-                        <img src={`${config.url}/assets/img/signin.png`} className='img' alt="sign-in" />
+                    <Grid item xs={12} sm={12} md={6}>
+                        <img src={`${config.url}/assets/img/signin.png`} className='img auth-img' alt="sign-in" />
                     </Grid>
 
-                    <Grid item xs={12} sm={6} className='center'>
+                    <Grid item xs={12} sm={12} md={6} className='center'>
 
                         <Formik
                             initialValues={{

@@ -111,7 +111,7 @@ class SignUpPage extends React.Component {
                         }
                     >
                         {({ errors, values, handleChange, touched }) => (
-                            <Form className='form'>
+                            <Form className='form pb-3'>
 
                                 <div className='title'>
                                     <Typography component="h1" variant="h5">Регистрация</Typography>
@@ -121,7 +121,7 @@ class SignUpPage extends React.Component {
                                     <Alert severity="error">{message}</Alert>
                                 )}
                                 <Grid container spacing={2}>
-                                    <Grid item xs={12} sm={6}>
+                                    <Grid item xs={12} sm={12} md={6}>
                                         <TextInput
                                             error={errors.firstname && touched.firstname}
                                             autoComplete="fname"
@@ -140,7 +140,7 @@ class SignUpPage extends React.Component {
                                             }
                                         />
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
+                                    <Grid item xs={12} sm={12} md={6}>
                                         <TextInput
                                             error={errors.lastname && touched.lastname}
                                             variant="outlined"
@@ -272,7 +272,7 @@ class SignUpPage extends React.Component {
                 </Grid>
 
                 <Grid xs={12} sm={6}>
-                    <img src={`${config.url}/assets/img/signup.png`} width='100%' alt="sign-up" />
+                    <img src={`${config.url}/assets/img/signup.png`} className="auth-img" width='100%' alt="sign-up" />
                 </Grid>
             </Grid>
         );

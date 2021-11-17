@@ -18,6 +18,7 @@ import {
     Accordion
 } from '../_components';
 import { ProgressCircle } from '../LessonPage';
+import config from 'config';
 
 const PromouterPanelPage = ({ dispatch, history, jwt, user, users }) => {
     const [loading, setLoading] = useState(true);
@@ -33,7 +34,7 @@ const PromouterPanelPage = ({ dispatch, history, jwt, user, users }) => {
         return (
             <div className='py-3'>
                 <TextInput
-                    value={`http://localhost:8081/sign-up/${user.id}/${user.teather_id}`}
+                    value={`${config.url}/sign-up/${user.id}/${user.teather_id}`}
                     id="course_name"
                     name="course_name"
                     label="Ваша ссылка промоутера"

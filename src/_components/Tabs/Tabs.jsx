@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 
 export const Tabs = ({ children, name, avatar, status, onClick, tab, onChange }) => {
     const [width, setWidth] = useState();
     const [left, setLeft] = useState();
+
 
     const setTabActive = (event) => {
         setWidth(event.target.offsetWidth);
@@ -11,7 +12,7 @@ export const Tabs = ({ children, name, avatar, status, onClick, tab, onChange })
         onChange(event)
     }
     const childrenWithProps = React.Children.map(children, child =>
-        React.cloneElement(child, { setTabActive: setTabActive, setWidthF: setWidth, tab: tab })
+        React.cloneElement(child, { setTabActive: setTabActive, setWidthF: setWidth, setLeftF: setLeft, tab: tab })
     );
     return (
         <div className='tabs'>

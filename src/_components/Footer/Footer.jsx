@@ -14,7 +14,7 @@ export class Footer extends React.Component {
                             <div>
                                 <p className="m-0"><strong>Адрес:</strong> Подольский район, д. Сергеевка, д.1А</p>
                                 <p className="m-0"><strong>Телефоны:</strong>(495) 996-78-41; 996-78-42; 996-56-92</p>
-                                <p className="m-0"><strong>E-mail:</strong> <a href="mailto:zrsasd@gmail.com" className="text-light">zrsasd@gmail.com</a></p>
+                                <p className="m-0"><strong>E-mail:</strong> <a href="mailto:zrsasd@gmail.com" className="text-dark">zrsasd@gmail.com</a></p>
                             </div>
                         </div>
                         <div className="social-plane">

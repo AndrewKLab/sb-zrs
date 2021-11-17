@@ -29,6 +29,7 @@ import {
 import { ProgressCircle } from '../LessonPage';
 import { TeatherCourses } from './';
 import { UpdateUserAccessDialog, UpdateUserStatusDialog } from '../Dialogs';
+import config from 'config';
 
 
 const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, students, promouters }) => {
@@ -63,7 +64,7 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, stud
             <Grid container spacing={2}>
             <Grid item xs={12}>
             <TextInput
-                    value={`http://localhost:8081/sign-up/${user.id}`}
+                    value={`${config.url}/sign-up/${user.id}`}
                     id="course_name"
                     name="course_name"
                     label="Ваша ссылка промоутера"
@@ -80,12 +81,13 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, stud
                         <TeatherCourses create={true} user={user} courses={courses} course_error={course_error} history={history} panel={'teather-panel'} />
                     </Paper>
                 </Grid>
+
                 <Grid item xs={12} sm={6}>
                     <UpdateUserAccessDialog open={accessDialog} close={closeAccessDialog} user={userData} />
                     <UpdateUserStatusDialog open={statusDialog} close={closeStatusDialog} user={userData} />
                     <Typography component='h4' variant='h4'>Ваши ученики:</Typography>
                     <List>
-                        {students !== undefined  ? students.map((student, index) => (
+                        {students !== undefined && students.length > 0 ? students.map((student, index) => (
                             <div key={index}>
                                 <ListItem>
                                     <ListItemFirstAction>
@@ -174,7 +176,7 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, stud
                 <Grid item xs={12} sm={6}>
                     <Typography component='h4' variant='h4'>Ваши промоутеры:</Typography>
                     <List>
-                        { promouters !== undefined ? promouters.map((student, index) => (
+                        { promouters !== undefined && students.length > 0 ? promouters.map((student, index) => (
                             <div key={index}>
                                 <ListItem>
                                     <ListItemFirstAction>
