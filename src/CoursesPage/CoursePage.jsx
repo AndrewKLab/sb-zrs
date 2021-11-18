@@ -29,6 +29,7 @@ import {
     ListItemFirstAction,
     ListItemIcon,
     ListItemText,
+    Divider,
 } from '../_components';
 
 class CoursePage extends React.Component {
@@ -212,7 +213,7 @@ class CoursePage extends React.Component {
                     <Grid container spacing={0}>
                         <Grid item xs={12} sm={12} md={7}>
                             <div className='p-relative'>
-                                <img className='w-100' src={data.img} alt={data.course_name} height="350" />
+                                <img className='img' src={data.img} alt={data.course_name} height="350" />
                                 <div className='wrap-area'>
                                     <Typography variant="h2" component="h1">{data.course_name}</Typography>
                                 </div>
@@ -242,14 +243,14 @@ class CoursePage extends React.Component {
                                     )}
                                 {data.passed_course_status === "finished" ?
                                     (
-                                        <div>
+                                        <Paper variant="outlined" square className="mb-3 p-3">
                                             <div className='done-area-title'>
                                                 <Typography variant="h5" component="h5">Курс пройден</Typography>
                                                 <CheckCircleOutlineIcon className='done-area-title-icon' fontSize="large" />
                                             </div>
                                             <Typography variant="body" component="body">Оценка: {data.assessment}</Typography>
                                             <Typography variant="body" component="body">Дата и время прохождения: {Moment(data.finish_time).locale('ru').format('Do MMMM YYYY, hh:mm:ss')}</Typography>
-                                        </div>
+                                        </Paper>
                                     ) : (null)
                                 }
                                 <div className='course-info-button'>
@@ -266,10 +267,16 @@ class CoursePage extends React.Component {
                                 </div>
                             </div>
                         </Grid>
+                        <Grid item xs={12} sm={12}><Divider /></Grid>
+                        <Grid item sm={12} className={'ph-3 pb-3'}>
+
+                            <Typography variant="h5" component="h5">О курсе:</Typography>
+                            <Typography>{data.description}</Typography>
+                        </Grid>
                     </Grid>
+
                 </Paper>
-                <Typography variant="h5" component="h5">О курсе:</Typography>
-                <Typography>{data.description}</Typography>
+
 
                 {/*
                 data.passed_course_status === "inprocess" || data.passed_course_status === "finished" ? (

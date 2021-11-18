@@ -1,9 +1,5 @@
 import React, { useState } from 'react'
-import {
-    Form,
-    Typography,
-    Button
-} from '../_components';
+import { Form, Typography, Button, Alert, Divider } from '../_components';
 import { lessonActions, userActions, courseActions } from '../_actions'
 import { LessonFinishedPlane, Question, LessonControlButton } from './';
 import { useForm } from "react-hook-form"
@@ -11,7 +7,7 @@ import Moment from 'moment';
 import 'moment/locale/ru';
 
 export const Test = ({ dispatch, history, jwt, user, category_name, course, passed_course_id, course_status, passed_course_assessment, passed_course_start_time, passed_course_finish_time, lessons, finishedLessonsLenght, lesson_id, number, status, lesson_passed_id, assessment, finish_time, questions }) => {
-    
+    const [testErrors, setTestErrors] = useState('')
     const { register, handleSubmit, errors } = useForm();
     const onSubmit = (data) => {
         if (status === "finished") {
@@ -20,6 +16,7 @@ export const Test = ({ dispatch, history, jwt, user, category_name, course, pass
                 // Предыдущий непройденый урок
                 backToUnFinisfedLesson()
             } else if (finishedLessonsLenght === lessons.length) {
+                //Пройти курс
                 if (course_status === "inprocess") {
                     var result = lessons.reduce((acc, item) => {
                         acc[item.id] = item.assessment;
@@ -28,13 +25,13 @@ export const Test = ({ dispatch, history, jwt, user, category_name, course, pass
                     var sum = 0;
                     result = result.filter(i => i !== null && i !== '0');
                     var assessment;
-                    if(result.length){
+                    if (result.length) {
                         for (var i = 0; i < result.length; i++) {
                             sum = sum + parseInt(result[i])
                         }
                         assessment = sum / result.length;
                     } else {
-                        assessment = null 
+                        assessment = null
                     }
 
                     finishCourse(assessment)
@@ -46,37 +43,59 @@ export const Test = ({ dispatch, history, jwt, user, category_name, course, pass
                 goToNextLesson()
             }
         } else {
-            var currentAnserwers = questions.reduce((acc, item) => {
-                acc[item.id] = item.question_type === 'checkbox' ?
-                    item.answers.map((answer, index) => (item.id === answer.question_id ? answer.current !== '0' ? answer.id : null : null)).filter(item => item !== null)
-                    : item.question_type === 'text' ? item.answers.filter(i => i.current !== '0')[0].answer : item.answers.filter(i => i.current !== '0')[0].id
-                return acc;
-            }, {});
-            var assessment;
-            if (Object.keys(currentAnserwers).length !== 0) {
-                assessment = 2;
-                for (var i = 0; i < Object.keys(currentAnserwers).length; i++) {
-                    let currAns = currentAnserwers[Object.keys(currentAnserwers)[i]];
-                    let userAns = data[Object.keys(currentAnserwers)[i]];
-                    if (Array.isArray(currAns) && Array.isArray(userAns)) {
-                        for (var a = 0; a < currAns.length; a++) {
-                            if (currAns[i] === userAns[a]) {
+            var err = ''
+            if (questions.length > 0) {
+                var isValid = true;
+                Object.values(data).every(element => {
+                    if (element === null) {
+                        isValid = false
+                        return false
+                    } else {
+                        return true
+                    }
+                })
+
+                if (isValid) {
+                    //верные ответы
+                    var currentAnserwers = questions.reduce((acc, item) => {
+                        acc[item.id] = item.question_type === 'checkbox' ?
+                            item.answers.map((answer, index) => (item.id === answer.question_id ? answer.current !== '0' ? answer.id : null : null)).filter(item => item !== null)
+                            : item.question_type === 'text' ? item.answers.filter(i => i.current !== '0')[0].answer : item.answers.filter(i => i.current !== '0')[0].id
+                        return acc;
+                    }, {});
+
+                    var currentAnserwersArr = Object.keys(currentAnserwers);
+                    var assessment = 0; //оценка
+                    for (var i = 0; i < currentAnserwersArr.length; i++) {
+                        let currAns = currentAnserwers[Object.keys(currentAnserwers)[i]]; //Правильный ответ
+                        let userAns = data[Object.keys(currentAnserwers)[i]]; //Ответ пользователя
+                        if (Array.isArray(currAns) && Array.isArray(userAns)) {
+                            for (var a = 0; a < currAns.length; a++) {
+                                if (currAns[i] === userAns[a]) {
+                                    assessment++
+                                }
+                            }
+                        } else {
+                            if (currAns.toUpperCase() == userAns.toUpperCase()) {
                                 assessment++
+                            } else {
                             }
                         }
-                    } else {
-                        if (currAns.toUpperCase() == userAns.toUpperCase()) {
-                            assessment++
-                        }
                     }
+                    assessment = Math.round(5 * (assessment/currentAnserwersArr.length))
+                } else {
+                    err = 'Пожалуйста пройдите тест!'
+                    setTestErrors('Пожалуйста пройдите тест!')
                 }
             } else {
                 assessment = null
             }
-
-            console.log(assessment)
-            finishLesson(lesson_passed_id, assessment, Moment().format())
+            if (err === '') {
+                setTestErrors('')
+                finishLesson(lesson_passed_id, assessment, Moment().format())
+            }
         }
+
 
     };
 
@@ -146,6 +165,7 @@ export const Test = ({ dispatch, history, jwt, user, category_name, course, pass
 
     return (
         <Form onSubmit={handleSubmit(onSubmit)}>
+
             {status !== 'finished' ? (
                 <div>
                     {questions.length !== 0 ? (<Typography component="h4" variant="h4" className='mb-2' >Тест:</Typography>) : (null)}
@@ -154,8 +174,10 @@ export const Test = ({ dispatch, history, jwt, user, category_name, course, pass
                     ))}
                 </div>
             ) : (
-                    <LessonFinishedPlane assessment={assessment} finish_time={finish_time} />
-                )}
+                <LessonFinishedPlane assessment={assessment} finish_time={finish_time} />
+            )}
+            {testErrors !== '' && <Alert severity="error" className="mt-3 mb-3">{testErrors}</Alert>}
+            <Divider />
             <div className={'d-flex grid-justify-xs-space-between'}>
                 <Button
                     color="primary"

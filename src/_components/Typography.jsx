@@ -38,6 +38,10 @@ export const Typography = ({ align, children, variant, component, className }) =
         case 'subtitle':
             typographyComponent = <h2 className={styleVariant + styleClass}>{children}</h2>
             break;
+            
+        case 'strong':
+            typographyComponent = <strong className={styleVariant + styleClass}>{children}</strong>
+            break;
 
         default:
             typographyComponent = <span className={styleVariant + styleClass}>{children}</span>

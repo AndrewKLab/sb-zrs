@@ -8,13 +8,14 @@ import SendIcon from '@material-ui/icons/Send';
 import * as ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { chatActions } from "../../_actions";
+import Picker from 'emoji-picker-react';
 
 
 class ChatCurrentDialog extends React.Component {
     constructor(props) {
         super(props);
         // Не вызывайте здесь this.setState()!
-        this.state = { loading: true };
+        this.state = { loading: true, openEmoBoard: false };
         this.firstSelectChat;
         this.selectOtherChat;
         this.loadMoreChat;
@@ -107,12 +108,22 @@ class ChatCurrentDialog extends React.Component {
         event.preventDefault();
     }
 
+    onEmojiClick = (event, emojiObject) => {
+        var input = document.getElementById('chat-input')
+        input.value = input.value + emojiObject.emoji
+    };
+
+    toogleEmojiBoard = () => {
+        this.setState({openEmoBoard: !this.state.openEmoBoard})
+    }
+
     render() {
         const { chats, message_loading, selected_chat, message_loadmore_loading, check_new_messages_error, user, jwt, dispatch } = this.props;
+        const { openEmoBoard } = this.state;
         if (message_loading) {
             return <div className={`chat-current-dialog bl-none center`}><Loading className={`messages-loading`} /></div>
         } else if (!message_loading && selected_chat === undefined) {
-            return <div className={`chat-current-dialog bl-none center`}><span className={`chat-select-dialog-alert`}>Выберите, кому бы выхотели написать</span></div>
+            return <div className={`chat-current-dialog bl-none center`}><span className={`chat-select-dialog-alert`}>Выберите, кому бы вы хотели написать</span></div>
         } else {
             console.log(selected_chat)
             var current_chat = chats.filter((chat) => (chat.chat_id === selected_chat));
@@ -136,7 +147,8 @@ class ChatCurrentDialog extends React.Component {
                             <div className="message-input">
                                 <AttachFileIcon />
                                 <input id={'chat-input'} name={'chat-input'} type={'text'} className='messages-input-plane' placeholder={'Напишите сообщение...'} autoComplete={"off"} />
-                                <SentimentSatisfiedOutlinedIcon />
+                                {/* {openEmoBoard && <div className="p-relative"><Picker onEmojiClick={this.onEmojiClick} /></div>}
+                                <SentimentSatisfiedOutlinedIcon onClick={this.toogleEmojiBoard}/> */}
                                 <SendIcon onClick={this.sendMessage} />
                             </div>
                         </Form>

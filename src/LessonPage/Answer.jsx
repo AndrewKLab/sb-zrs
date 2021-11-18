@@ -7,7 +7,6 @@ export const Answer = ({ question_type, answer, register, selected, setSelected 
             const [checked, setChecked] = useState(false);
             return (
                 <FormControlLabel
-                    className='w-max'
                     control={
                         <Checkbox
                             type="checkbox"
@@ -25,7 +24,6 @@ export const Answer = ({ question_type, answer, register, selected, setSelected 
         case "radio":
             return (
                 <FormControlLabel
-                    className='w-max'
                     control={
                         <Radio
                             name={answer.question_id}

@@ -19,7 +19,7 @@ class LessonPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            open: false
+            open: false,
         }
     }
     componentDidMount() {
@@ -53,7 +53,7 @@ class LessonPage extends React.Component {
         return (
             <div className='py-3'>
                 <Grid container spacing={1}>
-                    <Grid item xs={9} >
+                    <Grid item xs={10} sm={9} >
                         {lessons.map((lesson_item, index) => {
 
 
@@ -98,7 +98,7 @@ class LessonPage extends React.Component {
                             )
                         })}
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={2} sm={3}>
                         <LessonProgressPlane dispatch={dispatch} history={history} lessons={lessons} category_name={category_name} course={course} user={user} />
                         <TeatherPlane teather_status={data.teather_status} teather_name={teather_name} teather_avatar={teather_avatar} />
                     </Grid>
