@@ -1,7 +1,7 @@
 import { userConstants } from '../_constants';
 import { userService } from '../_services';
 import { alertActions } from './';
-import { history } from '../_helpers';
+import { getDeviceInfo, history } from '../_helpers';
 
 export const userActions = {
     signin,
@@ -21,7 +21,7 @@ export const userActions = {
 function signin(phonenumber, password) {
     return dispatch => {
         dispatch(request({ phonenumber }));
-
+        
         userService.signin(phonenumber, password)
             .then(
                 response => {
@@ -29,6 +29,11 @@ function signin(phonenumber, password) {
                         jwt: response.jwt,
                         user: response.user
                     }
+                    const init = async () => {
+                        const deviceInfo = await getDeviceInfo('qwe', user.user.id)
+                        console.log(deviceInfo)
+                    }
+                    init();
                     dispatch(success(user));
                     dispatch(validateToken(response.jwt));
                     history.push('/');
