@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
-import { getToken, onMessage, getMessaging   } from 'firebase/messaging';
-
+import { getToken, onMessage, getMessaging } from 'firebase/messaging';
+import { Button, notification } from 'antd';
 
 const firebaseApp = initializeApp({
     apiKey: "AIzaSyA36-3U3YsTwG6IRc72Ozq5mfrFp4U2OLo",
@@ -13,6 +13,7 @@ const firebaseApp = initializeApp({
 });
 
 const messaging = getMessaging(firebaseApp);
+
 
 export const getTokenHelper = async (setTokenFound) => {
     try {
@@ -29,11 +30,28 @@ export const getTokenHelper = async (setTokenFound) => {
     }
 }
 
-export const onMessageListener = () =>
-
-  new Promise((resolve) => {
-    console.log('payload')
-    onMessage(messaging, (payload) => {
-      resolve(payload);
+const openNotification = (message, description) => {
+    const key = `open${Date.now()}`;
+    notification.open({
+        message,
+        description,
+        key,
+        onClick: () => console.log('click'),
+        placement: 'bottomLeft'
     });
+};
+
+onMessage(messaging, (payload) => {
+    console.log(payload);
+    openNotification(payload.notification.title, payload.notification.body)
 });
+
+
+
+// export const onMessageListener = () =>
+//   new Promise((resolve) => {
+//     console.log('payload')
+//     onMessage(messaging, (payload) => {
+//       console.log(payload);
+//     });
+// });
