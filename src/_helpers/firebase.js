@@ -15,15 +15,13 @@ const firebaseApp = initializeApp({
 const messaging = getMessaging(firebaseApp);
 
 
-export const getTokenHelper = async (setTokenFound) => {
+export const getTokenHelper = async () => {
     try {
         const currentToken = await getToken(messaging, { vapidKey: 'BJ4idnM6Nn_C3pT6CItQC4yiMGwxGkpAarSywAJouKYzYwanedolLDcwmf79WpPkPYLG0e9ULr9aRhzA9QxxlSQ' });
         if (currentToken) {
-            console.log('current token for client: ', currentToken);
-            setTokenFound(true);
+            localStorage.setItem('FBCtoken', currentToken);
         } else {
             console.log('No registration token available. Request permission to generate one.');
-            setTokenFound(false);
         }
     } catch (err) {
         console.log('An error occurred while retrieving token. ', err);

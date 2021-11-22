@@ -30,8 +30,10 @@ function signin(phonenumber, password) {
                         user: response.user
                     }
                     const init = async () => {
-                        const deviceInfo = await getDeviceInfo('qwe', user.user.id)
-                        console.log(deviceInfo)
+                        const deviceInfo = await getDeviceInfo(user.user.id);
+                        const {dvc_user_id, dvc_platform, dvc_client, dvc_signature, dvc_fbc_token, dvc_active} = deviceInfo
+                        const res = userService.createUserDevice(user.jwt, dvc_user_id, dvc_platform, dvc_client, dvc_signature, dvc_fbc_token, dvc_active)
+                        console.log(res)
                     }
                     init();
                     dispatch(success(user));

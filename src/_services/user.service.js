@@ -11,7 +11,8 @@ export const userService = {
     readAll,
     getAllTeathers,
     getAllStudentsByUser,
-    getAllStudentsByPromouter
+    getAllStudentsByPromouter,
+    createUserDevice
 };
 
 
@@ -141,6 +142,22 @@ function getAllStudentsByPromouter(promouter_id, jwt) {
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` }
     };
     return fetch(`${config.apiUrl}/user/read_all_students_by_promouter.php?promouter_id=${promouter_id}`, requestOptions).then(handleResponse);
+}
+
+function createUserDevice(token, dvc_user_id, dvc_platform, dvc_client, dvc_signature, dvc_fbc_token, dvc_active) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({
+            dvc_user_id,
+            dvc_platform,
+            dvc_client,
+            dvc_signature,
+            dvc_fbc_token,
+            dvc_active
+        })
+    };
+    return fetch(`/api/user/user_devices/create_user_device.php`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {
