@@ -17,11 +17,19 @@ export const userService = {
 
 
 
-function signin(phonenumber, password) {
+function signin(phonenumber, password, dvc_platform, dvc_client, dvc_signature, dvc_fbc_token, dvc_active) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phonenumber, password })
+        body: JSON.stringify({ 
+            phonenumber,
+            password,
+            dvc_platform,
+            dvc_client,
+            dvc_signature,
+            dvc_fbc_token,
+            dvc_active
+        })
     };
 
     return fetch(`/api/login.php`, requestOptions)
@@ -62,9 +70,21 @@ function signup(firstname, lastname, phonenumber, country, sity, password, teath
         });
 }
 
-function logout() {
+function logout(token, dvc_signature, dvc_fbc_token) {
     // remove user from local storage to log user out
     localStorage.removeItem('user');
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({
+            dvc_signature,
+            dvc_fbc_token
+        })
+    };
+
+    return fetch(`/api/logout.php`, requestOptions).then(handleResponse)
+    
+    //localStorage.removeItem('FBCtoken');
 }
 
 function updateUser(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, avatar, admin_id, teather_id, promouter_id) {
