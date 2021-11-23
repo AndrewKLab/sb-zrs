@@ -2,10 +2,15 @@ import { userConstants } from '../_constants';
 
 let jwt = localStorage.getItem('user');
 
-const initialState = jwt ? { loggedIn: true, jwt: jwt } : {};
+const initialState = jwt ? { loggedIn: true, jwt: jwt } : { loggedIn: false };
 
 export function authentication(state = initialState, action) {
   switch (action.type) {
+    case userConstants.CHECK_AUTH:
+      return {
+        ...state,
+        isLogined: action.isLogined
+      }
     //SIGN-IN
     case userConstants.SIGNIN_REQUEST:
       return {
@@ -37,9 +42,7 @@ export function authentication(state = initialState, action) {
 
     //LOGOUT
     case userConstants.LOGOUT:
-      return {};
-    default:
-      return state
+      return { loggedIn: false };
 
     //UPDATE-USER
     case userConstants.USER_UPDATE_REQUEST:
@@ -85,16 +88,24 @@ export function authentication(state = initialState, action) {
     //VALIDATE-USER
     case userConstants.VALIDATE_REQUEST:
       return {
+        ...state,
         loading: true,
         user: action.user
       };
     case userConstants.VALIDATE_SUCCESS:
       return {
+        ...state,
         loading: false,
         jwt: action.user.jwt,
         user: action.user.user,
       };
     case userConstants.VALIDATE_FAILURE:
-      return {};
+      return { 
+        ...state,
+        loggedIn: false 
+      };
+    default:
+      return state
   }
+
 }

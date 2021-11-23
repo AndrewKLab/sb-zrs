@@ -8,17 +8,17 @@ import { Header, Footer, Loading } from '../_components';
 
 import { MainRouter } from '../App';
 
-const App = ({ jwt, dispatch, loading }) => {
+const App = ({ jwt, dispatch, loading, loggingIn }) => {
     const [loadings, setLoading] = useState(true)
 
 
     useEffect(() => {
         const init = async () => {
-            await getTokenHelper()
-            await dispatch(userActions.validateToken(jwt)).then(() => { setLoading(false) })
-        } 
+            await getTokenHelper(setTokenFound)
+            if (loggingIn) await dispatch(userActions.validateToken(jwt))
+            setLoading(false)
+        }
         init();
-        
     }, [])
 
     if (loadings === true || loading === true) return <Loading />
@@ -39,7 +39,7 @@ const App = ({ jwt, dispatch, loading }) => {
 
 function mapStateToProps(state) {
     const { alert, authentication } = state;
-    const { jwt, loading } = authentication
+    const { jwt, loading, loggingIn } = authentication
     return {
         loading,
         alert,

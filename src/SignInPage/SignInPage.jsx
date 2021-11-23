@@ -25,6 +25,7 @@ import { Formik, Form } from "formik";
 import * as yup from "yup";
 import "yup-phone";
 import config from 'config';
+import { getDeviceInfo } from '../_helpers';
 
 const phoneRegex = RegExp(
     /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
@@ -48,7 +49,7 @@ class SignInPage extends React.Component {
     constructor(props) {
         super(props);
         this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
-        this.props.dispatch(userActions.logout());
+        
 
         this.state = {
             phonenumber: "",
@@ -60,6 +61,15 @@ class SignInPage extends React.Component {
             loading: false,
             submitted: false
         };
+    }
+
+    componentDidMount(){
+        const {dispatch, loggingIn} = this.props;
+        const init = async () =>{
+            if(loggingIn) dispatch(userActions.logout(token, dvc_signature, dvc_fbc_token));
+        }
+        init()
+        
     }
 
     handleClickShowPassword(e) {
@@ -102,7 +112,12 @@ class SignInPage extends React.Component {
                                 this.setState({ submitted: true });
                                 const { dispatch } = this.props;
                                 if (phonenumber && password) {
-                                    dispatch(userActions.signin(phonenumber, password));
+                                    const login = async () => {
+                                        const deviceInfo = await getDeviceInfo();
+                                        const {dvc_platform, dvc_client, dvc_signature, dvc_fbc_token, dvc_active} = deviceInfo
+                                        await dispatch(userActions.signin(phonenumber, password, dvc_platform, dvc_client, dvc_signature, dvc_fbc_token, dvc_active));
+                                    }
+                                    login();
                                 }
                             }
                             }

@@ -1,7 +1,7 @@
 import { userConstants } from '../_constants';
 import { userService } from '../_services';
 import { alertActions } from './';
-import { getDeviceInfo, history } from '../_helpers';
+import {  history } from '../_helpers';
 
 export const userActions = {
     signin,
@@ -18,24 +18,17 @@ export const userActions = {
     getAllStudentsByPromouter
 };
 
-function signin(phonenumber, password) {
+function signin(phonenumber, password, dvc_platform, dvc_client, dvc_signature, dvc_fbc_token, dvc_active) {
     return dispatch => {
         dispatch(request({ phonenumber }));
-        
-        userService.signin(phonenumber, password)
+        userService.signin(phonenumber, password, dvc_platform, dvc_client, dvc_signature, dvc_fbc_token, dvc_active)
             .then(
                 response => {
                     const user = {
                         jwt: response.jwt,
                         user: response.user
                     }
-                    const init = async () => {
-                        const deviceInfo = await getDeviceInfo(user.user.id);
-                        const {dvc_user_id, dvc_platform, dvc_client, dvc_signature, dvc_fbc_token, dvc_active} = deviceInfo
-                        const res = userService.createUserDevice(user.jwt, dvc_user_id, dvc_platform, dvc_client, dvc_signature, dvc_fbc_token, dvc_active)
-                        console.log(res)
-                    }
-                    init();
+
                     dispatch(success(user));
                     dispatch(validateToken(response.jwt));
                     history.push('/');
@@ -73,10 +66,25 @@ function signup(firstname, lastname, phonenumber, country, sity, password, teath
     function failure(error) { return { type: userConstants.SIGNUP_FAILURE, error } }
 }
 
-function logout() {
-    userService.logout();
-    return { type: userConstants.LOGOUT };
+function logout(token, dvc_signature, dvc_fbc_token) {
+    return dispatch => {
+        //dispatch(request({ phonenumber }));
+        return userService.logout(token, dvc_signature, dvc_fbc_token)
+            .then(
+                response => {
+                    dispatch(success(response));
+                },
+                error => {
+                    console.log(error)
+                }
+            );
+    };
+
+   // function request(user) { return { type: userConstants.SIGNUP_REQUEST, user } }
+    function success() { return { type: userConstants.LOGOUT }; }
+   // function failure(error) { return { type: userConstants.SIGNUP_FAILURE, error } }
 }
+    
 
 function validateToken(jwt) {
     return dispatch => {
@@ -93,7 +101,7 @@ function validateToken(jwt) {
                 },
                 error => {
                     dispatch(failure(error));
-                    dispatch(alertActions.error(error));
+                    //dispatch(alertActions.error(error));
                 }
             );
     };
