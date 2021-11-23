@@ -10,11 +10,15 @@ import { MainRouter } from '../App';
 
 const App = ({ jwt, dispatch, loading }) => {
     const [loadings, setLoading] = useState(true)
-    const [isTokenFound, setTokenFound] = useState(false);
+
 
     useEffect(() => {
-        getTokenHelper(setTokenFound)
-        dispatch(userActions.validateToken(jwt)).then(() => { setLoading(false) })
+        const init = async () => {
+            await getTokenHelper()
+            await dispatch(userActions.validateToken(jwt)).then(() => { setLoading(false) })
+        } 
+        init();
+        
     }, [])
 
     if (loadings === true || loading === true) return <Loading />
