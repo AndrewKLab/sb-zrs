@@ -11,30 +11,29 @@ export const Dropdown = ({ children, className, id, open, onClose, }) => {
             document.body.classList.remove('stop-scrolling')
             onClose();
         }
-      };
-    
-      useEffect(() => {
-        document.addEventListener("click", handleClick);
-    
+    };
+
+    useEffect(() => {
+        if (open) {
+            document.addEventListener("click", handleClick);
+            document.body.classList.add('stop-scrolling')
+        }
+
+
         return () => {
-          document.removeEventListener("click", handleClick);
+            document.removeEventListener("click", handleClick);
+            document.body.classList.remove('stop-scrolling')
         };
-      });
+    }, [open]);
 
-    if (open === true) {
-        document.body.classList.add('stop-scrolling')
-        return (
-            <div className={"dropdown" + styleClass} ref={ref}>
-                <div id={id} className="dropdown-content show">
-                    {children}
-                </div>
+    return (
+        open &&
+        <div className={"dropdown" + styleClass} ref={ref}>
+            <div id={id} className="dropdown-content show">
+                {children}
             </div>
-        )
-    } else {
-        document.body.classList.remove('stop-scrolling')
-        return null;
-    }
-
+        </div>
+    )
 }
 
 

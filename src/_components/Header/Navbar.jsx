@@ -6,6 +6,7 @@ import config from 'config';
 import { Nav, NavbarActions } from './';
 import MenuIcon from '@material-ui/icons/Menu';
 import Brightness2Icon from '@material-ui/icons/Brightness2';
+import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
@@ -32,6 +33,7 @@ import {
     Dropdown
 } from "../"
 import { stylesActions, userActions } from "../../_actions";
+
 
 const Navbar = ({ history, dispatch, currentTheme, themes, user, search }) => {
     const [openMenu, setOpenMenu] = useState(false);
@@ -81,13 +83,13 @@ const Navbar = ({ history, dispatch, currentTheme, themes, user, search }) => {
 
                         <ul>
                             <Nav link={'/'}>Главная</Nav>
-                            {user === undefined ? (null) : (
+                            {user === null ? (null) : (
                                 (user.roles === 'ROLE_ADMIN' || user.roles === 'ROLE_SUPER_ADMIN') && <Nav link={'/admin-panel'}>{user.roles === 'ROLE_ADMIN' ? "Администратор" : 'Cуперадмин'}</Nav>
                             )}
-                            {user === undefined ? (null) : (
+                            {user === null ? (null) : (
                                 user.roles === 'ROLE_TEATHER' && <Nav link={'/teather-panel'}>Панель учителя</Nav>
                             )}
-                            {user === undefined ? (null) : (
+                            {user === null ? (null) : (
                                 user.roles === 'user' && user.status === 'ПРОМОУТЕР' && <Nav link={'/promouter-panel'}>Панель промоутера</Nav>
                             )}
                             <Nav link={'/courses'}>Курсы</Nav>
@@ -152,6 +154,14 @@ const Navbar = ({ history, dispatch, currentTheme, themes, user, search }) => {
 
                         )}
                         <Divider />
+                        <ListItem button onPress={() => {history.push('/dialogs'), toggleDrawer('left', false)} }>
+                            <ListItemFirstAction>
+                                <ListItemIcon>
+                                    <ChatBubbleIcon />
+                                </ListItemIcon>
+                                <ListItemText title="Мои диалоги" />
+                            </ListItemFirstAction>
+                        </ListItem>
                         <ListItem>
                             <ListItemFirstAction>
                                 <ListItemIcon><Brightness2Icon /></ListItemIcon>
@@ -161,13 +171,14 @@ const Navbar = ({ history, dispatch, currentTheme, themes, user, search }) => {
                                 <Switch isToggled={theme} onToggle={() => handleThemeChange()} />
                             </ListItemSecondAction>
                         </ListItem>
+
                         <Divider />
                         <ListItem onPress={() => { history.push('/'), toggleDrawer('left', false) }} button>
                             <ListItemFirstAction>
                                 <ListItemText title="Главная" />
                             </ListItemFirstAction>
                         </ListItem>
-                        {user === undefined ? (null) : (
+                        {user === null ? (null) : (
                             (user.roles === 'ROLE_ADMIN' || user.roles === 'ROLE_SUPER_ADMIN') &&
                             <ListItem onPress={() => { history.push('/admin-panel'), toggleDrawer('left', false) }} button>
                                 <ListItemFirstAction>
@@ -175,7 +186,7 @@ const Navbar = ({ history, dispatch, currentTheme, themes, user, search }) => {
                                 </ListItemFirstAction>
                             </ListItem>
                         )}
-                        {user === undefined ? (null) : (
+                        {user === null ? (null) : (
                             user.roles === 'ROLE_TEATHER' &&
                             <ListItem onPress={() => { history.push('/teather-panel'), toggleDrawer('left', false) }} button>
                                 <ListItemFirstAction>
@@ -183,7 +194,7 @@ const Navbar = ({ history, dispatch, currentTheme, themes, user, search }) => {
                                 </ListItemFirstAction>
                             </ListItem>
                         )}
-                        {user === undefined ? (null) : (
+                        {user === null ? (null) : (
                             user.roles === 'user' && user.status === 'ПРОМОУТЕР' &&
                             <ListItem onPress={() => { history.push('/promouter-panel'), toggleDrawer('left', false) }} button>
                                 <ListItemFirstAction>

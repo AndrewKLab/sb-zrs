@@ -1,10 +1,20 @@
 import { chatConstants } from '../_constants';
 
 const initialState = {
+    chats: [],
+    selected_chat: null,
+
     chat_loading: true,
     chat_error: null,
-    message_loadmore_loading: false,
-    message_loadmore_error: null,
+
+    get_messages_by_chat_loading: false,
+    get_messages_by_chat_error: null,
+    get_messages_by_chat_message: null,
+
+    get_more_messages_by_chat_loading: false,
+    get_more_messages_by_chat_error: null,
+    get_more_messages_by_chat_message: null,
+
     send_message_error: null,
     send_message_loading: false,
     check_new_messages_loading: false,
@@ -18,67 +28,71 @@ export function chat(state = initialState, action) {
             return {
                 ...state,
                 chat_loading: true,
-                message_loadmore_error: null,
-                selected_chat: undefined,
+                get_more_messages_by_chat_error: null,
             };
         case chatConstants.GET_ALL_CHATS_BY_USER_SUCCESS:
             return {
                 ...state,
                 chat_loading: false,
                 chats: action.chats.chats,
-                message_loadmore_error: null,
-                selected_chat: undefined,
+                get_more_messages_by_chat_error: null,
             };
         case chatConstants.GET_ALL_CHATS_BY_USER_FAILURE:
             return {
                 ...state,
                 chat_loading: false,
-                message_loadmore_error: null,
+                get_more_messages_by_chat_error: null,
                 chat_error: action.error,
-                selected_chat: undefined,
             };
 
         //GET MESSAGES BY CHAT
         case chatConstants.GET_ALL_MESSAGES_BY_CHAT_REQUEST:
             return {
                 ...state,
-                message_loadmore_loading: false,
-                message_loading: true
+                get_more_messages_by_chat_loading: false,
+
+                get_messages_by_chat_loading: true,
+                get_messages_by_chat_error: null,
+                get_messages_by_chat_message: null,
             };
         case chatConstants.GET_ALL_MESSAGES_BY_CHAT_SUCCESS:
             return {
-                ...state,
-                selected_chat: action.chat_id,
-                message_loading: false,
-                message_loadmore_loading: false,
-                message_loadmore_error: null,
-                chats: state.chats.map((chat) => (chat.chat_id !== action.chat_id ? chat : ({ ...chat, messages: action.messages, offset: 20 })))
+                ...state,               
+                get_messages_by_chat_loading: false,
+                get_messages_by_chat_error: null,
+                get_messages_by_chat_message: action.message,
+
+                get_more_messages_by_chat_loading: false,
+                get_more_messages_by_chat_error: null,
+
+                selected_chat: {...action.chat, messages: action.messages},
+                chats: state.chats.map((chat) => (chat.chat_id !== action.chat.chat_id ? chat : ({ ...chat, messages: action.messages, offset: 20 })))
             };
         case chatConstants.GET_ALL_MESSAGES_BY_CHAT_FAILURE:
             return {
                 ...state,
-                message_loading: false,
-                message_loadmore_loading: false,
-                error: action.error
+                get_messages_by_chat_loading: false,
+                get_messages_by_chat_error: action.error,
+                get_messages_by_chat_message: null,
             };
 
         //GET MORE MESSAGES BY CHAT
         case chatConstants.GET_MORE_MESSAGES_BY_CHAT_REQUEST:
             return {
                 ...state,
-                message_loadmore_loading: true
+                get_more_messages_by_chat_loading: true
             };
         case chatConstants.GET_MORE_MESSAGES_BY_CHAT_SUCCESS:
             return {
                 ...state,
-                message_loadmore_loading: false,
+                get_more_messages_by_chat_loading: false,
                 chats: state.chats.map((chat) => (chat.chat_id !== action.chat_id ? chat : ({ ...chat, messages: [...action.messages, ...chat.messages], offset: chat.offset + 20 }))),
             };
         case chatConstants.GET_MORE_MESSAGES_BY_CHAT_FAILURE:
             return {
                 ...state,
-                message_loadmore_loading: false,
-                message_loadmore_error: action.error
+                get_more_messages_by_chat_loading: false,
+                get_more_messages_by_chat_error: action.error
             };
 
 
@@ -87,7 +101,7 @@ export function chat(state = initialState, action) {
             return {
                 ...state,
                 selected_chat: action.chat_id,
-                message_loadmore_error: null
+                get_more_messages_by_chat_error: null
             };
 
         //SEND MESSAGE

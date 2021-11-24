@@ -6,22 +6,23 @@ import DoneIcon from '@material-ui/icons/Done';
 import { chatActions } from "../../_actions";
 import { connect } from 'react-redux';
 
-const ChatMessages = ({ message_loadmore_loading, check_new_messages_error, current_chat, jwt, dispatch, scrollToBottom }) => {
+const ChatMessages = ({ dispatch, message_loadmore_loading, check_new_messages_error, selected_chat, jwt, ChatMessagesEmptyComponent, scrollToBottom }) => {
 
     useEffect(() => {
-        const timer = setInterval(() => checkNewMessages(current_chat, jwt), 3000);
-        return () => clearInterval(timer);
-    }, [check_new_messages_error, current_chat]);
+        // const timer = setInterval(() => checkNewMessages(selected_chat, jwt), 3000);
+        // return () => clearInterval(timer);
+    }, []);
 
-    const checkNewMessages = (current_chat, jwt) => {
-        dispatch(chatActions.checkNewMessagesByChat(jwt, current_chat.chat_id, current_chat.chat_user_id)).then(() => {
-            console.log(current_chat.messages.filter(message => message.read_status === "0"))
-            if (check_new_messages_error === null) { scrollToBottom() }
-        })
-        // current_chat.messages.filter((message => current_chat.chat_user_id === message.send_from))
+    const checkNewMessages = (selected_chat, jwt) => {
+        // dispatch(chatActions.checkNewMessagesByChat(jwt, selected_chat.chat_id, selected_chat.chat_user_id)).then(() => {
+        //     console.log(selected_chat.messages.filter(message => message.read_status === "0"))
+        //     if (check_new_messages_error === null) { scrollToBottom() }
+        // })
+
+        // selected_chat.messages.filter((message => selected_chat.chat_user_id === message.send_from))
         // let current_date = moment().format('YYYY-MM-DD HH:MM:SS')
-        // var arr = current_chat.messages.filter((message, index, array) => {
-        //     if (current_chat.chat_user_id === message.send_from) {
+        // var arr = selected_chat.messages.filter((message, index, array) => {
+        //     if (selected_chat.chat_user_id === message.send_from) {
 
         //         console.log(moment(message.created).fromNow())
         //         if ((new Date() - new Date(current_date + ' ' + message.created)) < 3600 * 1000)
@@ -30,39 +31,42 @@ const ChatMessages = ({ message_loadmore_loading, check_new_messages_error, curr
         //             return false;
         //     }
         // });
-        // console.log(current_chat.chat_id, current_chat.chat_user_id, arr.length)
+        // console.log(selected_chat.chat_id, selected_chat.chat_user_id, arr.length)
     }
     return (
-        <div className='messages'>
-            {message_loadmore_loading === true && (<div className={`loadmore-messages-loading`}><CircularProgress size={20} /></div>)}
-            {
-                current_chat.messages.map((item, index) => {
+        selected_chat.messages !== undefined &&
+            selected_chat.messages.length > 0 ?
+            <div className='messages'>
+                {message_loadmore_loading === true && (<div className={`loadmore-messages-loading`}><CircularProgress size={20} /></div>)}
+                {selected_chat.messages.map((item) => {
                     return (
-                        <div key={index} className={`${current_chat.chat_user_id === item.send_to ? 'mine' : 'yours'} w-100`}>
-                            <div className={`${current_chat.chat_user_id === item.send_to ? 'mine' : 'yours'} message last`}>
+                        <div key={item.message_id} className={`${selected_chat.chat_user_id === item.send_to ? 'mine' : 'yours'} w-100`}>
+                            <div className={`${selected_chat.chat_user_id === item.send_to ? 'mine' : 'yours'} message last`}>
                                 {item.message}
                                 <div className={`messagetime-container`}>
                                     <div className={`messagetime-wrap`}>
                                         <span className={`messagetime`}>{moment(item.created).format('HH:mm')}</span>
-                                        <span className={`messagetime`}>{current_chat.chat_user_id === item.send_to ? item.read_status === "0" ? <DoneIcon /> : <DoneAllIcon /> : null}</span>
+                                        <span className={`messagetime`}>{selected_chat.chat_user_id === item.send_to ? item.read_status === "0" ? <DoneIcon /> : <DoneAllIcon /> : null}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                     )
                 })
-            }
-        </div>
+                }
+            </div>
+            : ChatMessagesEmptyComponent ? <ChatMessagesEmptyComponent /> : null
     );
 };
 
 function mapStateToProps(state) {
-    const { message_loadmore_loading, message_loadmore_error, selected_chat, check_new_messages_error } = state.chat;
+    const { message_loadmore_loading, get_more_messages_by_chat_error, selected_chat, check_new_messages_error } = state.chat;
     const { jwt } = state.authentication;
     return {
         jwt,
         message_loadmore_loading,
-        message_loadmore_error,
+        get_more_messages_by_chat_error,
         selected_chat,
         check_new_messages_error
     };

@@ -4,7 +4,8 @@ export const chatService = {
     getAllChatsByUser,
     getMessagesByChat,
     sendMessage,
-    checkNewMessagesByChat
+    checkNewMessagesByChat,
+    createChat
 };
 
 function getAllChatsByUser(jwt) {
@@ -42,6 +43,15 @@ function checkNewMessagesByChat(jwt, chat_id, send_from) {
     };
 
     return fetch(`/api/message/check_new_messages_by_chat.php?c=${chat_id}&sf=${send_from}`, requestOptions).then(handleResponse);
+}
+
+function createChat(jwt, target) {
+    var requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` },
+    };
+
+    return fetch(`/api/chat/create.php?target=${target}`, requestOptions).then(handleResponse);
 }
 
 

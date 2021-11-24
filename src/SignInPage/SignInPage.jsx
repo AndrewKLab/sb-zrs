@@ -64,9 +64,9 @@ class SignInPage extends React.Component {
     }
 
     componentDidMount(){
-        const {dispatch, loggingIn} = this.props;
+        const {dispatch, isLogined, jwt, deviceInfo} = this.props;
         const init = async () =>{
-            if(loggingIn) dispatch(userActions.logout(token, dvc_signature, dvc_fbc_token));
+            if(isLogined) dispatch(userActions.logout(jwt, deviceInfo.dvc_signature, deviceInfo.dvc_fbc_token));
         }
         init()
         
@@ -90,7 +90,7 @@ class SignInPage extends React.Component {
     }
 
     render() {
-        const { message } = this.props;
+        const { signin_error } = this.props;
         const { remember } = this.state
         return (
             <div>
@@ -133,8 +133,8 @@ class SignInPage extends React.Component {
                                     <Grid container spacing={3}>
 
                                         <Grid item xs={12}>
-                                            {message && (
-                                                <Alert className='error mb-3' severity="error">{message}</Alert>
+                                            {signin_error && (
+                                                <Alert className='error mb-3' severity="error">{signin_error}</Alert>
                                             )}
 
                                             <TextInput
@@ -224,14 +224,13 @@ class SignInPage extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { message } = state.alert;
-    const { loggingIn } = state.authentication;
-    const { theme, classes } = state.style;
+    const { isLogined, jwt, deviceInfo, signin_loading, signin_error } = state.authentication;
     return {
-        loggingIn,
-        theme,
-        classes,
-        message
+        isLogined,
+        jwt,
+        deviceInfo,
+        signin_loading,
+        signin_error
     };
 }
 

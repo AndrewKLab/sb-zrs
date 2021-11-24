@@ -64,8 +64,7 @@ class SignUpPage extends React.Component {
             phonenumber: "",
             password: "",
             showPassword: false,
-
-            loading: false,
+            
             submitted: false
         };
     }
@@ -83,7 +82,7 @@ class SignUpPage extends React.Component {
     };
 
     render() {
-        const { message } = this.props;
+        const { signup_error } = this.props;
         const { promouter_id, teather_id } = this.props.match.params;
         return (
             <Grid container>
@@ -117,8 +116,8 @@ class SignUpPage extends React.Component {
                                     <Typography component="h1" variant="h5">Регистрация</Typography>
                                 </div>
 
-                                {message && (
-                                    <Alert severity="error">{message}</Alert>
+                                {signup_error && (
+                                    <Alert className='error mb-3' severity="error">{signup_error}</Alert>
                                 )}
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} sm={12} md={6}>
@@ -280,11 +279,11 @@ class SignUpPage extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { message } = state.alert;
-    const { loggingIn } = state.authentication;
+    const { isLogined, signup_loading, signup_error } = state.authentication;
     return {
-        loggingIn,
-        message
+        isLogined,
+        signup_loading,
+        signup_error
     };
 }
 

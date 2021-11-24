@@ -100,7 +100,7 @@ section {
 body {
     width: 100%;
     margin: 0;
-    color: rgba(var(--text-dark));
+    color: rgba(var(--text-dark)) !important;
     margin: 0;
     /* font-size: 0.875rem; */
     font-family: var(--font-family-sans-serif);
@@ -455,6 +455,7 @@ h6,
     margin-bottom: 0.5rem;
     font-weight: 500;
     line-height: 1.2;
+    color: rgba(var(--text-dark));
 }
 
 h1,
@@ -882,6 +883,10 @@ h6,
     padding-left: 1rem !important;
     padding-right: 1rem !important;
 }
+.pv-3 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+}
 
 .p-4 {
     padding: 1.5rem !important;
@@ -1245,11 +1250,12 @@ nav ul li {
 nav ul li a {
     display: block;
     text-decoration: none;
-    color: rgba(var(--only-dark-text));
-    font-weight: 600;
+    color: rgba(var(--only-dark-text)) !important;
+    font-weight: 600 !important;
     text-transform: uppercase;
+    font-size: 16px;
     /* margin: 0 20px; */
-    height: calc(100% - 4px);
+    height: calc(100% - 3px);
     align-items: center;
     display: flex;
     border-bottom-left-radius: var(--rounding-angle);
@@ -1365,6 +1371,11 @@ footer {
 
     .home-page-main-baner-item-text {
         margin-left: 0rem !important;
+        
+    }
+
+    .home-page-main-baner-item-text h1 {
+        color: rgba(var(--text-dark)) !important;
     }
 
     .home-page-main-baner-item-book {
@@ -2504,8 +2515,8 @@ footer {
 }
 
 .alert-info {
-    color: rgb(13, 60, 97);
-    background-color: rgb(232, 244, 253);
+    color: rgba(var(--text-dark));
+    background-color: rgba(var(--background-color-dark));
 }
 
 .alert-info .alert-icon {
@@ -3132,7 +3143,7 @@ div.text-input-group label {
 
 .search-input-root input::placeholder {
     color: rgba(var(--only-text-light), 0.42);
-    font-size: 1.2em;
+    font-size: 16px;
 }
 
 /* Avatar */
@@ -3247,7 +3258,7 @@ div.text-input-group label {
 
 .table {
     color: rgba(var(--text-dark));
-    background-color: rgba(var(--text-light));
+    background-color: rgba(var(--background-color-light));
     border-collapse: collapse;
 }
 

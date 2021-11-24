@@ -25,7 +25,7 @@ class LessonPage extends React.Component {
     componentDidMount() {
         const { dispatch, user } = this.props;
         const { course, lesson } = this.props.match.params;
-        if (user != undefined) {
+        if (user != null) {
             dispatch(lessonActions.createLessonPassed(course, lesson, user.id))
                 .then(() => {
                     dispatch(lessonActions.getAllLessonsByCourse(course, user.id, user.teather_id))
@@ -39,7 +39,7 @@ class LessonPage extends React.Component {
         const { category_name, course, lesson } = this.props.match.params;
 
         var lessons;
-        if (loading == true || loading == undefined || user == undefined || data == undefined) {
+        if (loading == true || loading == undefined || user == null || data == undefined) {
             return <Loading />
         } else {
             lessons = data.lessons;

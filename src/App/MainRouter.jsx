@@ -19,6 +19,7 @@ import { CreateCoursePage } from '../CreateCoursePage';
 import { AdminPanelPage } from '../AdminPanelPage';
 import { ContactsPage } from '../ContactsPage';
 import getTheme from '../_styles/theme/base';
+import { DialogsPage } from '../Pages/DialogsPage';
 import { CourseCountructor } from '../Pages/CourseCounstructor';
 
 const currentTheme = localStorage.getItem('appTheme') || 'light'
@@ -48,6 +49,7 @@ class MainRouter extends React.Component {
                 <Route exact path="/courses/:category_name" component={CoursesPage} />
                 <Route exact path="/courses" component={CategoriesPage} />
                 <Route exact path="/contacts" component={ContactsPage} />
+                <Route exact path="/dialogs" component={DialogsPage} />
                 <Route exact path="/sign-in" component={SignInPage} />
                 <Route exact path="/sign-up" component={SignUpPage} />
                 <Route exact path="/sign-up/:promouter_id/:teather_id" component={SignUpPage} />

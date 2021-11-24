@@ -68,7 +68,7 @@ class CreateCoursePage extends React.Component {
 
     componentDidMount() {
         const { dispatch, user, jwt, message, course_error } = this.props;
-        if (user != undefined) {
+        if (user != null) {
             if (this.props.location.state !== undefined) {
                 dispatch(lessonActions.getAllLessonsByCourse(this.props.location.state.course.id, user.id, user.teather_id)).then(
                     () => this.setState({ loading: false })

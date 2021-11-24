@@ -1,9 +1,9 @@
-import React, { Component, createRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
 import config from 'config';
 import Brightness2Icon from '@material-ui/icons/Brightness2';
-import HelpIcon from '@material-ui/icons/Help';
+import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 import SearchIcon from '@material-ui/icons/Search';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -28,41 +28,33 @@ import {
 import { stylesActions, userActions, searchActions } from "../../_actions";
 
 
-class NavbarActions extends Component {
+const NavbarActions = ({ dispatch, history, themes, currentTheme, user, search }) => {
+    const wrapperRef = useRef(null);
+    const searchRef = useRef(null);
+    const anchorEl = useRef(null);
 
-    constructor(props) {
-        super(props);
-        this.wrapperRef = React.createRef();
-        this.searchRef = React.createRef()
-        this.handleClickOutside = this.handleClickOutside.bind(this);
-        this.anchorEl = createRef(null);
-        this.state = {
-            theme: this.props.currentTheme === 'light' ? false : true,
-            isOpen: false,
-            openSearch: false
-        };
-    }
+    const [theme, setThemeState] = useState(currentTheme === 'light' ? false : true)
+    const [isOpen, setIsOpen] = useState(false)
+    const [openSearch, setOpenSearch] = useState(false)
 
-    componentDidMount() {
-        this.setTheme();
-        document.addEventListener('mousedown', this.handleClickOutside);
-    }
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        setTheme()
 
-    componentWillUnmount() {
-        document.removeEventListener('mousedown', this.handleClickOutside);
-    }
-
-    componentDidUpdate(prevProps) {
-        if (this.props.currentTheme !== prevProps.currentTheme) {
-            this.setTheme();
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
         }
-
-    }
-
+    })
 
 
-    setTheme = () => {
-        const { currentTheme, themes } = this.props;
+    // componentDidUpdate(prevProps) {
+    //     if (this.props.currentTheme !== prevProps.currentTheme) {
+    //         this.setTheme();
+    //     }
+
+    // }
+
+    const setTheme = () => {
         const theme = themes[currentTheme];
         Object.keys(theme).forEach((key) => {
             const cssKey = `--${key}`;
@@ -72,184 +64,178 @@ class NavbarActions extends Component {
     }
 
 
-    handleThemeChange() {
-        const { currentTheme, themes } = this.props;
+    const handleThemeChange = () => {
         if (currentTheme === 'light') {
             localStorage.setItem('theme', 'dark')
-            this.setState({ theme: true })
+            setThemeState(true)
             const theme = { currentTheme: 'dark', themes: themes }
-            this.props.dispatch(stylesActions.setTheme(theme))
-            this.setTheme();
+            dispatch(stylesActions.setTheme(theme))
+            setTheme();
         } else {
             localStorage.setItem('theme', 'light')
-            this.setState({ theme: false })
+            setThemeState(false)
             const theme = { currentTheme: 'light', themes: themes }
-            this.props.dispatch(stylesActions.setTheme(theme))
-            this.setTheme();
+            dispatch(stylesActions.setTheme(theme))
+            setTheme();
         }
     }
 
-    handleOpenDropdown() {
-        document.getElementById("myDropdown").classList.toggle("show");
-    }
+    const handleOpenDropdown = () => { document.getElementById("myDropdown").classList.toggle("show"); }
 
-    handleCloseDropdown() {
-        document.getElementById("myDropdown").classList.remove("show");
-    }
+    const handleCloseDropdown = () => { document.getElementById("myDropdown").classList.remove("show"); }
 
-    handleClickOutside(event) {
-        if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
+    const handleClickOutside = (event) => {
+        if (wrapperRef && !wrapperRef.current.contains(event.target)) {
             if (!event.target.matches('.dropbtn')) {
                 document.getElementById("myDropdown").classList.remove("show")
             }
         }
     }
 
-    logOut() {
+    const logOut = () => {
         userActions.logout();
-        this.props.history.push('/sign-in');
+        history.push('/sign-in');
     }
 
     //Search
-    handleChange(event) {
-        const { dispatch } = this.props;
+    const handleChange = (event) => {
         if (event.target.value === "") {
-            this.handleClose()
+            handleClose()
         } else {
-            this.handleOpen()
+            handleOpen()
         }
 
         dispatch(searchActions.search(event.target.value))
     }
 
 
-    handleOpen() { this.setState({ openSearch: true }) }
+    const handleOpen = () => { setOpenSearch(true) }
+    const handleClose = () => { setOpenSearch(false) }
 
-    handleClose() { this.setState({ openSearch: false }) }
+    const goToPage = (page) => {
+        history.push(page)
+        handleCloseDropdown()
+    }
 
-    render() {
-        const { user, search } = this.props;
-        const { openSearch } = this.state;
-        return (
-            <div className='navbar-actions'>
-                <form role="search" className="search-input-root m-3">
-                    <input type="search" className='search-input' placeholder="Поиск..." onChange={(event) => this.handleChange(event)} />
-                    <div><SearchIcon /></div>
-                </form>
-                {openSearch === true ?
-                    <Dropdown id={"search"} open={openSearch} onClose={() => this.handleClose()}>
-                        {search.search && search.search.courses !== undefined || search.search && search.search.lessons !== undefined ? (
-                            <div>
-                                {search.search.courses !== null ? (
-                                    <div>
-                                        <Typography variant='h5' component='h5'>Курсы:</Typography>
-                                        <Divider />
-                                        {search.search.courses.map((item, index) => (
-                                            <Link to={`/courses/${item.category_name}/${item.id}`} key={index}>
-                                                <ListItem button onPress={() => this.handleClose()} className='text-align-left p-3'>
-                                                    <ListItemFirstAction>
-                                                        <ListItemText>
-                                                            <ListItemTitle>
-                                                                {item.name}
-                                                            </ListItemTitle>
-                                                            <ListItemSubtitle>
-                                                                {item.description.length > 70 ? item.description.substr(0, 80 - 1) + '...' : item.description}
-                                                            </ListItemSubtitle>
-                                                        </ListItemText>
-                                                    </ListItemFirstAction>
-                                                </ListItem>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                ) : null}
-                                {search.search.lessons !== null ? (
-                                    <div>
-                                        <Typography variant='h5' component='h5'>Уроки:</Typography>
-                                        <Divider />
+    return (
+        <div className='navbar-actions'>
+            <form role="search" className="search-input-root m-3">
+                <input type="search" className='search-input' placeholder="Поиск..." onChange={(event) => handleChange(event)} />
+                <div><SearchIcon /></div>
+            </form>
+            {openSearch === true ?
+                <Dropdown id={"search"} open={openSearch} onClose={() => handleClose()}>
+                    {search.search && search.search.courses !== undefined || search.search && search.search.lessons !== undefined ? (
+                        <div>
+                            {search.search.courses !== null ? (
+                                <div>
+                                    <Typography variant='h5' component='h5'>Курсы:</Typography>
+                                    <Divider />
+                                    {search.search.courses.map((item, index) => (
+                                        <Link to={`/courses/${item.category_name}/${item.id}`} key={index}>
+                                            <ListItem button onPress={() => handleClose()} className='text-align-left p-3'>
+                                                <ListItemFirstAction>
+                                                    <ListItemText>
+                                                        <ListItemTitle>
+                                                            {item.name}
+                                                        </ListItemTitle>
+                                                        <ListItemSubtitle>
+                                                            {item.description.length > 70 ? item.description.substr(0, 80 - 1) + '...' : item.description}
+                                                        </ListItemSubtitle>
+                                                    </ListItemText>
+                                                </ListItemFirstAction>
+                                            </ListItem>
+                                        </Link>
+                                    ))}
+                                </div>
+                            ) : null}
+                            {search.search.lessons !== null ? (
+                                <div>
+                                    <Typography variant='h5' component='h5'>Уроки:</Typography>
+                                    <Divider />
 
-                                        {search.search.lessons.map((item, index) => (
-                                            <Link to={`/courses/${item.category_name}/${item.courses_id}/${item.id}`} key={index}>
-                                                <ListItem button onPress={() => this.handleClose()} className='text-align-left p-3'>
-                                                    <ListItemFirstAction>
-                                                        <ListItemText>
-                                                            <ListItemTitle>
-                                                                {item.name}
-                                                            </ListItemTitle>
-                                                            <ListItemSubtitle>
-                                                                {item.description.length > 70 ? item.description.substr(0, 80 - 1) + '...' : item.description}
-                                                            </ListItemSubtitle>
-                                                        </ListItemText>
-                                                    </ListItemFirstAction>
-                                                </ListItem>
-                                            </Link>
-                                        ))}
+                                    {search.search.lessons.map((item, index) => (
+                                        <Link to={`/courses/${item.category_name}/${item.courses_id}/${item.id}`} key={index}>
+                                            <ListItem button onPress={() => handleClose()} className='text-align-left p-3'>
+                                                <ListItemFirstAction>
+                                                    <ListItemText>
+                                                        <ListItemTitle>
+                                                            {item.name}
+                                                        </ListItemTitle>
+                                                        <ListItemSubtitle>
+                                                            {item.description.length > 70 ? item.description.substr(0, 80 - 1) + '...' : item.description}
+                                                        </ListItemSubtitle>
+                                                    </ListItemText>
+                                                </ListItemFirstAction>
+                                            </ListItem>
+                                        </Link>
+                                    ))}
 
-                                    </div>
-                                ) : null}
-                            </div>
-                        ) : (
-                                <Typography>{search.search}</Typography>
-                            )}
-                    </Dropdown>
+                                </div>
+                            ) : null}
+                        </div>
+                    ) : (
+                        <Typography>{search.search}</Typography>
+                    )}
+                </Dropdown>
 
-                    : null}
+                : null}
 
-                <IconButton className={"navbar-icon"}>
-                    <NotificationsIcon />
+            <IconButton className={"navbar-icon"}>
+                <NotificationsIcon />
+            </IconButton>
+
+            <div className="dropdown" ref={wrapperRef}>
+                <IconButton
+                    onClick={() => handleOpenDropdown()}
+                    className="dropbtn"
+                >
+                    <Avatar alt="" className="dropbtn-img" src={`${config.url}/assets/img/unnamed.png`} />
                 </IconButton>
-
-                <div className="dropdown" ref={this.wrapperRef}>
-                    <IconButton
-                        onClick={() => this.handleOpenDropdown()}
-                        className="dropbtn"
-                    >
-                        <Avatar alt="" className="dropbtn-img" src={`${config.url}/assets/img/unnamed.png`} />
-                    </IconButton>
-                    <div id="myDropdown" className="dropdown-content">
-                        {user ? (
-                            <Link to="/profile" onClick={() => this.handleCloseDropdown()} className="p-0">
-                                <ListItem button>
-                                    <ListItemFirstAction>
-                                        <ListItemIcon>
-                                            <Avatar alt="" src={user.avatar} />
-                                        </ListItemIcon>
-                                        <ListItemText title={user.lastname + " " + user.firstname} subtitle={"Статус: " + user.status} />
-                                    </ListItemFirstAction>
-                                </ListItem>
-                            </Link>
-                        ) : (
-                                <ListItem>
-                                    <ListItemFirstAction>
-                                        <ListItemIcon>
-                                            <Avatar alt="" src={`${config.url}/assets/img/unnamed.png`} />
-                                        </ListItemIcon>
-                                        <ListItemText title="Привет, посетитель!" />
-                                    </ListItemFirstAction>
-                                </ListItem>
-
-                            )}
-
-                        <Divider className={'mt-0'} />
-
-                        <ListItem>
-                            <ListItemFirstAction>
-                                <ListItemIcon><Brightness2Icon /></ListItemIcon>
-                                <ListItemText title='Темная тема' />
-                            </ListItemFirstAction>
-                            <ListItemSecondAction>
-                                <Switch isToggled={this.state.theme} onToggle={() => this.handleThemeChange()} />
-                            </ListItemSecondAction>
-                        </ListItem>
-
-                        {/* <ListItem>
+                <div id="myDropdown" className="dropdown-content">
+                    {user ? (
+                        <ListItem button onPress={() => goToPage('/profile')}>
                             <ListItemFirstAction>
                                 <ListItemIcon>
-                                    <SettingsIcon />
+                                    <Avatar alt="" src={user.avatar} />
                                 </ListItemIcon>
-                                <ListItemText title="Настройки" />
+                                <ListItemText title={user.lastname + " " + user.firstname} subtitle={"Статус: " + user.status} />
                             </ListItemFirstAction>
-
                         </ListItem>
+                    ) : (
+                        <ListItem>
+                            <ListItemFirstAction>
+                                <ListItemIcon>
+                                    <Avatar alt="" src={`${config.url}/assets/img/unnamed.png`} />
+                                </ListItemIcon>
+                                <ListItemText title="Привет, посетитель!" />
+                            </ListItemFirstAction>
+                        </ListItem>
+
+                    )}
+
+                    <Divider className={'mt-0'} />
+
+                    <ListItem button onPress={() => goToPage('/dialogs')}>
+                        <ListItemFirstAction>
+                            <ListItemIcon>
+                                <ChatBubbleIcon />
+                            </ListItemIcon>
+                            <ListItemText title="Мои диалоги" />
+                        </ListItemFirstAction>
+                    </ListItem>
+
+                    <ListItem>
+                        <ListItemFirstAction>
+                            <ListItemIcon><Brightness2Icon /></ListItemIcon>
+                            <ListItemText title='Темная тема' />
+                        </ListItemFirstAction>
+                        <ListItemSecondAction>
+                            <Switch isToggled={theme} onToggle={() => handleThemeChange()} />
+                        </ListItemSecondAction>
+                    </ListItem>
+
+                    {/* 
 
                         <ListItem >
                             <ListItemFirstAction>
@@ -260,35 +246,32 @@ class NavbarActions extends Component {
                             </ListItemFirstAction>
                         </ListItem> */}
 
-                        <Divider />
-                        {user ? (
-                            <ListItem>
-                                <Button className='w-100' variant='outlined' onPress={() => { this.logOut(); this.handleCloseDropdown() }}>Выход</Button>
-                            </ListItem>
+                    <Divider />
+                    {user ? (
+                        <ListItem>
+                            <Button className='w-100' variant='outlined' onPress={() => { logOut(); handleCloseDropdown() }}>Выход</Button>
+                        </ListItem>
 
-                        ) : (
-                                <ListItem>
-                                    <ListItemIcon>
-                                        <Link to="/sign-in" onClick={() => this.handleCloseDropdown()}>
-                                            <Button color="primary" variant="outlined">Вход</Button>
-                                        </Link>
-                                    </ListItemIcon>
-                                    <ListItemText>
-                                        <Link to="/sign-up" onClick={() => this.handleCloseDropdown()}>
-                                            <Button color="primary" variant="outlined">Регистрация</Button>
-                                        </Link>
-                                    </ListItemText>
-                                </ListItem>
-
-
-                            )}
-
-                    </div>
+                    ) : (
+                        <ListItem>
+                            <ListItemIcon>
+                                <Link to="/sign-in" onClick={() => handleCloseDropdown()}>
+                                    <Button color="primary" variant="outlined">Вход</Button>
+                                </Link>
+                            </ListItemIcon>
+                            <ListItemText>
+                                <Link to="/sign-up" onClick={() => handleCloseDropdown()}>
+                                    <Button color="primary" variant="outlined">Регистрация</Button>
+                                </Link>
+                            </ListItemText>
+                        </ListItem>
+                    )}
                 </div>
-            </div >
-        );
-    }
+            </div>
+        </div >
+    );
 }
+
 function mapStateToProps(state) {
     const { currentTheme, themes } = state.style;
     const { user } = state.authentication

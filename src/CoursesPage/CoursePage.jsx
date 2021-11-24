@@ -42,7 +42,7 @@ class CoursePage extends React.Component {
     }
     componentDidMount() {
         const { dispatch, history, user, jwt } = this.props;
-        if (user !== undefined) {
+        if (user !== null) {
             dispatch(userActions.readOne(user.teather_id, jwt)).then(
                 () => dispatch(lessonActions.getAllLessonsByCourse(this.props.match.params.course, user.id, user.teather_id)).then(
                     () => this.setState({ loading: false })
@@ -215,7 +215,7 @@ class CoursePage extends React.Component {
                             <div className='p-relative'>
                                 <img className='img' src={data.img} alt={data.course_name} height="350" />
                                 <div className='wrap-area'>
-                                    <Typography variant="h2" component="h1">{data.course_name}</Typography>
+                                    <Typography variant="h2" component="h1" className="text-light">{data.course_name}</Typography>
                                 </div>
                             </div>
                         </Grid>

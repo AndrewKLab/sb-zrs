@@ -21,7 +21,7 @@ import {
     DataTable,
     Form,
     FormControlLabel,
-    Radio,
+    Alert,
     Tabs,
     Tab,
     TabPanel,
@@ -32,6 +32,7 @@ import { DialogDeleteUser, DialogChangeUser } from './';
 import { TeatherCourses } from '../TeatherPanelPage/TeatherCourses';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
+import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 
 const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_error }) => {
     const [loading, setLoading] = useState(true);
@@ -72,6 +73,9 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
 
 
     //EDIT
+    const dialog = (user) => {
+        console.log('open chat with ' + user.id)
+    }
     const edit = (user) => { setEditDialog(true), setUserData(user), setStatus(user.status), setRoles(user.roles), setAccess(user.access) }
     const editClose = () => { setEditDialog(false) }
 
@@ -81,6 +85,10 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
     const removeClose = () => { setDeleteDialog(false) }
 
     const selectTab = (event) => { setTab(event.target.id) }
+
+    const EmptyTableComponent = (text) =>{
+        return <Alert className='info' severity="info">{text}</Alert>
+    }
 
 
     if (loading) {
@@ -130,7 +138,8 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                                         <Typography component='h4' variant='h4' className={'paper-header-text'}>Ваши учителя и их ученики:</Typography>
                                     </div>
 
-                                    {users.teathers !== undefined && users.teathers.filter(teather => teather.admin_id === user.id).map((teather, index) => (
+                                    {users.teathers !== undefined && users.teathers.filter(teather => teather.admin_id === user.id) > 0 ?
+                                        users.teathers.filter(teather => teather.admin_id === user.id).map((teather, index) => (
                                         <div key={index} className={'mx-3 mb-3'}>
                                             <Accordion labеl={
                                                 <UserPlane className={'p-0'} name={teather.firstname + " " + teather.lastname} avatar={teather.avatar} status={teather.status} />
@@ -191,7 +200,9 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                                                 </div>
                                             </Accordion>
                                         </div>
-                                    ))}
+                                    ))
+                                :
+                                <Alert className='info' severity="info">{'На данный момент у вас нет учителей!'}</Alert>}
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -224,10 +235,12 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                                 { Header: 'Действия', accessor: '' }
                             ]}
                             data={users.students !== undefined ? users.students : []}
+                            dialog={dialog}
                             edit={edit}
                             remove={remove}
                             ititSortBy={'lastname'}
                             ititSortType={'asc'}
+                            EmptyTableComponent={() => EmptyTableComponent('На данный момент у вас нет учеников!')}
                         />
                     </div>
 
@@ -246,33 +259,37 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                                 { Header: 'Действия', accessor: '' }
                             ]}
                             data={users.promouters !== undefined ? users.promouters : []}
+                            dialog={dialog}
                             edit={edit}
                             remove={remove}
                             ititSortBy={'lastname'}
                             ititSortType={'asc'}
+                            EmptyTableComponent={() => EmptyTableComponent('На данный момент у вас нет промоутеров!')}
                         />
                     </div>
 
                     <div className='mb-3'>
                         <Typography variant='h3' component='h3'>{user.roles === "ROLE_SUPER_ADMIN" ? 'Учителя:' : 'Ваши учителя:'}</Typography>
-                        <DataTable columns={
-                            [
-                                { Header: 'Имя', accessor: 'firstname' },
-                                { Header: 'Фамилия', accessor: 'lastname' },
-                                { Header: 'Номер телефона', accessor: 'phonenumber' },
-                                { Header: 'Страна', accessor: 'country' },
-                                { Header: 'Город', accessor: 'sity' },
-                                { Header: 'Статус', accessor: 'status' },
-                                { Header: 'Доступ ко всем курсам', accessor: 'access' },
-                                { Header: 'Учитель', accessor: 'teather.name' },
-                                { Header: 'Действия', accessor: '' }
-                            ]}
-                            data={users.teathers !== undefined ? user.roles === "ROLE_SUPER_ADMIN" ? users.teathers : users.teathers.filter(t => t.admin_id === user.id) : []}
-                            edit={edit}
-                            remove={remove}
-                            ititSortBy={'lastname'}
-                            ititSortType={'asc'}
-                        />
+                            <DataTable columns={
+                                [
+                                    { Header: 'Имя', accessor: 'firstname' },
+                                    { Header: 'Фамилия', accessor: 'lastname' },
+                                    { Header: 'Номер телефона', accessor: 'phonenumber' },
+                                    { Header: 'Страна', accessor: 'country' },
+                                    { Header: 'Город', accessor: 'sity' },
+                                    { Header: 'Статус', accessor: 'status' },
+                                    { Header: 'Доступ ко всем курсам', accessor: 'access' },
+                                    { Header: 'Учитель', accessor: 'teather.name' },
+                                    { Header: 'Действия', accessor: '' }
+                                ]}
+                                data={users.teathers !== undefined ? user.roles === "ROLE_SUPER_ADMIN" ? users.teathers : users.teathers.filter(t => t.admin_id === user.id) : []}
+                                dialog={dialog}
+                                edit={edit}
+                                remove={remove}
+                                ititSortBy={'lastname'}
+                                ititSortType={'asc'}
+                                EmptyTableComponent={() => EmptyTableComponent('На данный момент у вас нет учителей!')}
+                            />
                     </div>
 
                     {
@@ -292,6 +309,7 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                                     { Header: 'Действия', accessor: '' }
                                 ]}
                                 data={users.admins !== undefined ? users.admins.filter(t => t.roles === 'ROLE_ADMIN') : []}
+                                dialog={dialog}
                                 edit={edit}
                                 remove={remove}
                                 ititSortBy={'lastname'}

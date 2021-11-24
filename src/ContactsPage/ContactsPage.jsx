@@ -55,7 +55,7 @@ export class ContactsPage extends React.Component {
     render() {
         const { message } = this.props;
         return (
-            <div className=" pb-3">
+            <div className="pb-3">
                 <div className="flex-container-2 gap-8 ">
                     <div className="flex-item-2 mt-3">
                         <Typography variant="h3" component="h1" className={"text-align-center"} >Наши контакты:</Typography>
@@ -76,7 +76,7 @@ export class ContactsPage extends React.Component {
                         <div className="title-underline-container mb-3">
                             <div className="title-underline"></div>
                         </div>
-                        <p className="m-0">Отправить сообщение. Все поля, отмеченные звездочкой, являются обязательными.</p>
+                        {/* <p className="m-0">Отправить сообщение. Все поля, отмеченные звездочкой, являются обязательными.</p> */}
 
                         <Formik
                             initialValues={{
@@ -148,7 +148,7 @@ export class ContactsPage extends React.Component {
                                                 value={values.theme}
                                                 id="theme"
                                                 name="theme"
-                                                label="Тема"
+                                                label="Тема*"
                                                 type={'text'}
                                                 autoComplete="theme"
                                                 variant={'outlined'}
@@ -169,7 +169,7 @@ export class ContactsPage extends React.Component {
                                                 rows={4}
                                                 id="message"
                                                 name="message"
-                                                label="Сообщение"
+                                                label="Сообщение*"
                                                 type={'message'}
                                                 autoComplete="message"
                                                 variant={'outlined'}

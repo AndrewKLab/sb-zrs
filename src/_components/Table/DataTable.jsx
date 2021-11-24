@@ -11,7 +11,7 @@ import LastPageOutlinedIcon from '@material-ui/icons/LastPageOutlined';
 
 import { IconButton } from '../'
 
-export const DataTable = ({ columns, data, edit, remove, more, ititSortBy, ititSortType }) => {
+export const DataTable = ({ columns, data, dialog, edit, remove, more, ititSortBy, ititSortType, EmptyTableComponent }) => {
     // Use the state and functions returned from useTable to build your UI
     const {
         getTableProps,
@@ -35,8 +35,8 @@ export const DataTable = ({ columns, data, edit, remove, more, ititSortBy, ititS
         {
             columns,
             data,
-            initialState: { 
-                pageIndex: 0, 
+            initialState: {
+                pageIndex: 0,
                 pageSize: 5,
                 sortBy: [
                     {
@@ -53,47 +53,48 @@ export const DataTable = ({ columns, data, edit, remove, more, ititSortBy, ititS
     // Render the UI for your table
     return (
         <div className='w-100'>
-            <table className='table' {...getTableProps()}>
-                <thead>
-                    {headerGroups.map(headerGroup => (
-                        <tr className='row'{...headerGroup.getHeaderGroupProps()}>
-                            {headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                                    {column.render('Header')}
-                                    <span>
-                                        {column.isSorted
-                                            ? column.isSortedDesc
-                                                ? <KeyboardArrowDownOutlinedIcon />
-                                                : <KeyboardArrowUpOutlinedIcon />
-                                            : ''}
-                                    </span>
-                                </th>
-                            ))}
-                        </tr>
-                    ))}
-                </thead>
-                <tbody {...getTableBodyProps()}>
-                    {page.map((row, i) => {
-                        prepareRow(row)
-                        return (
-                            <tr className='row'{...row.getRowProps()}>
-                                {row.cells.map(cell => {
-                                    return <td {...cell.getCellProps()}>{
-                                        cell.column.Header === 'Действия' ?
-                                            <TableActions user={row.original} edit={edit} remove={remove} more={more} />
-                                            :
-                                            cell.render('Cell')}</td>
-                                })}
+            {data.length > 0 ?
+                <table className='table' {...getTableProps()}>
+                    <thead>
+                        {headerGroups.map(headerGroup => (
+                            <tr className='row'{...headerGroup.getHeaderGroupProps()}>
+                                {headerGroup.headers.map(column => (
+                                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                        {column.render('Header')}
+                                        <span>
+                                            {column.isSorted
+                                                ? column.isSortedDesc
+                                                    ? <KeyboardArrowDownOutlinedIcon />
+                                                    : <KeyboardArrowUpOutlinedIcon />
+                                                : ''}
+                                        </span>
+                                    </th>
+                                ))}
                             </tr>
-                        )
-                    })}
-                </tbody>
-                <tfoot>
-                    <tr className='row'>
-                        <td colSpan={headerGroups[0].headers.length}>
-                            <div className="pagination">
-                                <div>
-                                    {/* <span>
+                        ))}
+                    </thead>
+                    <tbody {...getTableBodyProps()}>
+                        {page.map((row, i) => {
+                            prepareRow(row)
+                            return (
+                                <tr className='row'{...row.getRowProps()}>
+                                    {row.cells.map(cell => {
+                                        return <td {...cell.getCellProps()}>{
+                                            cell.column.Header === 'Действия' ?
+                                                <TableActions user={row.original} dialog={dialog} edit={edit} remove={remove} more={more} />
+                                                :
+                                                cell.render('Cell')}</td>
+                                    })}
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                    <tfoot>
+                        <tr className='row'>
+                            <td colSpan={headerGroups[0].headers.length}>
+                                <div className="pagination">
+                                    <div>
+                                        {/* <span>
                                         Перейти к странице:{' '}
                                         <input
                                             type="number"
@@ -106,50 +107,53 @@ export const DataTable = ({ columns, data, edit, remove, more, ititSortBy, ititS
                                         />
                                     </span> */}
 
-                                    <select
-                                        value={pageSize}
-                                        onChange={e => {
-                                            setPageSize(Number(e.target.value))
-                                        }}
-                                    >
-                                        {[5, 10, 20].map(pageSize => (
-                                            <option key={pageSize} value={pageSize}>
-                                                Показать {pageSize}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {' '}
-                                    <span>Всего: {data.length}</span>
-                                </div>
-                                <div>
-                                    <span>
-                                        Страница{' '}
-                                        <strong>
-                                            {pageIndex + 1} из {pageOptions.length}
-                                        </strong>{' '}
-                                    </span>
-                                    <IconButton onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-                                        <FirstPageOutlinedIcon />
-                                    </IconButton>
-                                    {' '}
-                                    <IconButton onClick={() => previousPage()} disabled={!canPreviousPage}>
-                                        <KeyboardArrowLeftOutlinedIcon />
-                                    </IconButton>
-                                    {' '}
-                                    <IconButton onClick={() => nextPage()} disabled={!canNextPage}>
-                                        <KeyboardArrowRightOutlinedIcon />
-                                    </IconButton>
-                                    {' '}
-                                    <IconButton onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-                                        <LastPageOutlinedIcon />
-                                    </IconButton>
-                                </div>
+                                        <select
+                                            value={pageSize}
+                                            onChange={e => {
+                                                setPageSize(Number(e.target.value))
+                                            }}
+                                        >
+                                            {[5, 10, 20].map(pageSize => (
+                                                <option key={pageSize} value={pageSize}>
+                                                    Показать {pageSize}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {' '}
+                                        <span>Всего: {data.length}</span>
+                                    </div>
+                                    <div>
+                                        <span>
+                                            Страница{' '}
+                                            <strong>
+                                                {pageIndex + 1} из {pageOptions.length}
+                                            </strong>{' '}
+                                        </span>
+                                        <IconButton onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+                                            <FirstPageOutlinedIcon />
+                                        </IconButton>
+                                        {' '}
+                                        <IconButton onClick={() => previousPage()} disabled={!canPreviousPage}>
+                                            <KeyboardArrowLeftOutlinedIcon />
+                                        </IconButton>
+                                        {' '}
+                                        <IconButton onClick={() => nextPage()} disabled={!canNextPage}>
+                                            <KeyboardArrowRightOutlinedIcon />
+                                        </IconButton>
+                                        {' '}
+                                        <IconButton onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+                                            <LastPageOutlinedIcon />
+                                        </IconButton>
+                                    </div>
 
-                            </div>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+                :
+                EmptyTableComponent  !== undefined ? <EmptyTableComponent /> : null
+            }
 
 
         </div>

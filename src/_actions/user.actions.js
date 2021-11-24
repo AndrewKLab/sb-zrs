@@ -4,6 +4,7 @@ import { alertActions } from './';
 import {  history } from '../_helpers';
 
 export const userActions = {
+    checkAuth,
     signin,
     signup,
     logout,
@@ -17,6 +18,12 @@ export const userActions = {
     getAllStudentsByUser,
     getAllStudentsByPromouter
 };
+
+function checkAuth(deviceInfo){
+    const token = localStorage.getItem('user')
+    var isLogined = token === null ? false : true
+    return { type: userConstants.CHECK_AUTH, isLogined, token, deviceInfo: deviceInfo}
+}
 
 function signin(phonenumber, password, dvc_platform, dvc_client, dvc_signature, dvc_fbc_token, dvc_active) {
     return dispatch => {
@@ -35,7 +42,7 @@ function signin(phonenumber, password, dvc_platform, dvc_client, dvc_signature, 
                 },
                 error => {
                     dispatch(failure(error));
-                    dispatch(alertActions.error(error));
+                    //dispatch(alertActions.error(error));
                 }
             );
     };
@@ -47,22 +54,22 @@ function signin(phonenumber, password, dvc_platform, dvc_client, dvc_signature, 
 
 function signup(firstname, lastname, phonenumber, country, sity, password, teather_id, promouter_id) {
     return dispatch => {
-        dispatch(request({ phonenumber }));
+        dispatch(request());
         userService.signup(firstname, lastname, phonenumber, country, sity, password, teather_id !== undefined ? teather_id : 0, promouter_id !== undefined ? promouter_id : 0)
             .then(
                 response => {
-                    dispatch(success(response));
+                    dispatch(success(response.message));
                     history.push('/sign-in');
                 },
                 error => {
                     dispatch(failure(error));
-                    dispatch(alertActions.error(error));
+                    //dispatch(alertActions.error(error));
                 }
             );
     };
 
-    function request(user) { return { type: userConstants.SIGNUP_REQUEST, user } }
-    function success(user) { return { type: userConstants.SIGNUP_SUCCESS, user } }
+    function request() { return { type: userConstants.SIGNUP_REQUEST } }
+    function success(message) { return { type: userConstants.SIGNUP_SUCCESS, message } }
     function failure(error) { return { type: userConstants.SIGNUP_FAILURE, error } }
 }
 
@@ -106,9 +113,9 @@ function validateToken(jwt) {
             );
     };
 
-    function request(user) { return { type: userConstants.VALIDATE_REQUEST, user } }
-    function success(user) { return { type: userConstants.VALIDATE_SUCCESS, user } }
-    function failure(error) { return { type: userConstants.VALIDATE_FAILURE, error } }
+    function request(user) { return { type: userConstants.VALIDATE_TOKEN_REQUEST, user } }
+    function success(user) { return { type: userConstants.VALIDATE_TOKEN_SUCCESS, user } }
+    function failure(error) { return { type: userConstants.VALIDATE_TOKEN_FAILURE, error } }
 }
 
 function updateSelf(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, avatar, admin_id, teather_id, promouter_id) {

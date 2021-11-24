@@ -10,14 +10,14 @@ class ProfilePage extends React.Component {
 
     componentDidMount() {
         const { dispatch, user } = this.props;
-        if (user != undefined) {
+        if (user != null) {
             dispatch(courseActions.getAllPassedCourseByUser(user.id))
         }
     }
 
     render() {
         const { history, user, courses } = this.props;
-        if (user == undefined) {
+        if (user == null) {
             return <Loading />
         }
         return (
@@ -38,9 +38,9 @@ class ProfilePage extends React.Component {
                     </Grid>
                     <Grid item xs={12} sm={12} md={6}>
                         <Paper className={'p-3 h-100'}>
-                            <Typography variant="body" component="body"> {user.sity && <div><strong>Номер телефона: </strong>{user.phonenumber}</div>}</Typography>
-                            <Typography variant="body" component="body"> {user.country && <div><strong>Страна: </strong>{user.country}</div>}</Typography>
-                            <Typography variant="body" component="body"> {user.sity && <div><strong>Город: </strong>{user.sity}</div>}</Typography>
+                            <Typography variant="body" component="body"> {user.sity && <React.Fragment><strong>Номер телефона: </strong>{user.phonenumber}</React.Fragment>}</Typography>
+                            <Typography variant="body" component="body"> {user.country && <React.Fragment><strong>Страна: </strong>{user.country}</React.Fragment>}</Typography>
+                            <Typography variant="body" component="body"> {user.sity && <React.Fragment><strong>Город: </strong>{user.sity}</React.Fragment>}</Typography>
                         </Paper>
                     </Grid>
                     <Grid item md={12}>

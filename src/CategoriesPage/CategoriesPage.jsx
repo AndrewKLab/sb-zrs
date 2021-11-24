@@ -13,8 +13,7 @@ import { ToAllButton } from './'
 class CategoriesPage extends React.Component {
     componentDidMount() {
         const { dispatch, history, user } = this.props;
-        if (user !== undefined) {
-            console.log(user)
+        if (user !== null) {
             if (user.access === 'limited') {
                 history.push(`/courses/basic`)
             }

@@ -18,19 +18,35 @@ const Chat = ({ dispatch, jwt, user, className, chat_loading, chat_error, chats,
 
 
     const selectChat = (item) => {
-        if (selected_chat !== item.chat_id) {
-            const openChats = chats.filter(chat => chat.messages !== undefined)
-            var isOpen = openChats.filter((chat) => { return chat.chat_id !== selected_chat })
-            if (isOpen.length !== 0) {
-                console.log("Этот чат уже открыт")
-                dispatch(chatActions.selectOpenChat(item.chat_id))
+        if(selected_chat === null){
+            dispatch(chatActions.getMessagesByChat(jwt, item, 0))
+        } else {
+            if(selected_chat.chat_id !== item.chat_id){
+                dispatch(chatActions.getMessagesByChat(jwt, item, 0))
             } else {
-                console.log("Этот чат еще не открыт")
-                dispatch(chatActions.getMessagesByChat(jwt, item.chat_id, 0))
+                console.log("Этот чат уже открыт")
             }
-
-
         }
+
+
+
+        // if (selected_chat.chat_id === item.chat_id) {
+        //     console.log("Этот чат уже открыт")
+        //     dispatch(chatActions.selectOpenChat(item.chat_id))
+
+        //     const openChats = chats.filter(chat => chat.messages !== undefined)
+        //     var isOpen = openChats.filter((chat) => { return chat.chat_id !== selected_chat })
+        //     if (isOpen.length !== 0) {
+                
+                
+        //     } else {
+        //         console.log("Этот чат еще не открыт")
+                
+        //         dispatch(chatActions.getMessagesByChat(jwt, item, 0))
+        //     }
+
+
+        // }
     }
 
     if(loading) return <Loading />

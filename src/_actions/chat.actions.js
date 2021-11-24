@@ -7,7 +7,8 @@ export const chatActions = {
     getMoreMessagesByChat,
     selectOpenChat,
     sendMessage,
-    checkNewMessagesByChat
+    checkNewMessagesByChat,
+    createChat
 };
 
 function getAllChatsByUser(jwt) {
@@ -26,18 +27,18 @@ function getAllChatsByUser(jwt) {
 }
 
 
-function getMessagesByChat(jwt, chat_id, offset) {
+function getMessagesByChat(jwt, chat, offset) {
     return dispatch => {
-        dispatch(request(jwt, chat_id, offset));
-
-        return chatService.getMessagesByChat(jwt, chat_id, offset)
+        dispatch(request());
+        console.log(chat.chat_id)
+        return chatService.getMessagesByChat(jwt, chat.chat_id, offset)
             .then(
-                messages => dispatch(success(chat_id, messages)),
+                done => dispatch(success(chat, done.message, done.messages)),
                 error => dispatch(failure(error))
             );
     };
-    function request(jwt, chat_id, offset) { return { type: chatConstants.GET_ALL_MESSAGES_BY_CHAT_REQUEST, jwt, chat_id, offset } }
-    function success(chat_id, messages) { return { type: chatConstants.GET_ALL_MESSAGES_BY_CHAT_SUCCESS, chat_id, messages } }
+    function request() { return { type: chatConstants.GET_ALL_MESSAGES_BY_CHAT_REQUEST } }
+    function success(chat, message, messages) { return { type: chatConstants.GET_ALL_MESSAGES_BY_CHAT_SUCCESS, chat, message, messages } }
     function failure(error) { return { type: chatConstants.GET_ALL_MESSAGES_BY_CHAT_FAILURE, error } }
 }
 
@@ -86,4 +87,19 @@ function checkNewMessagesByChat(jwt, chat_id, send_from) {
     function request(jwt, chat_id, send_from) { return { type: chatConstants.CHECK_NEW_MESSAGES_REQUEST, jwt, chat_id, send_from } }
     function success(chat_id, messages) { return { type: chatConstants.CHECK_NEW_MESSAGES_SUCCESS, chat_id, messages } }
     function failure(error) { return { type: chatConstants.CHECK_NEW_MESSAGES_FAILURE, error } }
+}
+
+function createChat(jwt, target) {
+    return dispatch => {
+        dispatch(request());
+
+        return chatService.createChat(jwt, target)
+            .then(
+                done => dispatch(success(done)),
+                error => dispatch(failure(error))
+            );
+    };
+    function request(jwt, to, message) { return { type: chatConstants.SEND_MESSAGE_REQUEST } }
+    function success(done) { return { type: chatConstants.SEND_MESSAGE_SUCCESS, done } }
+    function failure(error) { return { type: chatConstants.SEND_MESSAGE_FAILURE, error } }
 }
