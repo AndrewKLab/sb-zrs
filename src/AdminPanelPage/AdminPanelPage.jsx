@@ -73,8 +73,8 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
 
 
     //EDIT
-    const dialog = (user) => {
-        dispatch(chatActions.createChat(jwt, user.id))
+    const dialog = async (user) => {
+        await dispatch(chatActions.createChat(jwt, user.id))
         history.push('/dialogs')
     }
     const edit = (user) => { setEditDialog(true), setUserData(user), setStatus(user.status), setRoles(user.roles), setAccess(user.access) }

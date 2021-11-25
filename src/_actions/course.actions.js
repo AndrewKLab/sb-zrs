@@ -29,7 +29,7 @@ function createCourse(jwt, name, autor_id, category_name, img, description) {
             );
     };
 
-    function request() { return { type: courseConstants.CREATE_COURSE_REQUEST, jwt, name, autor_id, category_name, img, description } }
+    function request() { return { type: courseConstants.CREATE_COURSE_REQUEST } }
     function success(courses) { return { type: courseConstants.CREATE_COURSE_SUCCESS, courses } }
     function failure(error) { return { type: courseConstants.CREATE_COURSE_FAILURE, error } }
 }
