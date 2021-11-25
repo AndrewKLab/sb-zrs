@@ -7,6 +7,10 @@ const initialState = {
     chat_loading: true,
     chat_error: null,
 
+    create_chat_loading: false,
+    create_chat_error: null,
+    create_chat_message: null,
+
     get_messages_by_chat_loading: false,
     get_messages_by_chat_error: null,
     get_messages_by_chat_message: null,
@@ -15,14 +19,40 @@ const initialState = {
     get_more_messages_by_chat_error: null,
     get_more_messages_by_chat_message: null,
 
-    send_message_error: null,
     send_message_loading: false,
+    send_message_error: null,
+    send_message_message: null,
+
     check_new_messages_loading: false,
     check_new_messages_error: null,
 }
 
 export function chat(state = initialState, action) {
     switch (action.type) {
+        //CREATE CHAT REQUEST
+        case chatConstants.CREATE_CHAT_REQUEST:
+            return {
+                ...state,
+                create_chat_loading: false,
+                create_chat_error: null,
+                create_chat_message: null,
+
+            };
+        case chatConstants.CREATE_CHAT_SUCCESS:
+            return {
+                ...state,
+                create_chat_loading: true,
+                create_chat_error: null,
+                create_chat_message: action.message,
+                selected_chat: action.chat,
+            };
+        case chatConstants.CREATE_CHAT_FAILURE:
+            return {
+                ...state,
+                create_chat_loading: false,
+                create_chat_error: null,
+                create_chat_message: action.error,
+            };
         //GET ALL CHATS BY USER
         case chatConstants.GET_ALL_CHATS_BY_USER_REQUEST:
             return {
@@ -30,6 +60,7 @@ export function chat(state = initialState, action) {
                 chat_loading: true,
                 get_more_messages_by_chat_error: null,
             };
+
         case chatConstants.GET_ALL_CHATS_BY_USER_SUCCESS:
             return {
                 ...state,
@@ -57,7 +88,7 @@ export function chat(state = initialState, action) {
             };
         case chatConstants.GET_ALL_MESSAGES_BY_CHAT_SUCCESS:
             return {
-                ...state,               
+                ...state,
                 get_messages_by_chat_loading: false,
                 get_messages_by_chat_error: null,
                 get_messages_by_chat_message: action.message,
@@ -65,7 +96,7 @@ export function chat(state = initialState, action) {
                 get_more_messages_by_chat_loading: false,
                 get_more_messages_by_chat_error: null,
 
-                selected_chat: {...action.chat, messages: action.messages},
+                selected_chat: { ...action.chat, messages: action.messages },
                 chats: state.chats.map((chat) => (chat.chat_id !== action.chat.chat_id ? chat : ({ ...chat, messages: action.messages, offset: 20 })))
             };
         case chatConstants.GET_ALL_MESSAGES_BY_CHAT_FAILURE:
@@ -108,13 +139,18 @@ export function chat(state = initialState, action) {
         case chatConstants.SEND_MESSAGE_REQUEST:
             return {
                 ...state,
-                send_message_loading: true
+                send_message_loading: true,
+                send_message_error: null,
+                send_message_message: null,
             };
         case chatConstants.SEND_MESSAGE_SUCCESS:
             return {
                 ...state,
                 send_message_loading: false,
-                chats: state.chats.map((chat) => (chat.chat_id !== action.done.message_item.chat_id ? chat : ({ ...chat, messages: [...chat.messages, action.done.message_item,] }))),
+                send_message_error: null,
+                send_message_message: action.message,
+                selected_chat: { ...state.selected_chat, messages: [...state.selected_chat.messages, action.message_item] },
+                chats: state.chats.map((chat) => (chat.chat_id !== action.message_item.chat_id ? chat : ({ ...chat, messages: [...chat.messages, action.message_item] }))),
             };
         case chatConstants.SEND_MESSAGE_FAILURE:
             return {
@@ -123,7 +159,7 @@ export function chat(state = initialState, action) {
                 send_message_error: action.error
             };
 
-        //SEND MESSAGE
+        //CHECK NEW MESSAGES
         case chatConstants.CHECK_NEW_MESSAGES_REQUEST:
             return {
                 ...state,

@@ -61,16 +61,16 @@ function selectOpenChat(chat_id) { return { type: chatConstants.SELECT_OPEN_CHAT
 
 function sendMessage(jwt, to, message) {
     return dispatch => {
-        dispatch(request(jwt, to, message));
+        dispatch(request());
 
         return chatService.sendMessage(jwt, to, message)
             .then(
-                done => dispatch(success(jwt, to, message, done)),
+                done => dispatch(success(done.message, done.message_item)),
                 error => dispatch(failure(error))
             );
     };
-    function request(jwt, to, message) { return { type: chatConstants.SEND_MESSAGE_REQUEST, jwt, to, message } }
-    function success(jwt, to, message, done) { return { type: chatConstants.SEND_MESSAGE_SUCCESS, jwt, to, message, done } }
+    function request() { return { type: chatConstants.SEND_MESSAGE_REQUEST } }
+    function success(message, message_item) { return { type: chatConstants.SEND_MESSAGE_SUCCESS, message, message_item} }
     function failure(error) { return { type: chatConstants.SEND_MESSAGE_FAILURE, error } }
 }
 
@@ -95,11 +95,11 @@ function createChat(jwt, target) {
 
         return chatService.createChat(jwt, target)
             .then(
-                done => dispatch(success(done)),
+                done => dispatch(success(done.message, done.chat)),
                 error => dispatch(failure(error))
             );
     };
-    function request(jwt, to, message) { return { type: chatConstants.SEND_MESSAGE_REQUEST } }
-    function success(done) { return { type: chatConstants.SEND_MESSAGE_SUCCESS, done } }
-    function failure(error) { return { type: chatConstants.SEND_MESSAGE_FAILURE, error } }
+    function request() { return { type: chatConstants.CREATE_CHAT_REQUEST } }
+    function success(message, chat) { return { type: chatConstants.CREATE_CHAT_SUCCESS, message, chat } }
+    function failure(error) { return { type: chatConstants.CREATE_CHAT_FAILURE, error } }
 }

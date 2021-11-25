@@ -107,13 +107,11 @@ const ChatCurrentDialog = ({
     }
 
     const sendMessage = (event) => {
-
-        const chat = chats.filter(chat => chat.chat_id === selected_chat);
-        //console.log(document.getElementById('chat-input').value)
-        dispatch(chatActions.sendMessage(jwt, chat[0].chat_user_id, document.getElementById('chat-input').value)).then(() => {
+        event.preventDefault();
+        dispatch(chatActions.sendMessage(jwt, selected_chat.chat_user_id, document.getElementById('chat-input').value)).then(() => {
             document.getElementById('chat-input').value = ""
         })
-        event.preventDefault();
+        
     }
 
     const onEmojiClick = (event, emojiObject) => {

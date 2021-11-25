@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { connect } from 'react-redux';
-import { userActions, courseActions, categoryActions } from "../_actions";
+import { userActions, courseActions, categoryActions, chatActions } from "../_actions";
 import {
     Avatar,
     Paper,
@@ -74,7 +74,8 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
 
     //EDIT
     const dialog = (user) => {
-        console.log('open chat with ' + user.id)
+        dispatch(chatActions.createChat(jwt, user.id))
+        history.push('/dialogs')
     }
     const edit = (user) => { setEditDialog(true), setUserData(user), setStatus(user.status), setRoles(user.roles), setAccess(user.access) }
     const editClose = () => { setEditDialog(false) }

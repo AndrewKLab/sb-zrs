@@ -9,7 +9,6 @@ import { course } from './course.reducer';
 import { lesson } from './lesson.reducer';
 import { search } from './search.reducer';
 import { chat } from './chat.reducer';
-import { message } from './message.reducer';
 import { course_constructor } from './course_constructor.reducer';
 
 const rootReducer = combineReducers({
@@ -22,7 +21,6 @@ const rootReducer = combineReducers({
   lesson,
   search,
   chat,
-  message,
   course_constructor
 });
 
