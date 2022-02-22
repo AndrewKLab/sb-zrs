@@ -84,13 +84,13 @@ const Navbar = ({ history, dispatch, currentTheme, themes, user, search }) => {
                         <ul>
                             <Nav link={'/'}>Главная</Nav>
                             {user === null ? (null) : (
-                                (user.roles === 'ROLE_ADMIN' || user.roles === 'ROLE_SUPER_ADMIN') && <Nav link={'/admin-panel'}>{user.roles === 'ROLE_ADMIN' ? "Администратор" : 'Cуперадмин'}</Nav>
+                                (user.role_type === 'ROLE_ADMIN' || user.role_type === 'ROLE_SUPER_ADMIN') && <Nav link={'/admin-panel'}>{user.role_type === 'ROLE_ADMIN' ? "Администратор" : 'Cуперадмин'}</Nav>
                             )}
                             {user === null ? (null) : (
-                                user.roles === 'ROLE_TEATHER' && <Nav link={'/teather-panel'}>Панель учителя</Nav>
+                                user.role_type === 'ROLE_TEATHER' && <Nav link={'/teather-panel'}>Панель учителя</Nav>
                             )}
                             {user === null ? (null) : (
-                                user.roles === 'user' && user.status === 'ПРОМОУТЕР' && <Nav link={'/promouter-panel'}>Панель промоутера</Nav>
+                                user.role_type === 'ROLE_USER' && user.role_name === 'Промоутер' && <Nav link={'/promouter-panel'}>Панель промоутера</Nav>
                             )}
                             <Nav link={'/courses'}>Курсы</Nav>
                             <Nav link={'/contacts'}>Контакты</Nav>
@@ -115,7 +115,7 @@ const Navbar = ({ history, dispatch, currentTheme, themes, user, search }) => {
                                         <ListItemIcon>
                                             <Avatar alt="" src={user.avatar} />
                                         </ListItemIcon>
-                                        <ListItemText title={user.lastname + " " + user.firstname} subtitle={"Статус: " + user.status} />
+                                        <ListItemText title={user.lastname + " " + user.firstname} subtitle={`Статус: ${user.role_name}`} />
                                     </ListItemFirstAction>
                                 </ListItem>
                             </Link>
@@ -179,15 +179,15 @@ const Navbar = ({ history, dispatch, currentTheme, themes, user, search }) => {
                             </ListItemFirstAction>
                         </ListItem>
                         {user === null ? (null) : (
-                            (user.roles === 'ROLE_ADMIN' || user.roles === 'ROLE_SUPER_ADMIN') &&
+                            (user.role_type === 'ROLE_ADMIN' || user.role_type === 'ROLE_SUPER_ADMIN') &&
                             <ListItem onPress={() => { history.push('/admin-panel'), toggleDrawer('left', false) }} button>
                                 <ListItemFirstAction>
-                                    <ListItemText title={user.roles === 'ROLE_ADMIN' ? "Администратор" : 'Cуперадмин'} />
+                                    <ListItemText title={user.role_type === 'ROLE_ADMIN' ? "Администратор" : 'Cуперадмин'} />
                                 </ListItemFirstAction>
                             </ListItem>
                         )}
                         {user === null ? (null) : (
-                            user.roles === 'ROLE_TEATHER' &&
+                            user.role_type === 'ROLE_TEATHER' &&
                             <ListItem onPress={() => { history.push('/teather-panel'), toggleDrawer('left', false) }} button>
                                 <ListItemFirstAction>
                                     <ListItemText title="Панель учителя" />
@@ -195,7 +195,7 @@ const Navbar = ({ history, dispatch, currentTheme, themes, user, search }) => {
                             </ListItem>
                         )}
                         {user === null ? (null) : (
-                            user.roles === 'user' && user.status === 'ПРОМОУТЕР' &&
+                            user.role_type === 'user' && user.role_name === 'ПРОМОУТЕР' &&
                             <ListItem onPress={() => { history.push('/promouter-panel'), toggleDrawer('left', false) }} button>
                                 <ListItemFirstAction>
                                     <ListItemText title="Панель промоутера" />

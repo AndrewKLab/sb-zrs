@@ -67,13 +67,13 @@ const ChatCurrentDialog = ({
 
 
     // UNSAFE_componentWillUpdate(nextProps) {
-    //     const { selected_chat, chats, get_messages_by_chat_loading, get_more_messages_by_chat_loading, message_loadmore_error, send_get_messages_by_chat_loading, send_message_error } = this.props;
+    //     const { selected_chat, chats, get_messages_by_chat_loading, get_more_messages_by_chat_loading, get_more_messages_by_chat_error, send_get_messages_by_chat_loading, send_message_error } = this.props;
     //     const { loading } = this.state;
-    //     console.log("props: " + selected_chat, get_messages_by_chat_loading, chats, get_more_messages_by_chat_loading, message_loadmore_error, send_get_messages_by_chat_loading, send_message_error);
-    //     console.log("nextProps: " + nextProps.selected_chat, nextProps.get_messages_by_chat_loading, nextProps.chats, nextProps.get_more_messages_by_chat_loading, nextProps.message_loadmore_error, nextProps.send_get_messages_by_chat_loading, nextProps.send_message_error)
+    //     console.log("props: " + selected_chat, get_messages_by_chat_loading, chats, get_more_messages_by_chat_loading, get_more_messages_by_chat_error, send_get_messages_by_chat_loading, send_message_error);
+    //     console.log("nextProps: " + nextProps.selected_chat, nextProps.get_messages_by_chat_loading, nextProps.chats, nextProps.get_more_messages_by_chat_loading, nextProps.get_more_messages_by_chat_error, nextProps.send_get_messages_by_chat_loading, nextProps.send_message_error)
     //     this.firstSelectChat = selected_chat === undefined && selected_chat !== nextProps.selected_chat;
     //     this.selectOtherChat = selected_chat !== undefined && selected_chat !== nextProps.selected_chat;
-    //     this.loadMoreChat = nextProps.selected_chat === selected_chat && get_more_messages_by_chat_loading === true && nextProps.get_more_messages_by_chat_loading === false && nextProps.message_loadmore_error !== "Сообщения не найдены."
+    //     this.loadMoreChat = nextProps.selected_chat === selected_chat && get_more_messages_by_chat_loading === true && nextProps.get_more_messages_by_chat_loading === false && nextProps.get_more_messages_by_chat_error !== "Сообщения не найдены."
     //     this.sendMessageChat = (selected_chat !== undefined &&
     //         selected_chat === nextProps.selected_chat) &&
     //         send_get_messages_by_chat_loading &&
@@ -82,26 +82,27 @@ const ChatCurrentDialog = ({
     //         chats.filter((chat => chat.chat_id === selected_chat))[0].messages.length !== nextProps.chats.filter((chat => chat.chat_id === selected_chat))[0].messages.length;
     // }
 
+    const scrollToBottom = () => {
+        if (messageList && messageList.current) {
+            const maxScrollTop = messageList.current.scrollHeight - messageList.current.clientHeight;
+            messageList.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+        }
+    }
+
     const onScroll = (list, selected_chat) => {
         const messages_list = list.target;
         const scrollTop = messages_list.scrollTop;
         if (scrollTop === 0) {
-            loadMoreMessages(messages_list, selected_chat);
+            loadMoreMessages();
         }
     };
 
-    const scrollToBottom = () => {
-        const scrollHeight = messageList.scrollHeight;
-        const height = messageList.clientHeight;
-        const maxScrollTop = scrollHeight - height;
-        ReactDOM.findDOMNode(messageList).scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
-    }
-
-    const loadMoreMessages = (list, selected_chat) => {
+    const loadMoreMessages = async () => {
         // const messages_list = list.target;
         // if (messages_list.scrollHeight - (messages_list.scrollTop * 2) > messages_list.offsetHeight) {
-        if (get_more_messages_by_chat_loading === false && message_loadmore_error === null) {
-            dispatch(chatActions.getMoreMessagesByChat(jwt, selected_chat, selected_chat.offset))
+        const { offset } = selected_chat;
+        if (get_more_messages_by_chat_loading === false && get_more_messages_by_chat_error === null) {
+            await dispatch(chatActions.getMoreMessagesByChat(jwt, selected_chat, offset + 20));
         }
         // }
     }
@@ -111,7 +112,7 @@ const ChatCurrentDialog = ({
         dispatch(chatActions.sendMessage(jwt, selected_chat.chat_user_id, document.getElementById('chat-input').value)).then(() => {
             document.getElementById('chat-input').value = ""
         })
-        
+
     }
 
     const onEmojiClick = (event, emojiObject) => {

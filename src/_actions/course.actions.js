@@ -155,11 +155,11 @@ function deleteCoursePassed(passed_course_id) {
     function clear(passed_course_id) { return { type: courseConstants.DELETE_PASSED_COURSE, passed_course_id } }
 }
 
-function getAllPassedCourseByUser(user_id) {
+function getAllPassedCourseByUser(user_id, token) {
     return dispatch => {
         dispatch(request(user_id));
 
-        return courseService.getAllPassedCourseByUser(user_id)
+        return courseService.getAllPassedCourseByUser(user_id, token)
             .then(
                 courses => dispatch(success(courses)),
                 error => dispatch(failure(error))

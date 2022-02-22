@@ -4,7 +4,7 @@ import { courseActions, lessonActions } from '../../_actions';
 import { Alert, Loading, Paper, TextInput, Switch, SelectItem, Button, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Divider, TextEditor } from '../../_components';
 import Dropzone from "react-dropzone";
 import Thumb from "../../_components/Thumb";
-import { Formik, Form } from "formik";
+import { Formik, Form  } from "formik";
 import * as yup from "yup";
 
 
@@ -40,6 +40,7 @@ const CourseLessonsRedactor = ({
 }) => {
     const DiscriptionEditor = useRef(null);
     //const TextEditor = useRef(null);
+    const formRef = useRef()
     const [loading, setLoading] = useState(true);
     const [addTest, setAddTest] = useState(false);
     let styleClass = className !== undefined ? ' ' + className : '';
@@ -71,7 +72,7 @@ const CourseLessonsRedactor = ({
     }
 
     useEffect(() => {
-        if (selected_lesson_id !== null && selected_lesson_id !== "") {
+        if (selected_lesson_id !== null && selected_lesson_id !== "" && selected_lesson_id !== undefined) {
             dispatch(lessonActions.readOneLessonById(selected_lesson_id)).then(() => setLoading(false));
         } else {
             if (selected_lesson_id !== null) {
@@ -81,6 +82,7 @@ const CourseLessonsRedactor = ({
                 setLoading(false);
             }
         }
+        //return handleSubmit
     }, [selected_lesson_id]);
 
     const toggleLessonTest = (e) => {
@@ -88,11 +90,18 @@ const CourseLessonsRedactor = ({
         setAddTest(!addTest)
     }
 
+    const handleSubmit = () => {
+        if (formRef.current) {
+          formRef.current.handleSubmit()
+        }
+      }
+
     if (selected_lesson_loading || set_lesson_editing_data_loading || loading) return <Loading />;
     if (selected_lesson_id === null || selected_lesson === null) return null;
     return (
         <Paper className={`${styleClass} p-3 mt-3`}>
             <Formik
+                innerRef={formRef}
                 initialValues={
                     lesson_editing_status === 'create' ?
                         ({
@@ -109,7 +118,7 @@ const CourseLessonsRedactor = ({
                 validationSchema={SignupSchema}
                 onSubmit={(values) => {
                     const { lesson_name, lesson_videolink, lesson_text, lesson_description } = values;
-
+                    console.log('go')
                     if (lesson_editing_status === "create") {
                         dispatch(lessonActions.createLesson(
                             jwt,
@@ -215,7 +224,7 @@ const CourseLessonsRedactor = ({
                             {(create_lesson_success_message || update_lesson_success_message) && (
                                 <Alert severity="success">{create_lesson_success_message || update_lesson_success_message}</Alert>
                             )}
-                            <Button type='submit'>{lesson_editing_status === 'create' ? 'Создать урок' : 'Сохранить'}</Button>
+                            <Button type='submit'>{lesson_editing_status === 'create' ? 'Сохранить изменения' : 'Сохранить изменения'}</Button>
                         </div>
                     </Form>
                 )}

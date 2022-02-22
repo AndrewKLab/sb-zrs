@@ -61,13 +61,13 @@ class LessonPage extends React.Component {
                                 <div key={index}>
                                     {lesson === lesson_item.id &&
                                         <div>
-                                            {lesson.videolink && <YouTube videoId={lesson_item.videolink} className={'video-container'} containerClassName={'video-container'} onReady={this._onReady} />}
+                                            {lesson_item.videolink && <YouTube videoId={lesson_item.videolink} className={'video-container'} containerClassName={'video-container'} onReady={this._onReady} />}
                                             <div className={'mt-3'}>
                                                 <Typography variant="h4" component='h4' >{lesson_item.name}</Typography>
                                                 {/* <Typography>Описание урока:</Typography> */}
-                                                <div dangerouslySetInnerHTML={{ __html: lesson_item.description }}/>
+                                                <div dangerouslySetInnerHTML={{ __html: lesson_item.description }} />
                                                 <Typography variant="h4" component='h4' className={'mt-3'} >Текст урока:</Typography>
-                                                <LessonText text={lesson_item.text}/>
+                                                <LessonText text={lesson_item.text} />
                                                 <Divider />
                                                 <Test
                                                     dispatch={dispatch}
@@ -100,7 +100,7 @@ class LessonPage extends React.Component {
                     </Grid>
                     <Grid item xs={2} sm={3}>
                         <LessonProgressPlane dispatch={dispatch} history={history} lessons={lessons} category_name={category_name} course={course} user={user} />
-                        <TeatherPlane teather_status={data.teather_status} teather_name={teather_name} teather_avatar={teather_avatar} />
+                        <TeatherPlane teather_status={data.teather_role_name} teather_name={teather_name} teather_avatar={teather_avatar} />
                     </Grid>
                 </Grid>
             </div>

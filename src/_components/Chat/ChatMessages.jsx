@@ -9,9 +9,10 @@ import { connect } from 'react-redux';
 const ChatMessages = ({ dispatch, message_loadmore_loading, check_new_messages_error, selected_chat, jwt, ChatMessagesEmptyComponent, scrollToBottom }) => {
 
     useEffect(() => {
+        scrollToBottom()
         // const timer = setInterval(() => checkNewMessages(selected_chat, jwt), 3000);
         // return () => clearInterval(timer);
-    }, []);
+    }, [selected_chat]);
 
     const checkNewMessages = (selected_chat, jwt) => {
         // dispatch(chatActions.checkNewMessagesByChat(jwt, selected_chat.chat_id, selected_chat.chat_user_id)).then(() => {

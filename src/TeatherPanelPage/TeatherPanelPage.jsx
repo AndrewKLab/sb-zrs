@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { userActions, courseActions } from '../_actions';
+import { userActions, courseActions, chatActions } from '../_actions';
 import {
     Avatar,
     Accordion,
-    Button,
+    IconButton,
     Dialog,
     DialogTitle,
     DialogContent,
@@ -24,15 +24,16 @@ import {
     ListItemTitle,
     Menu,
     MenuItem,
-    TextInput 
+    TextInput
 } from '../_components';
 import { ProgressCircle } from '../LessonPage';
 import { TeatherCourses } from './';
 import { UpdateUserAccessDialog, UpdateUserStatusDialog } from '../Dialogs';
 import config from 'config';
+import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 
 
-const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, students, promouters }) => {
+const TeatherPanelPage = ({ history, dispatch, jwt, user, courses, course_error, students, promouters }) => {
     const [loading, setLoading] = useState(true);
     const [statusDialog, setStatusDialog] = useState(false);
     const [accessDialog, setAccessDialog] = useState(false);
@@ -40,7 +41,7 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, stud
     const [userData, setUserData] = useState({});
 
     useEffect(() => {
-        if (user.roles !== 'ROLE_TEATHER') {
+        if (user.role_type !== 'ROLE_TEATHER') {
             history.push('/')
         } else {
             dispatch(userActions.getAllStudentsByUser(user.id)).then(
@@ -49,11 +50,15 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, stud
         }
     }, []);
 
-    const openStatusDialog = (cur_user) => { setStatusDialog(true), setUserData(cur_user) }
+    const openStatusDialog = (cur_user) => { setStatusDialog(true), dispatch(userActions.selectUser(cur_user)) }
     const closeStatusDialog = () => { setStatusDialog(false) }
 
-    const openAccessDialog = (cur_user) => { setAccessDialog(true), setUserData(cur_user) }
+    const openAccessDialog = (cur_user) => { setAccessDialog(true), dispatch(userActions.selectUser(cur_user)) }
     const closeAccessDialog = () => { setAccessDialog(false) }
+    const dialog = async (user) => {
+        await dispatch(chatActions.createChat(jwt, user.id))
+        history.push('/dialogs')
+    }
 
     if (loading) {
         return <Loading />
@@ -62,18 +67,18 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, stud
     return (
         <div className={'py-3'}>
             <Grid container spacing={2}>
-            <Grid item xs={12}>
-            <TextInput
-                    value={`${config.url}/sign-up/${user.id}`}
-                    id="course_name"
-                    name="course_name"
-                    label="Ваша ссылка промоутера"
-                    type={'text'}
-                    autoComplete={'off'}
-                    variant={'outlined'}
-                    onChange={() => { }}
-                    className='w-100 mb-3'
-                />
+                <Grid item xs={12}>
+                    <TextInput
+                        value={`${config.url}/sign-up/${user.id}`}
+                        id="course_name"
+                        name="course_name"
+                        label="Ваша ссылка промоутера"
+                        type={'text'}
+                        autoComplete={'off'}
+                        variant={'outlined'}
+                        onChange={() => { }}
+                        className='w-100 mb-3'
+                    />
                 </Grid>
 
                 <Grid item xs={12}>
@@ -83,7 +88,7 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, stud
                 </Grid>
 
                 <Grid item xs={12} sm={6}>
-                    <UpdateUserAccessDialog open={accessDialog} close={closeAccessDialog} user={userData} />
+                    <UpdateUserAccessDialog open={accessDialog} close={closeAccessDialog} />
                     <UpdateUserStatusDialog open={statusDialog} close={closeStatusDialog} user={userData} />
                     <Typography component='h4' variant='h4'>Ваши ученики:</Typography>
                     <List>
@@ -99,14 +104,17 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, stud
                                                 {student.firstname + " " + student.lastname}
                                             </ListItemTitle>
                                             <ListItemSubtitle>
-                                                Статус: {student.status}
+                                                Статус: {student.role_name}
                                             </ListItemSubtitle>
                                         </ListItemText>
                                     </ListItemFirstAction>
                                     <ListItemSecondAction>
+                                        <IconButton onClick={() => dialog(student)}>
+                                            <ChatBubbleOutlineIcon />
+                                        </IconButton>
                                         <Menu>
                                             <MenuItem onPress={() => openStatusDialog(student)}>Изменить статус ученика</MenuItem>
-                                            {student.status === 'УЧЕНИК' || student.status === 'ПРОМОУТЕР' ?
+                                            {student.role_name !== 'Искатель' ?
                                                 <MenuItem onPress={() => openAccessDialog(student)}>Изменить доступ к курсам</MenuItem> : null
                                             }
                                         </Menu>
@@ -161,7 +169,7 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, stud
                                                                 ))}
                                                             </div>
                                                         </Accordion>
-                                                    )) }
+                                                    ))}
                                                 </Paper>
                                             </Grid>
                                         ) : (null)}
@@ -176,7 +184,7 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, stud
                 <Grid item xs={12} sm={6}>
                     <Typography component='h4' variant='h4'>Ваши промоутеры:</Typography>
                     <List>
-                        { promouters !== undefined && students.length > 0 ? promouters.map((student, index) => (
+                        {promouters !== undefined && students.length > 0 ? promouters.map((student, index) => (
                             <div key={index}>
                                 <ListItem>
                                     <ListItemFirstAction>
@@ -188,14 +196,17 @@ const TeatherPanelPage = ({ history, dispatch, user, courses, course_error, stud
                                                 {student.firstname + " " + student.lastname}
                                             </ListItemTitle>
                                             <ListItemSubtitle>
-                                                Статус: {student.status}
+                                                Статус: {student.role_name}
                                             </ListItemSubtitle>
                                         </ListItemText>
                                     </ListItemFirstAction>
                                     <ListItemSecondAction>
+                                        <IconButton onClick={() => dialog(student)}>
+                                            <ChatBubbleOutlineIcon />
+                                        </IconButton>
                                         <Menu>
                                             <MenuItem onPress={() => openStatusDialog(student)}>Изменить статус ученика</MenuItem>
-                                            {student.status === 'УЧЕНИК' || student.status === 'ПРОМОУТЕР' ?
+                                            {student.role_name !== 'Искатель' ?
                                                 <MenuItem onPress={() => openAccessDialog(student)}>Изменить доступ к курсам</MenuItem> : null
                                             }
                                         </Menu>
@@ -283,4 +294,4 @@ function mapStateToProps(state) {
     };
 }
 const connectedTeatherPanelPage = connect(mapStateToProps)(TeatherPanelPage);
-export { connectedTeatherPanelPage as TeatherPanelPage }; 
+export { connectedTeatherPanelPage as TeatherPanelPage };

@@ -9,9 +9,9 @@ import { ProgressCircle } from '../LessonPage'
 class ProfilePage extends React.Component {
 
     componentDidMount() {
-        const { dispatch, user } = this.props;
+        const { dispatch, user, jwt } = this.props;
         if (user != null) {
-            dispatch(courseActions.getAllPassedCourseByUser(user.id))
+            dispatch(courseActions.getAllPassedCourseByUser(user.id, jwt))
         }
     }
 
@@ -31,7 +31,7 @@ class ProfilePage extends React.Component {
                             <Grid item sm={9} md={9} xs={9}>
                                 <div className='p-3'>
                                     <Typography variant="h4" component="h4">{user.firstname + ' ' + user.lastname}</Typography>
-                                    <Typography variant="h6" component="h6"><strong>Статус:</strong> {user.status}</Typography>
+                                    <Typography variant="h6" component="h6"><strong>Статус:</strong> {user.role_name}</Typography>
                                 </div>
                             </Grid>
                         </Paper>
@@ -108,10 +108,11 @@ class ProfilePage extends React.Component {
 
 function mapStateToProps(state) {
     const { authentication, course } = state;
-    const { user } = authentication;
+    const { user, jwt } = authentication;
     const { loading, courses } = course;
     return {
         user,
+        jwt,
         loading,
         courses
     };

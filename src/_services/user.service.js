@@ -12,7 +12,8 @@ export const userService = {
     getAllTeathers,
     getAllStudentsByUser,
     getAllStudentsByPromouter,
-    createUserDevice
+    createUserDevice,
+    getUserRoles
 };
 
 
@@ -21,7 +22,7 @@ function signin(phonenumber, password, dvc_platform, dvc_client, dvc_signature, 
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
             phonenumber,
             password,
             dvc_platform,
@@ -83,31 +84,24 @@ function logout(token, dvc_signature, dvc_fbc_token) {
     };
 
     return fetch(`/api/logout.php`, requestOptions).then(handleResponse)
-    
+
     //localStorage.removeItem('FBCtoken');
 }
 
-function updateUser(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, avatar, admin_id, teather_id, promouter_id) {
+function updateUser(token, user) {
+const userData = {
+    ...user, 
+    admin_id: typeof user.admin === "object" ? user.admin.id : user.admin_id !== undefined ?  user.admin_id : 0,
+    teather_id: typeof user.teather === "object" ? user.teather.id : user.teather_id !== undefined ?  user.teather_id : 0,
+    //promouter_id: typeof user.promouter === "object" ? user.promouter.id : 0
+}
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` },
-        body: JSON.stringify({
-            firstname,
-            lastname,
-            phonenumber,
-            country,
-            sity,
-            status,
-            access,
-            roles,
-            avatar,
-            admin_id,
-            teather_id,
-            promouter_id
-        })
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify(userData)
     };
 
-    return fetch(`/api/user/update.php?user_id=${user_id}`, requestOptions).then(handleResponse)
+    return fetch(`/api/user/update.php?user_id=${userData.id}`, requestOptions).then(handleResponse)
 }
 
 function deleteUser(jwt, user_id) {
@@ -143,7 +137,7 @@ function readOne(user_id, jwt) {
 function readAll(jwt) {
     const requestOptions = {
         method: 'GET',
-        headers: {'Authorization': `Bearer ${jwt}` }
+        headers: { 'Authorization': `Bearer ${jwt}` }
     };
     return fetch(`${config.apiUrl}/user/read.php`, requestOptions).then(handleResponse);
 }
@@ -178,6 +172,13 @@ function createUserDevice(token, dvc_user_id, dvc_platform, dvc_client, dvc_sign
         })
     };
     return fetch(`/api/user/user_devices/create_user_device.php`, requestOptions).then(handleResponse);
+}
+function getUserRoles(token) {
+    const requestOptions = {
+        method: 'GET',
+        headers: { 'Authorization': `Bearer ${token}` },
+    };
+    return fetch(`/api/user/user_roles/get_user_roles.php`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {

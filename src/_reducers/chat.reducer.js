@@ -96,7 +96,7 @@ export function chat(state = initialState, action) {
                 get_more_messages_by_chat_loading: false,
                 get_more_messages_by_chat_error: null,
 
-                selected_chat: { ...action.chat, messages: action.messages },
+                selected_chat: { ...action.chat, messages: action.messages, offset: action.offset },
                 chats: state.chats.map((chat) => (chat.chat_id !== action.chat.chat_id ? chat : ({ ...chat, messages: action.messages, offset: 20 })))
             };
         case chatConstants.GET_ALL_MESSAGES_BY_CHAT_FAILURE:
@@ -134,6 +134,12 @@ export function chat(state = initialState, action) {
                 selected_chat: action.chat_id,
                 get_more_messages_by_chat_error: null
             };
+
+        case chatConstants.GET_NEW_MESSAGE:
+            return {
+                ...state,
+                selected_chat: state.selected_chat === null ? state.selected_chat : {...state.selected_chat, messages: [...state.selected_chat.messages, action.message]}
+            }
 
         //SEND MESSAGE
         case chatConstants.SEND_MESSAGE_REQUEST:

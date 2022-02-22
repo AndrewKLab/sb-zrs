@@ -117,8 +117,12 @@ function deleteCoursePassed(passed_course_id) {
     return fetch(`${config.apiUrl}/courses_passed/delete.php?id=${passed_course_id}`, config.POST).then(handleResponse);
 }
 
-function getAllPassedCourseByUser(user_id) {
-    return fetch(`${config.apiUrl}/courses_passed/read_all_courses_passed_by_user.php?user_id=${user_id}`, config.GET).then(handleResponse);
+function getAllPassedCourseByUser(user_id, token) {
+    const requestOptions = {
+        method: 'GET',
+        headers: { 'Authorization': `Bearer ${token}` }
+    };
+    return fetch(`/api/courses_passed/read_all_courses_passed_by_user.php?user_id=${user_id}`, requestOptions).then(handleResponse);
 }
 
 function readAllCourses(jwt) {

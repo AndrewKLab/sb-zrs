@@ -50,9 +50,25 @@ export const DataTable = ({ columns, data, dialog, edit, remove, more, ititSortB
         usePagination
     )
 
+    const CustomRows = ({cell, row}) =>{
+        switch (cell.column.Header) {
+            case 'Действия':
+                return  <td {...cell.getCellProps()}><TableActions user={row.original} dialog={dialog} edit={edit} remove={remove} more={more} /></td>
+            case 'Учитель':
+                return  <td {...cell.getCellProps()}>{row.original.teather && `${row.original.teather.firstname} ${row.original.teather.lastname}`}</td>
+            case 'Админ':
+                return  <td {...cell.getCellProps()}>{row.original.admin && `${row.original.admin.firstname} ${row.original.admin.lastname}`}</td>
+            case 'Суперадмин':
+                return  <td {...cell.getCellProps()}>{row.original.admin && `${row.original.admin.firstname} ${row.original.admin.lastname}`}</td>
+        
+            default:
+                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+        }
+    }
+
     // Render the UI for your table
     return (
-        <div className='w-100'>
+        <div className='w-100 overflow-auto'>
             {data.length > 0 ?
                 <table className='table' {...getTableProps()}>
                     <thead>
@@ -79,11 +95,7 @@ export const DataTable = ({ columns, data, dialog, edit, remove, more, ititSortB
                             return (
                                 <tr className='row'{...row.getRowProps()}>
                                     {row.cells.map(cell => {
-                                        return <td {...cell.getCellProps()}>{
-                                            cell.column.Header === 'Действия' ?
-                                                <TableActions user={row.original} dialog={dialog} edit={edit} remove={remove} more={more} />
-                                                :
-                                                cell.render('Cell')}</td>
+                                        return <CustomRows cell={cell} row={row}/>
                                     })}
                                 </tr>
                             )

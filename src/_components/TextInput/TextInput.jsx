@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 
-export const TextInput = ({ helperText, variant, id, name, autoComplete, label, onChange, className, type, InputProps, fullWidth, reff, select, defaultValue, children, multiline, rows, value }) => {
+export const TextInput = ({ helperText, variant, id, name, autoComplete, label, onChange, onSelect, className, type, InputProps, fullWidth, reff, select, defaultValue, children, multiline, rows, value }) => {
     const ref = useRef();
     let curRef = reff !== undefined ? reff : ref
     let styleClass = className == undefined ? '' : ' ' + className;
@@ -237,6 +237,7 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
                                 autoComplete={autoComplete}
                                 type={type}
                                 onChange={onChange}
+                                onSelect={onSelect}
                                 onFocus={onFocus}
                                 onBlur={onBlur}
                             >
@@ -252,7 +253,7 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
                             <div className={'text-input-' + variants + '' + styleFocused + styleFocusedColor + styleAlert}></div>
                             {InputProps == undefined ? (null) : (
                                 InputProps.endAdornment && <div
-                                    className='text-input-end-adornment'
+                                    className={'text-input-end-adornment'+InputProps.endAdornmentClass !== undefined ? InputProps.endAdornmentClass : ''}
                                 >
                                     {InputProps.endAdornment}
                                 </div>)}

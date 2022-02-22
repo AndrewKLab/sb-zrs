@@ -104,7 +104,7 @@ const CourseRedactor = ({
             >
                 {({ errors, values, handleChange, setFieldValue, touched }) => (
                     <Form onChange={() => { }}>
-                        <div className='mb-3'>
+                        <div className='drag-and-drop-container mb-3'>
                             <Dropzone
                                 className={`drag-and-drop ${errors.course_image && touched.course_image && 'drag-and-drop-error'}`}
                                 accept="image/*"
@@ -147,6 +147,8 @@ const CourseRedactor = ({
                             </Dropzone>
 
                             {errors.course_image && touched.course_image && <span className="text-input-helper text-input-danger">{errors.course_image}</span>}
+                            <small>Рекомендуемые размеры: 1280х720.</small><br/>
+                            <small>Рекомендуемый формат: ".webp".</small>
                         </div>
 
                         <TextInput
@@ -181,6 +183,8 @@ const CourseRedactor = ({
                                 endAdornment: (
                                     <ExpandMoreIcon />
                                 ),
+                                endAdornmentClass: 'select-arrow'
+                                
                             }}
                             className='w-100 mb-3'
                         >

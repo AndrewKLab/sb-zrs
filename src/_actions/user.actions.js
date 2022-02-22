@@ -16,7 +16,12 @@ export const userActions = {
     readAll,
     getAllTeathers,
     getAllStudentsByUser,
-    getAllStudentsByPromouter
+    getAllStudentsByPromouter,
+    getUserRoles,
+
+    selectUser,
+    updateSelectedUser,
+    cleanSelectedUser
 };
 
 function checkAuth(deviceInfo){
@@ -154,28 +159,14 @@ function updateSelf(user_id, jwt, firstname, lastname, phonenumber, country, sit
 }
 
 
-function updateUser(id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, avatar, admin_id, teather, promouter_id) {
+function updateUser(jwt, user) {
     return dispatch => {
         dispatch(request());
-        return userService.updateUser(id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, avatar, admin_id, teather === '0' ? '0' : typeof teather === "string" ? teather : teather.id, promouter_id)
+        return userService.updateUser(jwt, user)
             .then(
-                data => {
-                    const user = {
-                        id,
-                        firstname,
-                        lastname,
-                        phonenumber,
-                        country,
-                        sity,
-                        status,
-                        access,
-                        roles,
-                        avatar,
-                        admin_id,
-                        teather: teather === '0' ? null : teather,
-                        promouter_id
-                    }
-                    dispatch(success(user));
+                res => {
+                    const userData = {...user, ...res.user}
+                    dispatch(success(userData));
                 },
                 error => {
                     dispatch(failure(error));
@@ -281,4 +272,30 @@ function getAllStudentsByPromouter(promouter_id, jwt) {
     function request() { return { type: userConstants.GETALL_STUDENTS_BY_PROMOUTER_REQUEST } }
     function success(students) { return { type: userConstants.GETALL_STUDENTS_BY_PROMOUTER_SUCCESS, students } }
     function failure(error) { return { type: userConstants.GETALL_STUDENTS_BY_PROMOUTER_FAILURE, error } }
+}
+
+function getUserRoles(token) {
+    return dispatch => {
+        dispatch(request());
+
+        return userService.getUserRoles(token)
+            .then(
+                roles => dispatch(success(roles)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request() { return { type: userConstants.GET_USER_ROLES_REQUEST } }
+    function success(roles) { return { type: userConstants.GET_USER_ROLES_SUCCESS, roles } }
+    function failure(error) { return { type: userConstants.GET_USER_ROLES_FAILURE, error } }
+}
+
+function selectUser(user) {
+    return { type: userConstants.SELECT_USER, user }
+}
+function updateSelectedUser(user) {
+    return { type: userConstants.UPDATE_SELECTED_USER, user }
+}
+function cleanSelectedUser(user) {
+    return { type: userConstants.CLEAN_SELECTED_USER }
 }

@@ -86,7 +86,7 @@ class SignUpPage extends React.Component {
         const { promouter_id, teather_id } = this.props.match.params;
         return (
             <Grid container>
-                <Grid xs={12} sm={6} className='center'>
+                <Grid xs={12} sm={12} md={12} lg={6} className='center'>
                     <Formik
                         initialValues={{
                             firstname: "",
@@ -113,7 +113,7 @@ class SignUpPage extends React.Component {
                             <Form className='form pb-3'>
 
                                 <div className='title'>
-                                    <Typography component="h1" variant="h5">Регистрация</Typography>
+                                    <Typography component="h2" variant="h2">Регистрация</Typography>
                                 </div>
 
                                 {signup_error && (
@@ -183,7 +183,7 @@ class SignUpPage extends React.Component {
                                         />
                                     </Grid>
 
-                                    <Grid item xs={12}>
+                                    <Grid item xs={12} sm={12}>
                                         <TextInput
                                             error={errors.phonenumber && touched.phonenumber}
                                             variant="outlined"
@@ -202,7 +202,7 @@ class SignUpPage extends React.Component {
                                         />
                                     </Grid>
 
-                                    <Grid item xs={12}>
+                                    <Grid item xs={12} sm={12}>
                                         <TextInput
                                             error={errors.password && touched.password}
                                             value={values.password}
@@ -232,7 +232,7 @@ class SignUpPage extends React.Component {
                                         />
                                     </Grid>
 
-                                    <Grid item xs={12}>
+                                    <Grid item xs={12} sm={12}>
                                         <TextInput
                                             error={errors.passwordConfirmation && touched.passwordConfirmation}
                                             variant="outlined"
@@ -270,8 +270,15 @@ class SignUpPage extends React.Component {
                     </Formik>
                 </Grid>
 
-                <Grid xs={12} sm={6}>
-                    <img src={`${config.url}/assets/img/signup.png`} className="auth-img" width='100%' alt="sign-up" />
+                <Grid className={'p-relative'} xs={12} sm={12} md={12} lg={6}>
+                    <img src={`${config.url}/assets/img/signup.webp`} width='100%' height={"100%"} style={{minHeight: '600px'}} alt="sign-up" />
+                    <div className='signup-img-text'>
+                        <Typography className={'text-align-center'} variant={'h1'} component={'h1'}>Для чего нужна регистрация?</Typography>
+                        <Typography variant={'body'} component={'body'}>Регистрация дает возможность завести для Вас на сайте личный кабинет, где хранятся Ваши достижения, "свитки" и пр.</Typography>
+                        <Typography variant={'body'} component={'body'}>Мы бережно храним Ваши персональные данные и не передаем их третьим лицам.</Typography>
+                        <Typography variant={'body'} component={'body'}>Также мы не используем их для навязчивой рассылки различной рекламы.</Typography>
+                        <Typography variant={'body'} component={'body'}>Регистрация используется только в Ваших интересах!</Typography>
+                    </div>
                 </Grid>
             </Grid>
         );

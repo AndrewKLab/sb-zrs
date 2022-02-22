@@ -317,6 +317,7 @@ select {
 
 select {
     word-wrap: normal;
+    background-color: rgba(var(--background-color-light));
 }
 
 button,
@@ -883,6 +884,7 @@ h6,
     padding-left: 1rem !important;
     padding-right: 1rem !important;
 }
+
 .pv-3 {
     padding-top: 1rem !important;
     padding-bottom: 1rem !important;
@@ -1343,6 +1345,11 @@ footer {
     margin-left: auto;
 }
 
+.home-page-main-baner-item {
+    position: relative;
+    width: 50%;
+}
+
 @media (min-width: 0px) {
     .container {
         max-width: 100%;
@@ -1371,16 +1378,13 @@ footer {
 
     .home-page-main-baner-item-text {
         margin-left: 0rem !important;
-        
+
     }
 
     .home-page-main-baner-item-text h1 {
         color: rgba(var(--text-dark)) !important;
     }
 
-    .home-page-main-baner-item-book {
-        display: none !important;
-    }
 
     .desktop-navbar {
         display: none !important;
@@ -1397,16 +1401,20 @@ footer {
     .auth-img {
         display: none !important;
     }
-    .step-text{
+
+    .step-text {
         display: none !important;
     }
-    .step-line{
+
+    .step-line {
         margin-left: 50% !important;
     }
-    .step-button{
+
+    .step-button {
         justify-content: center !important;
     }
-    .step-title{
+
+    .step-title {
         display: none !important;
     }
 }
@@ -1441,9 +1449,6 @@ footer {
         margin-left: 0rem !important;
     }
 
-    .home-page-main-baner-item-book {
-        display: none !important;
-    }
 
     .desktop-navbar {
         display: none !important;
@@ -1460,16 +1465,20 @@ footer {
     .auth-img {
         display: none !important;
     }
-    .step-text{
+
+    .step-text {
         display: none !important;
     }
-    .step-line{
+
+    .step-line {
         margin-left: 50% !important;
     }
-    .step-button{
+
+    .step-button {
         justify-content: center !important;
     }
-    .step-title{
+
+    .step-title {
         display: none !important;
     }
 }
@@ -1505,9 +1514,6 @@ footer {
         margin-left: 0rem !important;
     }
 
-    .home-page-main-baner-item-book {
-        display: none !important;
-    }
 
     .desktop-navbar {
         display: none !important;
@@ -1524,16 +1530,20 @@ footer {
     .auth-img {
         display: none !important;
     }
-    .step-text{
+
+    .step-text {
         display: none !important;
     }
-    .step-line{
+
+    .step-line {
         margin-left: 50% !important;
     }
-    .step-button{
+
+    .step-button {
         justify-content: center !important;
     }
-    .step-title{
+
+    .step-title {
         display: none !important;
     }
 }
@@ -1568,9 +1578,6 @@ footer {
         margin-left: 0rem !important;
     }
 
-    .home-page-main-baner-item-book {
-        display: none !important;
-    }
 
     .desktop-navbar {
         display: none !important;
@@ -1581,22 +1588,26 @@ footer {
     }
 
     .home-page-main-baner {
-        display: block !important;
+        display: none !important;
     }
 
     .auth-img {
         display: block !important;
     }
-    .step-text{
+
+    .step-text {
         display: block !important;
     }
-    .step-line{
+
+    .step-line {
         margin-left: 32px !important;
     }
-    .step-button{
+
+    .step-button {
         justify-content: flex-start !important;
     }
-    .step-title{
+
+    .step-title {
         display: block !important;
     }
 }
@@ -1631,9 +1642,6 @@ footer {
         margin-left: 0rem !important;
     }
 
-    .home-page-main-baner-item-book {
-        display: none !important;
-    }
 
     .desktop-navbar {
         display: flex !important;
@@ -1650,16 +1658,20 @@ footer {
     .auth-img {
         display: block !important;
     }
-    .step-text{
+
+    .step-text {
         display: block !important;
     }
-    .step-line{
+
+    .step-line {
         margin-left: 32px !important;
     }
-    .step-button{
+
+    .step-button {
         justify-content: flex-start !important;
     }
-    .step-title{
+
+    .step-title {
         display: block !important;
     }
 }
@@ -1669,9 +1681,6 @@ footer {
         margin-left: 8rem !important;
     }
 
-    .home-page-main-baner-item-book {
-        display: block !important;
-    }
 
     .desktop-navbar {
         display: flex !important;
@@ -1688,16 +1697,20 @@ footer {
     .auth-img {
         display: block !important;
     }
-    .step-text{
+
+    .step-text {
         display: block !important;
     }
-    .step-line{
+
+    .step-line {
         margin-left: 32px !important;
     }
-    .step-button{
+
+    .step-button {
         justify-content: flex-start !important;
     }
-    .step-title{
+
+    .step-title {
         display: block !important;
     }
 }
@@ -1732,9 +1745,6 @@ footer {
         margin-left: 8rem !important;
     }
 
-    .home-page-main-baner-item-book {
-        display: block !important;
-    }
 
     .desktop-navbar {
         display: flex !important;
@@ -1751,16 +1761,20 @@ footer {
     .auth-img {
         display: block !important;
     }
-    .step-text{
+
+    .step-text {
         display: block !important;
     }
-    .step-line{
+
+    .step-line {
         margin-left: 32px !important;
     }
-    .step-button{
+
+    .step-button {
         justify-content: flex-start !important;
     }
-    .step-title{
+
+    .step-title {
         display: block !important;
     }
 }
@@ -2795,6 +2809,14 @@ div.text-input-group {
 div.text-input-group label {
     margin: 0;
     width: 100%;
+}
+
+select option {
+    background-color: rgba(var(--background-color-light));
+}
+
+.text-input-option {
+    background-color: rgba(var(--background-color-light));
 }
 
 /* DEFAULT INPUT */
@@ -4145,8 +4167,7 @@ tr.row th {
 .home-page-main-baner-item-text {
     margin-left: 8rem;
     position: absolute;
-    top: 10rem;
-    left: 10rem;
+    padding: 5rem;
 }
 
 .home-page-main-baner-item-book {
@@ -4239,6 +4260,11 @@ tr.row th {
     border-right: 3px solid;
     font-family: monospace;
     font-size: 2em;
+}
+
+.typing-demo-text {
+    font-family: monospace;
+    font-size: 1.5em;
 }
 
 @keyframes typing {
@@ -4653,8 +4679,7 @@ tr.row th {
 }
 
 .drag-and-drop {
-    width: 100%;
-    height: 200px;
+    position: relative;
     border-width: 1px;
     border-color: rgb(var(--text-dark), 0.3);
     border-style: solid;
@@ -4662,6 +4687,22 @@ tr.row th {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.drag-and-drop::after {
+    display: block;
+    content: '';
+    /* 16:9 aspect ratio */
+    padding-bottom: 56.25%;
+}
+
+.drag-and-drop img {
+    /* Image should match parent box size */
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .drag-and-drop-error {
@@ -4862,14 +4903,14 @@ pre {
 
 /* notification */
 
-.notification-content{
+.notification-content {
     background-color: rgba(var(--background-color-light));
     max-width: 300px;
     min-width: 250px;
-    box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12);
+    box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
 }
 
-.notification-title{
+.notification-title {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -4877,6 +4918,64 @@ pre {
     padding: 0.5rem;
     border-bottom: 1px solid rgba(var(--text-dark), 0.12);
 }
-.notification-body{
+
+.notification-body {
     padding: 0.5rem;
+}
+
+.signup-img-text {
+    position: absolute;
+    top: 0;
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.5);
+    height: 100%;
+    font-size: 1.25rem;
+}
+
+.go-to-courses-button-text {
+    color: white;
+    position: absolute;
+    color: white;
+    position: absolute;
+    left: calc(50% - 95px);
+    top: calc(50% - 14px);
+    font-size: 1.25rem;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+.slider-button {
+    margin: 1rem;
+    border-radius: 500%;
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(var(--text-dark));
+    background-color: rgba(var(--background-color-main));
+}
+
+.overflow-auto {
+    overflow: auto !important;
+}
+
+.select-arrow {
+    position: absolute;
+    right: 20px;
+    z-index: 0;
+}
+
+.course-image-container {
+    position: relative;
+}
+
+.course-image-container::after {
+    display: block;
+    content: '';
+    /* 16:9 aspect ratio */
+    padding-bottom: 56.25%;
+}
+
+.course-image {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
 }

@@ -192,7 +192,7 @@ class SignInPage extends React.Component {
 
                                     <FormControlLabel
                                         control={<Checkbox checked={remember} name='remember' onChange={() => this.remember()} />}
-                                        label="Запоминить меня"
+                                        label="Запомнить меня"
                                     />
 
 

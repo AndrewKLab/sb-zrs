@@ -4,7 +4,14 @@ const initialState = {
   students: [],
   promouters: [],
   teathers: [],
-  admins: []
+  admins: [],
+
+  user_roles_loading: false,
+  user_roles: null,
+  user_roles_error: null,
+
+  selected_user: null
+
 }
 
 export function users(state = initialState, action) {
@@ -27,145 +34,85 @@ export function users(state = initialState, action) {
         for (var j = 0; j < users_arr[i].length; j++) {
           if (users_arr[i][j].id === action.user.id) {
 
-            if (users_arr[i][j].status === action.user.status) {
-              switch (action.user.status) {
-                case 'ИСКАТЕЛЬ':
+            if (users_arr[i][j].role_name === action.user.role_name) {
+              switch (action.user.role_name) {
+                case 'Искатель':
                   users = {
                     ...users,
                     students: users.students.map(user => user.id === action.user.id ? {
                       ...user,
-                      id: action.user.id,
-                      firstname: action.user.firstname,
-                      lastname: action.user.lastname,
-                      phonenumber: action.user.phonenumber,
-                      country: action.user.country,
-                      sity: action.user.sity,
-                      status: action.user.status,
-                      access: action.user.access,
-                      roles: action.user.roles,
-                      admin_id: action.user.admin_id,
-                      teather: action.user.teather,
-                      avatar: action.user.avatar,
-                      promouter_id: action.user.promouter_id
+                      ...action.user
                     } : user)
                   }
                   break;
-                case 'УЧЕНИК':
+                case 'Ученик':
                   users = {
                     ...users,
                     students: users.students.map(user => user.id === action.user.id ? {
                       ...user,
-                      id: action.user.id,
-                      firstname: action.user.firstname,
-                      lastname: action.user.lastname,
-                      phonenumber: action.user.phonenumber,
-                      country: action.user.country,
-                      sity: action.user.sity,
-                      status: action.user.status,
-                      access: action.user.access,
-                      roles: action.user.roles,
-                      admin_id: action.user.admin_id,
-                      teather: action.user.teather,
-                      avatar: action.user.avatar,
-                      promouter_id: action.user.promouter_id
+                      ...action.user
                     } : user)
                   }
                   break;
-                case 'ПРОМОУТЕР':
+                case 'Промоутер':
                   users = {
                     ...users,
                     promouters: users.promouters.map(user => user.id === action.user.id ? {
                       ...user,
-                      id: action.user.id,
-                      firstname: action.user.firstname,
-                      lastname: action.user.lastname,
-                      phonenumber: action.user.phonenumber,
-                      country: action.user.country,
-                      sity: action.user.sity,
-                      status: action.user.status,
-                      access: action.user.access,
-                      roles: action.user.roles,
-                      admin_id: action.user.admin_id,
-                      teather: action.user.teather,
-                      avatar: action.user.avatar,
-                      promouter_id: action.user.promouter_id
+                      ...action.user
                     } : user)
                   }
                   break;
-                case 'УЧИТЕЛЬ':
+                case 'Учитель':
                   users = {
                     ...users,
                     teathers: users.teathers.map(user => user.id === action.user.id ? {
                       ...user,
-                      id: action.user.id,
-                      firstname: action.user.firstname,
-                      lastname: action.user.lastname,
-                      phonenumber: action.user.phonenumber,
-                      country: action.user.country,
-                      sity: action.user.sity,
-                      status: action.user.status,
-                      access: action.user.access,
-                      roles: action.user.roles,
-                      admin_id: action.user.admin_id,
-                      teather: action.user.teather,
-                      avatar: action.user.avatar,
-                      promouter_id: action.user.promouter_id
+                      ...action.user
                     } : user)
                   }
                   break;
-                case 'admin':
+                case 'Администратор':
                   users = {
                     ...users,
                     admins: users.admins.map(user => user.id === action.user.id ? {
                       ...user,
-                      id: action.user.id,
-                      firstname: action.user.firstname,
-                      lastname: action.user.lastname,
-                      phonenumber: action.user.phonenumber,
-                      country: action.user.country,
-                      sity: action.user.sity,
-                      status: action.user.status,
-                      access: action.user.access,
-                      roles: action.user.roles,
-                      admin_id: action.user.admin_id,
-                      teather: action.user.teather,
-                      avatar: action.user.avatar,
-                      promouter_id: action.user.promouter_id
+                      ...action.user
                     } : user)
                   }
                   break;
               }
             } else {
-              switch (users_arr[i][j].status) {
-                case 'ИСКАТЕЛЬ':
+              switch (users_arr[i][j].role_name) {
+                case 'Искатель':
                   var result = users.students.filter(user => user.id !== action.user.id);
                   users = {
                     ...users,
                     students: result
                   }
                   break;
-                case 'УЧЕНИК':
+                case 'Ученик':
                   var result = users.students.filter(user => user.id !== action.user.id);
                   users = {
                     ...users,
                     students: result
                   }
                   break;
-                case 'ПРОМОУТЕР':
+                case 'Промоутер':
                   var result = users.promouters.filter(user => user.id !== action.user.id);
                   users = {
                     ...users,
                     promouters: result
                   }
                   break;
-                case 'УЧИТЕЛЬ':
+                case 'Учитель':
                   var result = users.teathers.filter(user => user.id !== action.user.id);
                   users = {
                     ...users,
                     teathers: result
                   }
                   break;
-                case 'admin':
+                case 'Администратор':
                   var result = users.admins.filter(user => user.id !== action.user.id);
                   users = {
                     ...users,
@@ -173,122 +120,62 @@ export function users(state = initialState, action) {
                   }
                   break;
               }
-              switch (action.user.status) {
-                case 'ИСКАТЕЛЬ':
+              switch (action.user.role_name) {
+                case 'Искатель':
                   var result = users.students;
                   result.push({
                     ...users_arr[i][j],
-                    id: action.user.id,
-                    firstname: action.user.firstname,
-                    lastname: action.user.lastname,
-                    phonenumber: action.user.phonenumber,
-                    country: action.user.country,
-                    sity: action.user.sity,
-                    status: action.user.status,
-                    access: action.user.access,
-                    roles: action.user.roles,
-                    admin_id: action.user.admin_id,
-                    teather: action.user.teather,
-                    avatar: action.user.avatar,
-                    promouter_id: action.user.promouter_id
+                    ...action.user
                   })
                   users = {
                     ...users,
                     students: result
                   }
                   break;
-                case 'УЧЕНИК':
+                case 'Ученик':
                   var result = users.students;
                   result.push({
                     ...users_arr[i][j],
-                    id: action.user.id,
-                    firstname: action.user.firstname,
-                    lastname: action.user.lastname,
-                    phonenumber: action.user.phonenumber,
-                    country: action.user.country,
-                    sity: action.user.sity,
-                    status: action.user.status,
-                    access: action.user.access,
-                    roles: action.user.roles,
-                    admin_id: action.user.admin_id,
-                    teather: action.user.teather,
-                    avatar: action.user.avatar,
-                    promouter_id: action.user.promouter_id
+                    ...action.user
                   })
                   users = {
                     ...users,
                     students: result
                   }
                   break;
-                case 'ПРОМОУТЕР':
+                case 'Промоутер':
                   var result = users.promouters;
                   result.push({
                     ...users_arr[i][j],
-                    id: action.user.id,
-                    firstname: action.user.firstname,
-                    lastname: action.user.lastname,
-                    phonenumber: action.user.phonenumber,
-                    country: action.user.country,
-                    sity: action.user.sity,
-                    status: action.user.status,
-                    access: action.user.access,
-                    roles: action.user.roles,
-                    admin_id: action.user.admin_id,
-                    teather: action.user.teather,
-                    avatar: action.user.avatar,
-                    promouter_id: action.user.promouter_id
+                    ...action.user
                   })
                   users = {
                     ...users,
                     promouters: result
                   }
                   break;
-                case 'УЧИТЕЛЬ':
+                case 'Учитель':
                   var result = users.teathers;
                   result.push({
                     ...users_arr[i][j],
-                    id: action.user.id,
-                    firstname: action.user.firstname,
-                    lastname: action.user.lastname,
-                    phonenumber: action.user.phonenumber,
-                    country: action.user.country,
-                    sity: action.user.sity,
-                    status: action.user.status,
-                    access: action.user.access,
-                    roles: action.user.roles,
-                    admin_id: action.user.admin_id,
-                    teather: action.user.teather,
-                    avatar: action.user.avatar,
-                    promouter_id: action.user.promouter_id
+                    ...action.user
                   })
                   users = {
                     ...users,
                     teathers: result
                   }
                   break;
-                  case 'admin':
-                    var result = users.admins;
-                    result.push({
-                      ...users_arr[i][j],
-                      id: action.user.id,
-                      firstname: action.user.firstname,
-                      lastname: action.user.lastname,
-                      phonenumber: action.user.phonenumber,
-                      country: action.user.country,
-                      sity: action.user.sity,
-                      status: action.user.status,
-                      access: action.user.access,
-                      roles: action.user.roles,
-                      admin_id: action.user.admin_id,
-                      teather: action.user.teather,
-                      avatar: action.user.avatar,
-                      promouter_id: action.user.promouter_id
-                    })
-                    users = {
-                      ...users,
-                      admins: result
-                    }
-                    break;
+                case 'Администратор':
+                  var result = users.admins;
+                  result.push({
+                    ...users_arr[i][j],
+                    ...action.user
+                  })
+                  users = {
+                    ...users,
+                    admins: result
+                  }
+                  break;
               }
             }
           } else {
@@ -346,20 +233,20 @@ export function users(state = initialState, action) {
       var teathers = [];
       var admins = []
       for (let i = 0; i < action.users.users.length; i++) {
-        switch (action.users.users[i].status) {
-          case 'ИСКАТЕЛЬ':
+        switch (action.users.users[i].role_name) {
+          case 'Искатель':
             students.push(action.users.users[i])
             break;
-          case 'УЧЕНИК':
+          case 'Ученик':
             students.push(action.users.users[i])
             break;
-          case 'ПРОМОУТЕР':
+          case 'Промоутер':
             promouters.push(action.users.users[i])
             break;
-          case 'УЧИТЕЛЬ':
+          case 'Учитель':
             teathers.push(action.users.users[i])
             break;
-          case 'admin':
+          case 'Администратор':
             admins.push(action.users.users[i])
             break;
         }
@@ -376,6 +263,7 @@ export function users(state = initialState, action) {
       };
     case userConstants.GETALL_USERS_FAILURE:
       return {
+        ...state,
         user_error: action.error
       };
 
@@ -392,6 +280,7 @@ export function users(state = initialState, action) {
       };
     case userConstants.GETALL_TEATHERS_FAILURE:
       return {
+        ...state,
         error: action.error
       };
 
@@ -405,14 +294,14 @@ export function users(state = initialState, action) {
       var students = [];
       var promouters = [];
       for (let i = 0; i < action.students.students.length; i++) {
-        switch (action.students.students[i].status) {
-          case 'ИСКАТЕЛЬ':
+        switch (action.students.students[i].role_name) {
+          case 'Искатель':
             students.push(action.students.students[i])
             break;
-          case 'УЧЕНИК':
+          case 'Ученик':
             students.push(action.students.students[i])
             break;
-          case 'ПРОМОУТЕР':
+          case 'Промоутер':
             promouters.push(action.students.students[i])
             break;
         }
@@ -426,6 +315,7 @@ export function users(state = initialState, action) {
       };
     case userConstants.GETALL_STUDENTS_FAILURE:
       return {
+        ...state,
         error: action.error
       };
 
@@ -436,13 +326,31 @@ export function users(state = initialState, action) {
         users_loading: true
       };
     case userConstants.GETALL_STUDENTS_BY_PROMOUTER_SUCCESS:
+      var students = [];
+      var promouters = [];
+      for (let i = 0; i < action.students.users.length; i++) {
+        switch (action.students.users[i].role_name) {
+          case 'Искатель':
+            students.push(action.students.users[i])
+            break;
+          case 'Ученик':
+            students.push(action.students.users[i])
+            break;
+          case 'Промоутер':
+            promouters.push(action.students.users[i])
+            break;
+        }
+      }
       return {
         ...state,
-        users_loading: false,
-        promouters: action.students.users
+        user_loading: false,
+        students: students,
+        promouters: promouters
+
       };
     case userConstants.GETALL_STUDENTS_BY_PROMOUTER_FAILURE:
       return {
+        ...state,
         users_error: action.error
       };
 
@@ -454,12 +362,51 @@ export function users(state = initialState, action) {
       };
     case userConstants.GETONE_USER_SUCCESS:
       return {
+        ...state,
         users_loading: false,
         user_data: action.user
       };
     case userConstants.GETONE_USER_REQUEST:
       return {
+        ...state,
         users_error: action.error
+      };
+
+    //GETONE_USER
+    case userConstants.GET_USER_ROLES_REQUEST:
+      return {
+        ...state,
+        user_roles_loading: true,
+        user_roles_error: null,
+      };
+    case userConstants.GET_USER_ROLES_SUCCESS:
+      return {
+        ...state,
+        user_roles_loading: false,
+        user_roles: action.roles,
+        user_roles_error: null,
+      };
+    case userConstants.GET_USER_ROLES_FAILURE:
+      return {
+        ...state,
+        user_roles_loading: false,
+        user_roles_error: action.error,
+      };
+
+    case userConstants.SELECT_USER:
+      return {
+        ...state,
+        selected_user: action.user,
+      };
+    case userConstants.UPDATE_SELECTED_USER:
+      return {
+        ...state,
+        selected_user: {...state.user, ...action.user},
+      };
+    case userConstants.CLEAN_SELECTED_USER:
+      return {
+        ...state,
+        selected_user: null,
       };
 
     default:

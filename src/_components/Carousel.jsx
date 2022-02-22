@@ -61,6 +61,7 @@ export class Carousel extends Component {
             slidesToShow: courses.length > 3 ? 3 : courses.length,
             slidesToScroll: 1,
             initialSlide: 0,
+            //adaptiveHeight: true,
             nextArrow: <SampleNextArrow />,
             prevArrow: <SamplePrevArrow />,
             responsive: [
@@ -99,13 +100,15 @@ export class Carousel extends Component {
                         <Card className="h-100">
                             <Link to={`/courses/${categoty_name}/${course.id}`}>
                                 <CardActionArea className="h-100">
+                                    <div className="course-image-container">
                                     <CardMedia
                                         component="img"
                                         alt={course.name}
-                                        height="163,88335"
                                         image={course.img}
+                                        className="course-image"
                                         title="Contemplative Reptile"
                                     />
+                                    </div>
                                     <CardContent className="h-100">
                                         <Typography gutterBottom variant="h5" component="h2">
                                             {course.name}

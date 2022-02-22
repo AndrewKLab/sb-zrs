@@ -14,7 +14,7 @@ const App = ({ jwt, dispatch, validate_token_loading, isLogined }) => {
 
     useEffect(() => {
         const init = async () => {
-            await getTokenHelper();
+            await getTokenHelper(dispatch);
             const deviceInfo = await getDeviceInfo();
             const checkAuth = await dispatch(userActions.checkAuth(deviceInfo))
             if (checkAuth.isLogined) await dispatch(userActions.validateToken(checkAuth.token))

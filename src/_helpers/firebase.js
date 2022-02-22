@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getToken, onMessage, getMessaging } from 'firebase/messaging';
 import { Button, notification } from 'antd';
+import { chatActions } from '../_actions';
 
 const firebaseApp = initializeApp({
     apiKey: "AIzaSyA36-3U3YsTwG6IRc72Ozq5mfrFp4U2OLo",
@@ -15,12 +16,18 @@ const firebaseApp = initializeApp({
 const messaging = getMessaging(firebaseApp);
 
 
-export const getTokenHelper = async () => {
+export const getTokenHelper = async (dispatch) => {
+
     try {
         const currentToken = await getToken(messaging, { vapidKey: 'BJ4idnM6Nn_C3pT6CItQC4yiMGwxGkpAarSywAJouKYzYwanedolLDcwmf79WpPkPYLG0e9ULr9aRhzA9QxxlSQ' });
         if (currentToken) {
             //console.log(currentToken)
             localStorage.setItem('FBCtoken', currentToken);
+            onMessage(messaging, (payload) => {
+                console.log(payload);
+                openNotification(payload, dispatch)
+            });
+            
         } else {
             console.log('No registration token available. Request permission to generate one.');
         }
@@ -29,21 +36,30 @@ export const getTokenHelper = async () => {
     }
 }
 
-const openNotification = (message, description) => {
+const openNotification = (payload, dispatch) => {
     const key = `open${Date.now()}`;
-    notification.open({
+    const { title, body } = payload.notification;
+    const { chat_id, created, message, message_id, read_status, send_from, send_to } = payload.data;
+    const message_data = {
+        chat_id,
+        created,
         message,
-        description,
+        message_id,
+        read_status,
+        send_from,
+        send_to,
+    }
+    notification.open({
+        message: title,
+        description: body,
         key,
         onClick: () => console.log('click'),
         placement: 'bottomLeft'
     });
+    
+    dispatch(chatActions.getNewMessage(chat_id, message_data))
 };
 
-onMessage(messaging, (payload) => {
-    console.log(payload);
-    openNotification(payload.notification.title, payload.notification.body)
-});
 
 
 

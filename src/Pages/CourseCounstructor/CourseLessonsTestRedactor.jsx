@@ -168,7 +168,9 @@ const CourseLessonsTestRedactor = ({
                                             endAdornment: (
                                                 <ExpandMoreIcon />
                                             ),
+                                            endAdornmentClass: 'select-arrow'
                                         }}
+                                        
                                         className='w-100 mb-3'
                                     >
                                         <SelectItem selectded={selectedQuestionState.question_type === 'checkbox'} value={'checkbox'}>Несколько верных ответов</SelectItem>
@@ -181,7 +183,7 @@ const CourseLessonsTestRedactor = ({
                                             <tbody>
                                                 <tr>
                                                     <th className='pb-2'>Ответы</th>
-                                                    <th className='text-align-end pb-2'>Правльный ответ</th>
+                                                    <th className='text-align-end pb-2'>Правильный ответ</th>
                                                     <th className='text-align-end pb-2'>Действия</th>
                                                 </tr>
                                                 {selectedQuestionState.question_answers.map((answer, index) => (
@@ -254,7 +256,7 @@ const CourseLessonsTestRedactor = ({
                                             <tbody>
                                                 <tr>
                                                     <th>Ответы</th>
-                                                    <th className='text-align-end'>Правльный ответ</th>
+                                                    <th className='text-align-end'>Правильный  ответ</th>
                                                 </tr>
                                                 {question.question_answers !== null && question.question_answers.map((answer, index) => {
 
@@ -374,6 +376,7 @@ const CourseLessonsTestRedactor = ({
                             endAdornment: (
                                 <ExpandMoreIcon />
                             ),
+                            endAdornmentClass: 'select-arrow'
                         }}
                         className='w-100 mb-3'
                     >
@@ -387,7 +390,7 @@ const CourseLessonsTestRedactor = ({
                             <tbody>
                                 <tr>
                                     <th className='pb-2'>Ответы</th>
-                                    <th className='text-align-end pb-2'>Правльный ответ</th>
+                                    <th className='text-align-end pb-2'>Правильный ответ</th>
                                     <th className='text-align-end pb-2'>Действия</th>
                                 </tr>
                                 {selectedQuestionState.question_answers.map((answer, index) => (

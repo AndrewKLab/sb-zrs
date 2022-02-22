@@ -64,12 +64,12 @@ class CoursePage extends React.Component {
                         <List className='teathers-list'>
                             {teathers.map((teather, index) => (
                                 <div key={index}>
-                                    <ListItem button key={index} onPress={() => this.handleClickOpen(teather.id, teather.firstname, teather.lastname, teather.status, teather.avatar)}>
+                                    <ListItem button key={index} onPress={() => this.handleClickOpen(teather.id, teather.firstname, teather.lastname, teather.role_name, teather.avatar)}>
                                         <ListItemFirstAction>
                                             <ListItemIcon>
                                                 <Avatar alt={teather.firstname + " " + teather.lastname} src={teather.avatar} />
                                             </ListItemIcon>
-                                            <ListItemText title={teather.firstname + " " + teather.lastname} subtitle={"Статус: " + teather.status} />
+                                            <ListItemText title={teather.firstname + " " + teather.lastname} subtitle={"Статус: " + teather.role_name} />
                                         </ListItemFirstAction>
                                     </ListItem>
                                     {this.renderTeatherDialog()}
@@ -212,18 +212,19 @@ class CoursePage extends React.Component {
                 <Paper variant="outlined" square className='d-flex'>
                     <Grid container spacing={0}>
                         <Grid item xs={12} sm={12} md={7}>
-                            <div className='p-relative'>
-                                <img className='img' src={data.img} alt={data.course_name} height="350" />
-                                <div className='wrap-area'>
-                                    <Typography variant="h2" component="h1" className="text-light">{data.course_name}</Typography>
-                                </div>
+                            <div className='course-image-container p-relative'>
+                                <img className='img course-image' src={data.img} alt={data.course_name} />
                             </div>
                         </Grid>
                         <Grid item xs={12} sm={12} md={5}>
                             <div className='course-info-area'>
-                                <div className='course-info-text'>
-                                    <Typography variant="h5" component="h5">Количество уроков:</Typography>
-                                    <Typography variant="h5" component="h5">{data.lessons.length}</Typography>
+                                <div>
+                                    <Typography variant="h2" component="h1">{data.course_name}</Typography>
+                                    <Divider/>
+                                    <div className='course-info-text'>
+                                        <Typography variant="h5" component="h5">Количество уроков:</Typography>
+                                        <Typography variant="h5" component="h5">{data.lessons.length}</Typography>
+                                    </div>
                                 </div>
                                 {user.teather_id === "0" ? user.roles === 'user' ? 'В скором времени мы запишем вас в группу к учителю!' : '' :
                                     (
@@ -235,7 +236,7 @@ class CoursePage extends React.Component {
                                                         <ListItemIcon>
                                                             <Avatar alt={user_data.firstname + " " + user_data.lastname} src={user_data.avatar} />
                                                         </ListItemIcon>
-                                                        <ListItemText title={user_data.firstname + " " + user_data.lastname} subtitle={"Регалии: " + user_data.status} />
+                                                        <ListItemText title={user_data.firstname + " " + user_data.lastname} subtitle={"Регалии: " + user_data.role_name} />
                                                     </ListItemFirstAction>
                                                 </ListItem>
                                             </Paper>

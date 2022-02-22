@@ -66,17 +66,19 @@ class CoursesPage extends React.Component {
                     alignItems={"flex-start"}
                     spacing={1}>
                     {Object.values(courses).map((course, index) => (
-                        <Grid item xs={12} sm={12}  md={6}  key={index}>
+                        <Grid item xs={12} sm={12} md={4} key={index}>
                             <Card className="h-100">
                                 <Link to={`/courses/${this.props.match.params.category_name}/${course.id}`} >
                                     <CardActionArea className="h-100">
-                                        <CardMedia
-                                            component="img"
-                                            alt={course.name}
-                                            height="163,88335"
-                                            image={course.img}
-                                            title="Contemplative Reptile"
-                                        />
+                                        <div className="course-image-container">
+                                            <CardMedia
+                                                component="img"
+                                                alt={course.name}
+                                                image={course.img}
+                                                className="course-image"
+                                                title="Contemplative Reptile"
+                                            />
+                                        </div>
                                         <CardContent className="h-100">
                                             <Typography variant="h6" component="h6">
                                                 {course.name}

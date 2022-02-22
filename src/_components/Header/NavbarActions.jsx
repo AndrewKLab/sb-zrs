@@ -199,7 +199,7 @@ const NavbarActions = ({ dispatch, history, themes, currentTheme, user, search }
                                 <ListItemIcon>
                                     <Avatar alt="" src={user.avatar} />
                                 </ListItemIcon>
-                                <ListItemText title={user.lastname + " " + user.firstname} subtitle={"Статус: " + user.status} />
+                                <ListItemText title={user.lastname + " " + user.firstname} subtitle={`Статус: ${user.role_name}` } />
                             </ListItemFirstAction>
                         </ListItem>
                     ) : (

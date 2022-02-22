@@ -71,7 +71,7 @@ const CourseLessonsList = ({
                     </List>
                 </div>
             }
-            <RenderConfermDialog dialog_title={`Удалить урок`} dialog_body={`Сохранить урок с именем "${lessonState.lesson_name}"`} dialogAction={() => deleteLesson()} />
+            <RenderConfermDialog dialog_title={`Удалить урок`} dialog_body={`Удалить урок с именем "${lessonState.lesson_name}"`} dialogAction={() => deleteLesson()} />
             <div className='center p-3'>
                 <Button disabled={course_editing_status === 'create'} onPress={() => dispatch(courseActions.setLessonEditingStatus('create'))}>Добавить урок</Button>
             </div>

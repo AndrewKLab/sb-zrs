@@ -8,7 +8,8 @@ export const chatActions = {
     selectOpenChat,
     sendMessage,
     checkNewMessagesByChat,
-    createChat
+    createChat,
+    getNewMessage
 };
 
 function getAllChatsByUser(jwt) {
@@ -30,30 +31,37 @@ function getAllChatsByUser(jwt) {
 function getMessagesByChat(jwt, chat, offset) {
     return dispatch => {
         dispatch(request());
-        console.log(chat.chat_id)
         return chatService.getMessagesByChat(jwt, chat.chat_id, offset)
             .then(
-                done => dispatch(success(chat, done.message, done.messages)),
+                done => {
+                    dispatch(success(chat, done.message, done.messages, offset))
+                },
                 error => dispatch(failure(error))
             );
     };
     function request() { return { type: chatConstants.GET_ALL_MESSAGES_BY_CHAT_REQUEST } }
-    function success(chat, message, messages) { return { type: chatConstants.GET_ALL_MESSAGES_BY_CHAT_SUCCESS, chat, message, messages } }
+    function success(chat, message, messages, offset) { return { type: chatConstants.GET_ALL_MESSAGES_BY_CHAT_SUCCESS, chat, message, messages, offset } }
     function failure(error) { return { type: chatConstants.GET_ALL_MESSAGES_BY_CHAT_FAILURE, error } }
 }
 
-function getMoreMessagesByChat(jwt, chat_id, offset) {
+function getMoreMessagesByChat(jwt, chat, offset) {
     return dispatch => {
-        dispatch(request(jwt, chat_id, offset));
+        dispatch(request());
 
-        return chatService.getMessagesByChat(jwt, chat_id, offset)
+        return chatService.getMessagesByChat(jwt, chat.chat_id, offset)
             .then(
-                messages => dispatch(success(chat_id, messages)),
+                done => {
+                    if(offset > 0 && done.messages.length === 0){
+                        dispatch(failure(done.message))
+                    } else {
+                        dispatch(success(chat, done.message, done.messages, offset))
+                    }
+                },
                 error => dispatch(failure(error))
             );
     };
-    function request(jwt, chat_id, offset) { return { type: chatConstants.GET_MORE_MESSAGES_BY_CHAT_REQUEST, jwt, chat_id, offset } }
-    function success(chat_id, messages) { return { type: chatConstants.GET_MORE_MESSAGES_BY_CHAT_SUCCESS, chat_id, messages } }
+    function request() { return { type: chatConstants.GET_MORE_MESSAGES_BY_CHAT_REQUEST } }
+    function success(chat, message, messages, offset) { return { type: chatConstants.GET_MORE_MESSAGES_BY_CHAT_SUCCESS, chat, message, messages, offset } }
     function failure(error) { return { type: chatConstants.GET_MORE_MESSAGES_BY_CHAT_FAILURE, error } }
 }
 
@@ -102,4 +110,21 @@ function createChat(jwt, target) {
     function request() { return { type: chatConstants.CREATE_CHAT_REQUEST } }
     function success(message, chat) { return { type: chatConstants.CREATE_CHAT_SUCCESS, message, chat } }
     function failure(error) { return { type: chatConstants.CREATE_CHAT_FAILURE, error } }
+}
+
+function getNewMessage(chat_id, message) {
+    // return dispatch => {
+    //     dispatch(request());
+
+    //     return chatService.createChat(jwt, target)
+    //         .then(
+    //             done => dispatch(success(done.message, done.chat)),
+    //             error => dispatch(failure(error))
+    //         );
+    // };
+    // function request() { return { type: chatConstants.CREATE_CHAT_REQUEST } }
+    // function success(message, chat) { return { type: chatConstants.CREATE_CHAT_SUCCESS, message, chat } }
+    // function failure(error) { return { type: chatConstants.CREATE_CHAT_FAILURE, error } }
+
+    return {type: chatConstants.GET_NEW_MESSAGE, chat_id, message}
 }

@@ -42,16 +42,15 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
     const [editDialog, setEditDialog] = useState(false);
     const [deleteDialog, setDeleteDialog] = useState(false);
 
-    const [status, setStatus] = useState('');
-    const [roles, setRoles] = useState('');
+    const [userRoleId, setUserRoleId] = useState('');
     const [access, setAccess] = useState('');
     const [adminId, setAdminId] = useState('0');
 
     useEffect(() => {
-        if (user.roles === 'ROLE_ADMIN' || user.roles === 'ROLE_SUPER_ADMIN') {
+        if (user.role_type === 'ROLE_ADMIN' || user.role_type === 'ROLE_SUPER_ADMIN') {
             dispatch(userActions.readAll(jwt)).then(
                 () => {
-                    switch (user.roles) {
+                    switch (user.role_type) {
                         case 'ROLE_ADMIN':
                             dispatch(courseActions.getAllCoursesByAutor(user.id)).then(
                                 () => setLoading(false))
@@ -77,7 +76,7 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
         await dispatch(chatActions.createChat(jwt, user.id))
         history.push('/dialogs')
     }
-    const edit = (user) => { setEditDialog(true), setUserData(user), setStatus(user.status), setRoles(user.roles), setAccess(user.access) }
+    const edit = (user) => { dispatch(userActions.selectUser(user)), setEditDialog(true) }
     const editClose = () => { setEditDialog(false) }
 
 
@@ -87,7 +86,7 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
 
     const selectTab = (event) => { setTab(event.target.id) }
 
-    const EmptyTableComponent = (text) =>{
+    const EmptyTableComponent = (text) => {
         return <Alert className='info' severity="info">{text}</Alert>
     }
 
@@ -119,15 +118,10 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                         close={editClose}
                         userData={userData}
                         setUserData={setUserData}
-                        setStatus={setStatus}
-                        status={status}
-                        setRoles={setRoles}
-                        roles={roles}
-                        setAccess={setAccess}
-                        access={access}
                         setAdminId={setAdminId}
                         adminId={adminId}
                         teathers={users.teathers !== undefined ? users.teathers : []}
+                        admins={users.admins !== undefined ? users.admins : []}
                     />
                     <DialogDeleteUser open={deleteDialog} close={removeClose} userData={userData} />
 
@@ -141,69 +135,69 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
 
                                     {users.teathers !== undefined && users.teathers.filter(teather => teather.admin_id === user.id) > 0 ?
                                         users.teathers.filter(teather => teather.admin_id === user.id).map((teather, index) => (
-                                        <div key={index} className={'mx-3 mb-3'}>
-                                            <Accordion labеl={
-                                                <UserPlane className={'p-0'} name={teather.firstname + " " + teather.lastname} avatar={teather.avatar} status={teather.status} />
-                                            }>
-                                                <div>
-                                                    <div className={'d-flex p-3 grid-align-items-xs-center'}>
-                                                        <Avatar alt={teather.firstname + " " + teather.lastname} src={teather.avatar} className={'avatar-large'} />
-                                                        <div className={'p-3 w-100'}>
-                                                            <div className={'d-flex grid-justify-xs-space-between grid-align-items-xs-center'}>
-                                                                <Typography component='h5' variant='h5'>{teather.firstname + " " + teather.lastname}</Typography>
-                                                                <div>
-                                                                    <IconButton onClick={() => edit(teather)}>
-                                                                        <EditOutlinedIcon />
-                                                                    </IconButton>
-                                                                    <IconButton onClick={() => remove(teather)}>
-                                                                        <DeleteForeverOutlinedIcon className='danger-area-title-icon' />
-                                                                    </IconButton>
+                                            <div key={index} className={'mx-3 mb-3'}>
+                                                <Accordion labеl={
+                                                    <UserPlane className={'p-0'} name={teather.firstname + " " + teather.lastname} avatar={teather.avatar} status={teather.status} />
+                                                }>
+                                                    <div>
+                                                        <div className={'d-flex p-3 grid-align-items-xs-center'}>
+                                                            <Avatar alt={teather.firstname + " " + teather.lastname} src={teather.avatar} className={'avatar-large'} />
+                                                            <div className={'p-3 w-100'}>
+                                                                <div className={'d-flex grid-justify-xs-space-between grid-align-items-xs-center'}>
+                                                                    <Typography component='h5' variant='h5'>{teather.firstname + " " + teather.lastname}</Typography>
+                                                                    <div>
+                                                                        <IconButton onClick={() => edit(teather)}>
+                                                                            <EditOutlinedIcon />
+                                                                        </IconButton>
+                                                                        <IconButton onClick={() => remove(teather)}>
+                                                                            <DeleteForeverOutlinedIcon className='danger-area-title-icon' />
+                                                                        </IconButton>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div className={'d-flex'}>
-                                                                <div>
-                                                                    <strong>Телефон: </strong>+7{teather.phonenumber}<br />
-                                                                    <strong>Страна: </strong>{teather.country}<br />
-                                                                    <strong>Город: </strong>{teather.sity}
-                                                                </div>
+                                                                <div className={'d-flex'}>
+                                                                    <div>
+                                                                        <strong>Телефон: </strong>+7{teather.phonenumber}<br />
+                                                                        <strong>Страна: </strong>{teather.country}<br />
+                                                                        <strong>Город: </strong>{teather.sity}
+                                                                    </div>
 
-                                                                <div className={'ml-3'}>
-                                                                    <strong>Статус: </strong>{teather.status}<br />
-                                                                    <strong>Доступ к курсам: </strong>{teather.access === 'full' ? 'полный' : 'ограниченый'}<br />
-                                                                    <strong>Учитель: </strong>{teather.teather === null ? 'НЕТ' : teather.teather.name}
+                                                                    <div className={'ml-3'}>
+                                                                        <strong>Статус: </strong>{teather.status}<br />
+                                                                        <strong>Доступ к курсам: </strong>{teather.access === 'full' ? 'полный' : 'ограниченый'}<br />
+                                                                        <strong>Учитель: </strong>{teather.teather === null ? 'НЕТ' : teather.teather.name}
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
+
+
+                                                        <Grid container spacing={2}>
+                                                            <Grid item xs={12} sm={6}>
+                                                                <Divider className={'mt-0'} />
+                                                                <Typography component='h5' variant='h5' className={'paper-header-text'}>Ученики:</Typography>
+                                                                <Divider className={'mb-3'} />
+
+                                                                {users.students !== undefined ? users.students.filter(student => student.teather !== null && student.teather.id === teather.id).length === 0 ? <div className='p-3'>У данного учителя нет учеников.</div> : users.students.filter(student => student.teather !== null && student.teather.id === teather.id).map((student, index) => (
+                                                                    <UserAccordionPlane key={index} edit={edit} remove={remove} user={student} />
+                                                                )) : 'У данного учителя нет учеников.'}
+
+                                                            </Grid>
+                                                            <Grid item xs={12} sm={6}>
+                                                                <Divider className={'mt-0'} />
+                                                                <Typography component='h5' variant='h5' className={'paper-header-text'}>Промоутеры:</Typography>
+                                                                <Divider className={'mb-3'} />
+                                                                {users.promouters !== undefined ? users.promouters.filter(promouter => promouter.teather !== null && promouter.teather.id === teather.id).length === 0 ? <div className='p-3'>У данного учителя нет промоутеров.</div> : users.promouters.filter(promouter => promouter.teather !== null && promouter.teather.id === teather.id).map((promouter, index) => (
+                                                                    <UserAccordionPlane key={index} edit={edit} remove={remove} user={promouter} />
+                                                                )) : 'У данного учителя нет учеников.'}
+                                                            </Grid>
+                                                        </Grid>
+
                                                     </div>
-
-
-                                                    <Grid container spacing={2}>
-                                                        <Grid item xs={12} sm={6}>
-                                                            <Divider className={'mt-0'} />
-                                                            <Typography component='h5' variant='h5' className={'paper-header-text'}>Ученики:</Typography>
-                                                            <Divider className={'mb-3'} />
-
-                                                            {users.students !== undefined ? users.students.filter(student => student.teather !== null && student.teather.id === teather.id).length === 0 ? <div className='p-3'>У данного учителя нет учеников.</div> : users.students.filter(student => student.teather !== null && student.teather.id === teather.id).map((student, index) => (
-                                                                <UserAccordionPlane key={index} edit={edit} remove={remove} user={student} />
-                                                            )) : 'У данного учителя нет учеников.'}
-
-                                                        </Grid>
-                                                        <Grid item xs={12} sm={6}>
-                                                            <Divider className={'mt-0'} />
-                                                            <Typography component='h5' variant='h5' className={'paper-header-text'}>Промоутеры:</Typography>
-                                                            <Divider className={'mb-3'} />
-                                                            {users.promouters !== undefined ? users.promouters.filter(promouter => promouter.teather !== null && promouter.teather.id === teather.id).length === 0 ? <div className='p-3'>У данного учителя нет промоутеров.</div> : users.promouters.filter(promouter => promouter.teather !== null && promouter.teather.id === teather.id).map((promouter, index) => (
-                                                                <UserAccordionPlane key={index} edit={edit} remove={remove} user={promouter} />
-                                                            )) : 'У данного учителя нет учеников.'}
-                                                        </Grid>
-                                                    </Grid>
-
-                                                </div>
-                                            </Accordion>
-                                        </div>
-                                    ))
-                                :
-                                <Alert className='info' severity="info">{'На данный момент у вас нет учителей!'}</Alert>}
+                                                </Accordion>
+                                            </div>
+                                        ))
+                                        :
+                                        <Alert className='info' severity="info">{'На данный момент у вас нет учителей!'}</Alert>}
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -212,7 +206,7 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                                         <Typography component='h4' variant='h4' className={'paper-header-text'}>Ученики без учителя:</Typography>
                                     </div>
                                     <div className='mx-3'>
-                                        {users.students !== undefined ? users.students.filter(student => student.teather === null).length === 0 ? <div className='p-3'>Сейчас нет учеников без учителя.</div> : users.students.filter(student => student.teather === null).map((student, index) => (
+                                        {users.students !== undefined ? users.students.filter(student => !student.teather).length === 0 ? <div className='p-3'>Сейчас нет учеников без учителя.</div> : users.students.filter(student => !student.teather).map((student, index) => (
                                             <UserAccordionPlane key={index} edit={edit} remove={remove} user={student} />
                                         )) : 'Сейчас нет учеников без учителя.'}
                                     </div>
@@ -230,9 +224,9 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                                 { Header: 'Номер телефона', accessor: 'phonenumber' },
                                 { Header: 'Страна', accessor: 'country' },
                                 { Header: 'Город', accessor: 'sity' },
-                                { Header: 'Статус', accessor: 'status' },
+                                { Header: 'Статус', accessor: 'role_name' },
                                 { Header: 'Доступ ко всем курсам', accessor: 'access' },
-                                { Header: 'Учитель', accessor: 'teather.name' },
+                                { Header: 'Учитель', accessor: '' },
                                 { Header: 'Действия', accessor: '' }
                             ]}
                             data={users.students !== undefined ? users.students : []}
@@ -254,9 +248,9 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                                 { Header: 'Номер телефона', accessor: 'phonenumber' },
                                 { Header: 'Страна', accessor: 'country' },
                                 { Header: 'Город', accessor: 'sity' },
-                                { Header: 'Статус', accessor: 'status' },
+                                { Header: 'Статус', accessor: 'role_name' },
                                 { Header: 'Доступ ко всем курсам', accessor: 'access' },
-                                { Header: 'Учитель', accessor: 'teather.name' },
+                                { Header: 'Учитель', accessor: '' },
                                 { Header: 'Действия', accessor: '' }
                             ]}
                             data={users.promouters !== undefined ? users.promouters : []}
@@ -270,31 +264,31 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                     </div>
 
                     <div className='mb-3'>
-                        <Typography variant='h3' component='h3'>{user.roles === "ROLE_SUPER_ADMIN" ? 'Учителя:' : 'Ваши учителя:'}</Typography>
-                            <DataTable columns={
-                                [
-                                    { Header: 'Имя', accessor: 'firstname' },
-                                    { Header: 'Фамилия', accessor: 'lastname' },
-                                    { Header: 'Номер телефона', accessor: 'phonenumber' },
-                                    { Header: 'Страна', accessor: 'country' },
-                                    { Header: 'Город', accessor: 'sity' },
-                                    { Header: 'Статус', accessor: 'status' },
-                                    { Header: 'Доступ ко всем курсам', accessor: 'access' },
-                                    { Header: 'Учитель', accessor: 'teather.name' },
-                                    { Header: 'Действия', accessor: '' }
-                                ]}
-                                data={users.teathers !== undefined ? user.roles === "ROLE_SUPER_ADMIN" ? users.teathers : users.teathers.filter(t => t.admin_id === user.id) : []}
-                                dialog={dialog}
-                                edit={edit}
-                                remove={remove}
-                                ititSortBy={'lastname'}
-                                ititSortType={'asc'}
-                                EmptyTableComponent={() => EmptyTableComponent('На данный момент у вас нет учителей!')}
-                            />
+                        <Typography variant='h3' component='h3'>{user.role_type === "ROLE_TEATHER" ? 'Ваши учителя:' : 'Учителя:'}</Typography>
+                        <DataTable columns={
+                            [
+                                { Header: 'Имя', accessor: 'firstname' },
+                                { Header: 'Фамилия', accessor: 'lastname' },
+                                { Header: 'Номер телефона', accessor: 'phonenumber' },
+                                { Header: 'Страна', accessor: 'country' },
+                                { Header: 'Город', accessor: 'sity' },
+                                { Header: 'Статус', accessor: 'role_name' },
+                                { Header: 'Доступ ко всем курсам', accessor: 'access' },
+                                { Header: 'Админ', accessor: '' },
+                                { Header: 'Действия', accessor: '' }
+                            ]}
+                            data={users.teathers !== undefined ? user.role_type === "ROLE_SUPER_ADMIN" ? users.teathers : users.teathers.filter(t => t.admin_id === user.id) : []}
+                            dialog={dialog}
+                            edit={edit}
+                            remove={remove}
+                            ititSortBy={'lastname'}
+                            ititSortType={'asc'}
+                            EmptyTableComponent={() => EmptyTableComponent('На данный момент у вас нет учителей!')}
+                        />
                     </div>
 
                     {
-                        user.roles === "ROLE_SUPER_ADMIN" &&
+                        user.role_type === "ROLE_SUPER_ADMIN" &&
                         <div className='mb-3'>
                             <Typography variant='h3' component='h3'>{'Администраторы:'}</Typography>
                             <DataTable columns={
@@ -304,12 +298,12 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                                     { Header: 'Номер телефона', accessor: 'phonenumber' },
                                     { Header: 'Страна', accessor: 'country' },
                                     { Header: 'Город', accessor: 'sity' },
-                                    { Header: 'Статус', accessor: 'status' },
+                                    { Header: 'Статус', accessor: 'role_name' },
                                     { Header: 'Доступ ко всем курсам', accessor: 'access' },
-                                    { Header: 'Учитель', accessor: 'teather.name' },
+                                    { Header: 'Суперадмин', accessor: '' },
                                     { Header: 'Действия', accessor: '' }
                                 ]}
-                                data={users.admins !== undefined ? users.admins.filter(t => t.roles === 'ROLE_ADMIN') : []}
+                                data={users.admins !== undefined ? users.admins.filter(t => t.role_type === 'ROLE_ADMIN') : []}
                                 dialog={dialog}
                                 edit={edit}
                                 remove={remove}
@@ -333,15 +327,20 @@ const AdminPanelPage = ({ dispatch, history, jwt, user, users, courses, course_e
                                 <div className='paper-header'>
                                     <Typography component='h4' variant='h4' className={'paper-header-text'}>Ваши учителя и их курсы:</Typography>
                                 </div>
-                                {users.teathers !== undefined && users.teathers.filter(teather => teather.admin_id === user.id).map((teather, index) => (
-                                    <div key={index} className={'mx-3 mb-3'}>
-                                        <Accordion labеl={
-                                            <UserPlane className={'p-0'} name={teather.firstname + " " + teather.lastname} avatar={teather.avatar} status={teather.status} />
-                                        }>
-                                            <TeatherCourses create={false} history={history} panel={'admin-panel'} user={user} courses={teather.courses !== null ? teather.courses : []} course_error={teather.courses === null ? 'У этого учителя нет своих курсов.' : undefined} />
-                                        </Accordion>
-                                    </div>
-                                ))}
+                                {users.teathers !== undefined ?
+                                    users.teathers.filter(teather => teather.admin_id === user.id).length > 0 ?
+                                        users.teathers.filter(teather => teather.admin_id === user.id).map((teather, index) => (
+                                            <div key={index} className={'mx-3 mb-3'}>
+                                                <Accordion labеl={
+                                                    <UserPlane className={'p-0'} name={teather.firstname + " " + teather.lastname} avatar={teather.avatar} status={teather.role_name} />
+                                                }>
+                                                    <TeatherCourses create={false} history={history} panel={'admin-panel'} user={user} courses={teather.courses !== null ? teather.courses : []} course_error={teather.courses === null ? 'У этого учителя нет своих курсов.' : undefined} />
+                                                </Accordion>
+                                            </div>
+                                        ))
+                                        : <Alert className='info' severity="info">{'На данный момент у вас нет учителей!'}</Alert>
+                                    : <Alert className='info' severity="info">{'На данный момент нет учителей!'}</Alert>
+                                }
                             </Paper>
                         </Grid>
                     </Grid>
