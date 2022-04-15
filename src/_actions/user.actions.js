@@ -8,16 +8,20 @@ export const userActions = {
     signin,
     signup,
     logout,
+    createUser,
     updateSelf,
     updateUser,
     deleteUser,
     validateToken,
     readOne,
+    readFullInfoByUser,
     readAll,
     getAllTeathers,
     getAllStudentsByUser,
     getAllStudentsByPromouter,
     getUserRoles,
+
+    updateUserQuestionAnswer,
 
     selectUser,
     updateSelectedUser,
@@ -123,39 +127,45 @@ function validateToken(jwt) {
     function failure(error) { return { type: userConstants.VALIDATE_TOKEN_FAILURE, error } }
 }
 
-function updateSelf(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, avatar, admin_id, teather_id, promouter_id) {
+function createUser(jwt, close, resetForm, user) {
     return dispatch => {
-        dispatch(request({ user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, avatar, admin_id, teather_id, promouter_id }));
-
-        return userService.updateUser(user_id, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, admin_id, avatar, teather_id, promouter_id)
+        dispatch(request());
+        return userService.createUser(jwt, user)
             .then(
-                data => {
-                    localStorage.setItem("user", data.jwt);
-                    const user = {
-                        jwt: data.jwt,
-                        firstname,
-                        lastname,
-                        phonenumber,
-                        country,
-                        sity,
-                        status,
-                        access,
-                        roles,
-                        teather_id,
-                        avatar
-                    }
-                    dispatch(success(user));
+                res => {
+                    dispatch(success(res.message, res.user));
+                    close()
+                    resetForm()
                 },
                 error => {
                     dispatch(failure(error));
-                    dispatch(alertActions.error(error));
                 }
             );
     };
 
-    function request() { return { type: userConstants.USER_UPDATE_REQUEST, jwt, firstname, lastname, phonenumber, country, sity, status, access, roles, admin_id, teather_id, avatar } }
-    function success(user) { return { type: userConstants.USER_UPDATE_SUCCESS, user } }
-    function failure(error) { return { type: userConstants.USER_UPDATE_FAILURE, error } }
+    function request() { return { type: userConstants.CREATE_USER_REQUEST }}
+    function success(message, user) { return { type: userConstants.CREATE_USER_SUCCESS, message, user }}
+    function failure(error) { return { type: userConstants.CREATE_USER_FAILURE, error }}
+}
+
+function updateSelf(jwt, user) {
+    return dispatch => {
+        dispatch(request());
+        return userService.updateUser(jwt, user)
+            .then(
+                res => {
+                    //localStorage.setItem("user", data.jwt);
+                    dispatch(success(res.message, res.user));
+                },
+                error => {
+                    dispatch(failure(error));
+                }
+            );
+    };
+
+    function request() { return { type: userConstants.USER_UPDATE_REQUEST }}
+    function success(message, user) { return { type: userConstants.USER_UPDATE_SUCCESS, message, user }}
+    function failure(error) { return { type: userConstants.USER_UPDATE_FAILURE, error }}
 }
 
 
@@ -209,6 +219,21 @@ function readOne(user_id, jwt) {
     function request() { return { type: userConstants.GETONE_USER_REQUEST } }
     function success(user) { return { type: userConstants.GETONE_USER_SUCCESS, user } }
     function failure(error) { return { type: userConstants.GETONE_USER_FAILURE, error } }
+}
+
+function readFullInfoByUser(user_id, jwt) {
+    return dispatch => {
+        dispatch(request());
+        return userService.readFullInfoByUser(user_id, jwt)
+            .then(
+                user => dispatch(success(user)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request() { return { type: userConstants.READ_FULL_INFO_BY_USER_REQUEST } }
+    function success(user) { return { type: userConstants.READ_FULL_INFO_BY_USER_SUCCESS, user } }
+    function failure(error) { return { type: userConstants.READ_FULL_INFO_BY_USER_FAILURE, error } }
 }
 
 function readAll(jwt) {
@@ -288,6 +313,22 @@ function getUserRoles(token) {
     function request() { return { type: userConstants.GET_USER_ROLES_REQUEST } }
     function success(roles) { return { type: userConstants.GET_USER_ROLES_SUCCESS, roles } }
     function failure(error) { return { type: userConstants.GET_USER_ROLES_FAILURE, error } }
+}
+
+function updateUserQuestionAnswer(token, answer) { 
+    return dispatch => {
+        dispatch(request());
+
+        return userService.updateUserQuestionAnswer(token, answer)
+            .then(
+                res => dispatch(success(res.message, res.user_question_answer)),
+                error => dispatch(failure(error))
+            );
+    };
+
+    function request() { return { type: userConstants.UPDATE_USER_QUESTION_ANSWER_REQUEST } }
+    function success(message, answer) { return { type: userConstants.UPDATE_USER_QUESTION_ANSWER_SUCCESS, message, answer } }
+    function failure(error) { return { type: userConstants.UPDATE_USER_QUESTION_ANSWER_FAILURE, error } }
 }
 
 function selectUser(user) {

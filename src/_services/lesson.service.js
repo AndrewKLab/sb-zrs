@@ -11,41 +11,46 @@ export const lessonService = {
     //lessons_passed
     createLessonPassed,
     updateLessonPassed,
-    deleteAllPassedLessonsByCourse
+    deleteAllPassedLessonsByCourse,
+    checkPassedLessonAnswers
 };
 
 //создать урок
-function createLesson(jwt, course_id, lesson_number, lesson_name, lesson_videolink, lesson_description, lesson_text, lesson_questions) {
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` },
-        body: JSON.stringify({
-            lesson_number,
-            lesson_name,
-            lesson_videolink,
-            lesson_description,
-            lesson_text,
-            lesson_questions
-        })
-    };
+function createLesson(token, course_id, lesson_number, lesson_name, lesson_videolink, lesson_description, lesson_text, lesson_questions) {
+        const formData = new FormData();
+    
+        formData.append('lesson_number', lesson_number);
+        formData.append('lesson_name', lesson_name);
+        formData.append('lesson_description', lesson_description);
+        formData.append('lesson_text', lesson_text);
+        formData.append('lesson_questions', JSON.stringify(lesson_questions));
+        formData.append('lesson_videolink', lesson_videolink);
+    
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` },
+            body: formData
+        };
+    
 
     return fetch(`/api/lesson/create.php?course_id=${course_id}`, requestOptions).then(handleResponse);
 }
 
 //обновить урок
 function updateLesson(jwt, lesson_id, lesson_number, lesson_name, lesson_videolink, lesson_description, lesson_text, lesson_questions) {
+    const formData = new FormData();
+    
+    formData.append('lesson_number', lesson_number);
+    formData.append('lesson_name', lesson_name);
+    formData.append('lesson_description', lesson_description);
+    formData.append('lesson_text', lesson_text);
+    formData.append('lesson_questions', JSON.stringify(lesson_questions));
+    formData.append('lesson_videolink', lesson_videolink);
 
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` },
-        body: JSON.stringify({
-            lesson_number,
-            lesson_name,
-            lesson_videolink,
-            lesson_description,
-            lesson_text,
-            lesson_questions
-        })
+        headers: { 'Authorization': `Bearer ${jwt}` },
+        body: formData
     };
 
     return fetch(`/api/lesson/update.php?lesson_id=${lesson_id}`, requestOptions).then(handleResponse);
@@ -74,31 +79,45 @@ function readOneLessonById(lesson_id) {
 // !!!-----!!!///
 
 //создать проходимый урок
-function createLessonPassed(course_id, lesson_id, user_id) {
-    return fetch(`${config.apiUrl}/lessons_passed/create.php?course_id=${course_id}&lesson_id=${lesson_id}&user_id=${user_id}`, config.POST).then(handleResponse);
+function createLessonPassed(token, course_id, lesson_id, user_id) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+    };
+    return fetch(`/api/lessons_passed/create.php?course_id=${course_id}&lesson_id=${lesson_id}&user_id=${user_id}`, requestOptions).then(handleResponse);
 }
 
 //обновить проходимый урок
-function updateLessonPassed(passed_id, assessment, finish_time) {
-    return fetch(`${config.apiUrl}/lessons_passed/update.php?id=${passed_id}`,
-        {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'Accept-Encoding': 'gzip, deflate',
-                'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
-            },
-            body: JSON.stringify({
-                finish_time,
-                status: "finished",
-                assessment
-            })
-        }).then(handleResponse);
+function updateLessonPassed(token, passed_id, assessment, finish_time, user_answers) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({
+            finish_time,
+            status: "finished",
+            assessment,
+            user_answers
+        })
+    };
+
+    return fetch(`/api/lessons_passed/update.php?id=${passed_id}`,requestOptions).then(handleResponse);
 }
 
 //удалить проходимый урок
-function deleteAllPassedLessonsByCourse(course_id, user_id) {
-    return fetch(`${config.apiUrl}/lessons_passed/delete_all_by_course_passed.php?course_id=${course_id}&user_id=${user_id}`, config.POST).then(handleResponse);
+function deleteAllPassedLessonsByCourse(token, course_id, user_id) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+    };
+    return fetch(`/api/lessons_passed/delete_all_by_course_passed.php?course_id=${course_id}&user_id=${user_id}`, requestOptions).then(handleResponse);
+}
+
+function checkPassedLessonAnswers(token, passed_lesson_id) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+    };
+    return fetch(`/api/lesson/check_lesson_answers.php?passed_lesson_id=${passed_lesson_id}`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {

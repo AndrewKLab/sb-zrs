@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { connect } from 'react-redux';
 import { lessonActions, courseActions, userActions } from '../_actions'
@@ -14,112 +14,47 @@ import {
     LessonText,
     Divider,
 } from '../_components';
+import { LessonPlane } from './LessonPlane';
 
-class LessonPage extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            open: false,
+const LessonPage = ({ dispatch, match, history, user, jwt, course, get_by_course_loading, get_by_course_message, get_by_course_error, inprocess_lesson }) => {
+    useEffect(() => {
+        const init = async () => {
+            try {
+                await dispatch(lessonActions.getAllLessonsByCourse(match.params.course, user.id, user.teather_id))
+
+            } catch (error) {
+                console.log(error)
+            }
         }
-    }
-    componentDidMount() {
-        const { dispatch, user } = this.props;
-        const { course, lesson } = this.props.match.params;
-        if (user != null) {
-            dispatch(lessonActions.createLessonPassed(course, lesson, user.id))
-                .then(() => {
-                    dispatch(lessonActions.getAllLessonsByCourse(course, user.id, user.teather_id))
-                })
-        }
-
-    }
-
-    render() {
-        const { dispatch, history, data, loading, jwt, user } = this.props;
-        const { category_name, course, lesson } = this.props.match.params;
-
-        var lessons;
-        if (loading == true || loading == undefined || user == null || data == undefined) {
-            return <Loading />
+        if (user !== null) {
+            init();
         } else {
-            lessons = data.lessons;
+            history.push('/sign-in')
         }
+    }, [])
 
+    if (get_by_course_error) return <div className="alert-screen-center"><Alert severity="error" className="mt-3 mb-3">{get_by_course_error}</Alert></div>
+    if (get_by_course_loading || !course) return <Loading />
 
-
-        var finishedLessonsLenght = 0;
-        lessons.forEach(item => item.status == 'finished' ? finishedLessonsLenght++ : finishedLessonsLenght)
-        const { course_id, teather_status, teather_name, teather_avatar, passed_course_id, passed_course_status, assessment, start_time, finish_time } = data;
-        return (
-            <div className='py-3'>
-                <Grid container spacing={1}>
-                    <Grid item xs={10} sm={9} >
-                        {lessons.map((lesson_item, index) => {
-
-
-                            return (
-                                <div key={index}>
-                                    {lesson === lesson_item.id &&
-                                        <div>
-                                            {lesson_item.videolink && <YouTube videoId={lesson_item.videolink} className={'video-container'} containerClassName={'video-container'} onReady={this._onReady} />}
-                                            <div className={'mt-3'}>
-                                                <Typography variant="h4" component='h4' >{lesson_item.name}</Typography>
-                                                {/* <Typography>Описание урока:</Typography> */}
-                                                <div dangerouslySetInnerHTML={{ __html: lesson_item.description }} />
-                                                <Typography variant="h4" component='h4' className={'mt-3'} >Текст урока:</Typography>
-                                                <LessonText text={lesson_item.text} />
-                                                <Divider />
-                                                <Test
-                                                    dispatch={dispatch}
-                                                    history={history}
-                                                    jwt={jwt}
-                                                    user={user}
-                                                    category_name={category_name}
-                                                    course={course}
-                                                    passed_course_id={passed_course_id}
-                                                    course_status={passed_course_status}
-                                                    passed_course_assessment={assessment}
-                                                    passed_course_start_time={start_time}
-                                                    passed_course_finish_time={finish_time}
-                                                    lessons={lessons}
-                                                    finishedLessonsLenght={finishedLessonsLenght}
-                                                    lesson_id={lesson_item.id}
-                                                    number={lesson_item.number}
-                                                    status={lesson_item.status}
-                                                    lesson_passed_id={lesson_item.passed_id}
-                                                    assessment={lesson_item.assessment}
-                                                    finish_time={lesson_item.finish_time}
-                                                    questions={lesson_item.questions}
-                                                />
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-                            )
-                        })}
-                    </Grid>
-                    <Grid item xs={2} sm={3}>
-                        <LessonProgressPlane dispatch={dispatch} history={history} lessons={lessons} category_name={category_name} course={course} user={user} />
-                        <TeatherPlane teather_status={data.teather_role_name} teather_name={teather_name} teather_avatar={teather_avatar} />
-                    </Grid>
+    return (
+            <Grid container spacing={1} className="py-3">
+                <Grid item xs={10} sm={9} >
+                    <LessonPlane lesson_id={match.params.lesson} history={history} />
                 </Grid>
-            </div>
-        );
-    }
+                <Grid item xs={2} sm={3}>
+                    <LessonProgressPlane dispatch={dispatch} history={history} course={course} user={user} />
+                    {/* {user.teather && <TeatherPlane teather={user.teather} />} */}
+                </Grid>
+            </Grid>
+    );
+
 }
 
+
 function mapStateToProps(state) {
-    const { lesson, authentication, users } = state;
-    const { loading, data } = lesson;
-    const { user, jwt } = authentication;
-    const { teathers } = users;
-    return {
-        jwt,
-        user,
-        data,
-        teathers,
-        loading
-    };
+    const { course, get_by_course_loading, get_by_course_message, get_by_course_error, inprocess_lesson } = state.lesson;
+    const { user, jwt } = state.authentication;
+    return { jwt, user, course, get_by_course_loading, get_by_course_message, get_by_course_error, inprocess_lesson };
 }
 
 const connectedLessonPage = connect(mapStateToProps)(LessonPage);

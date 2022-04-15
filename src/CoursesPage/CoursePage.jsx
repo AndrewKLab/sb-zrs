@@ -1,10 +1,9 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { lessonActions, courseActions, userActions } from '../_actions'
-import ClampLines from 'react-clamp-lines';
+import { lessonActions, courseActions } from '../_actions'
 import Moment from 'moment';
 import 'moment/locale/ru';
+
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import config from 'config';
 
@@ -13,331 +12,141 @@ import {
     Alert,
     Loading,
     Paper,
-    Button,
     Typography,
     Grid,
-    Card,
-    CardActionArea,
-    CardContent,
-    CardMedia,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    List,
+    Share,
+    ShareButton,
     ListItem,
     ListItemFirstAction,
     ListItemIcon,
     ListItemText,
     Divider,
 } from '../_components';
+import { CourseActionButton } from './CourseActionButton';
 
-class CoursePage extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            open: false,
-            loading: true
+const CoursePage = ({ dispatch, match, history, user, jwt, course, get_by_course_loading, get_by_course_message, get_by_course_error, create_passed_course_loading, delete_all_passed_lessons_by_course_loading }) => {
+    const [openShareMenu, setOpenShareMenu] = useState(false);
+
+    useEffect(() => {
+        const init = async () => {
+            try {
+                await dispatch(lessonActions.getAllLessonsByCourse(match.params.course, user.id, user.teather_id))
+            } catch (error) {
+                console.log(error)
+            }
         }
-    }
-    componentDidMount() {
-        const { dispatch, history, user, jwt } = this.props;
         if (user !== null) {
-            dispatch(userActions.readOne(user.teather_id, jwt)).then(
-                () => dispatch(lessonActions.getAllLessonsByCourse(this.props.match.params.course, user.id, user.teather_id)).then(
-                    () => this.setState({ loading: false })
-                )
-            )
+            init();
         } else {
             history.push('/sign-in')
         }
+    }, [])
 
 
-    }
-
-    renderTeathersList(user, teathers, teather_name, teather_status, teather_avatar) {
-        if (Number(user.teather_id) === 0 && user.roles === "user") {
-            return (
-                <div>
-                    <Typography variant="h6">Учителя: </Typography>
-                    <Paper variant="outlined" square >
-                        <List className='teathers-list'>
-                            {teathers.map((teather, index) => (
-                                <div key={index}>
-                                    <ListItem button key={index} onPress={() => this.handleClickOpen(teather.id, teather.firstname, teather.lastname, teather.role_name, teather.avatar)}>
-                                        <ListItemFirstAction>
-                                            <ListItemIcon>
-                                                <Avatar alt={teather.firstname + " " + teather.lastname} src={teather.avatar} />
-                                            </ListItemIcon>
-                                            <ListItemText title={teather.firstname + " " + teather.lastname} subtitle={"Статус: " + teather.role_name} />
-                                        </ListItemFirstAction>
-                                    </ListItem>
-                                    {this.renderTeatherDialog()}
-                                </div>
-                            )
-                            )}
-                        </List>
-                    </Paper>
-                </div>
-            )
-        } else if (Number(user.teather_id) === 0 && user.roles !== "user") {
-            return (null)
-        } else {
-            return (
-                <div>
-                    <Typography variant="h6" >Учитель: </Typography>
-                    <Paper variant="outlined" square >
-                        <ListItem button>
-                            <ListItemFirstAction>
-                                <ListItemIcon>
-                                    <Avatar alt={teather_name} src={teather_avatar} />
-                                </ListItemIcon>
-                                <ListItemText title={teather_name} subtitle={"Регалии: " + teather_status} />
-                            </ListItemFirstAction>
-                        </ListItem>
-                    </Paper>
-                </div>
-            )
-        }
-    }
-
-    renderTeatherDialog() {
-        const { open, firstname, lastname, avatar, status, id } = this.state;
-        return (
-            <Dialog onClose={() => this.handleClose()} open={open}>
-
-                <DialogTitle>
-                    <Typography variant='h5' component='h5'>{firstname + ' ' + lastname}</Typography>
-                </DialogTitle>
-                <DialogContent dividers>
-                    <ListItem>
-                        <ListItemIcon>
-                            <Avatar alt={firstname + " " + lastname} src={avatar} className='avatar-large' />
-                        </ListItemIcon>
-                        <ListItemText
-                            title={
-                                <Typography variant="h5">{firstname + " " + lastname}</Typography>
-                            }
-                            subtitle={
-                                <Typography >
-                                    <strong>Статус:</strong>{" "}
-                                    {status}
-                                </Typography>
-                            } />
-                    </ListItem>
-                    <Typography >Информация об учителе</Typography >
-                </DialogContent>
-                <DialogActions>
-                    <Button onPress={() => this.sendRequest(id)} variant='outlined' color="primary">
-                        Подать заявку
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        )
-    }
-
-    handleClickOpen(id, firstname, lastname, status, avatar) {
-        this.setState({
-            open: true,
-            id,
-            firstname,
-            lastname,
-            status,
-            avatar
-        })
-    }
-    handleClose() {
-        this.setState({ open: false })
-    }
-
-    sendRequest(id) {
-        const { dispatch, user, jwt } = this.props
-        dispatch(userActions.updateSelf(user.id, jwt, user.firstname, user.lastname, user.phonenumber, user.country, user.sity, user.status, user.access, user.roles, user.admin_id, id, user.avatar))
-        this.handleClose();
-    }
-
-    // условный рендеринг кнопки контроля курса.
-    renderCourseButton(course_id, category_name, passed_course_status, passed_course_id, assessment, finish_time, user, lessons) {
-        const { history } = this.props
-        if (passed_course_status === "finished") {
-            return <Button variant="contained" color="inherit" onPress={() => this.enroll(course_id, category_name, passed_course_status, passed_course_id, assessment, finish_time, user.id, lessons)}>Пройти еще раз</Button>
-        } else if (passed_course_status === "inprocess") {
-            return <div className="pagination w-100 gap-3 grid-wrap-xs-wrap">
-                <Button variant='contained' onPress={() => history.push(`/courses/${category_name}/${course_id}/${lessons[0].id}`)}>Перейти к курсу</Button>
-                <Button variant='contained' onPress={() => this.enroll(course_id, category_name, passed_course_status, passed_course_id, assessment, finish_time, user.id, lessons)}>Прекратить прохождение курса</Button>
-            </div>
-        } else if (Number(user.teather_id) === 0 && user.roles === "user") {
-            return <Button disabled={true} variant="contained" color="secondary">Записаться на курс</Button>
-        } else {
-            return <Button variant="contained" color="secondary" onPress={() => this.enroll(course_id, category_name, passed_course_status, passed_course_id, assessment, finish_time, user.id, lessons)}>Записаться на курс</Button>
-        }
-    }
-
-    enroll = (course_id, category_name, passed_course_status, passed_course_id, assessment, finish_time, user_id, lessons) => {
-        const { dispatch, history } = this.props
-        const start_time = Moment().format();
-        switch (passed_course_status) {
-            case 'inprocess':
-                dispatch(courseActions.deleteCoursePassed(passed_course_id))
-                break;
+    const enroll = async () => {
+        switch (course.passed_course_status) {
             case 'finished':
-                dispatch(courseActions.updateCoursePassed(
-                    passed_course_id,
-                    passed_course_status = 'inprocess',
-                    assessment = null,
-                    start_time,
-                    finish_time = null))
-                    .then(
-                        dispatch(lessonActions.deleteAllPassedLessonsByCourse(course_id, user_id))
-                            .then(() => history.push(`/courses/${category_name}/${course_id}/${lessons[0].id}`))
-                    )
+                await dispatch(courseActions.updateCoursePassed(jwt, course.passed_course_id, 'inprocess', null, Moment().format(), null))
+                await dispatch(lessonActions.deleteAllPassedLessonsByCourse(jwt, course.course_id, user.id))
+                history.push(`/courses/${course.category_name}/${course.course_id}/${course.lessons[0].id}`)
                 break;
-
+            case 'inprocess':
+                await dispatch(courseActions.deleteCoursePassed(course.passed_course_id))
+                break;
             default:
-                dispatch(courseActions.createCoursePassed(course_id, user_id))
-                history.push(`/courses/${category_name}/${course_id}/${lessons[0].id}`)
+                await dispatch(courseActions.createCoursePassed(jwt, course.course_id, user.id))
+                history.push(`/courses/${course.category_name}/${course.course_id}/${course.lessons[0].id}`)
                 break;
         }
     }
 
-    render() {
-        const { data, user, user_data, lesson_error } = this.props;
-        const { loading } = this.state;
-        var lessons = data !== undefined ? data : {};
-
-        if (loading) return <Loading />
-        if (lesson_error) return <div className="alert-screen-center"><Alert severity="error" className="mt-3 mb-3">{lesson_error}</Alert></div>
-        return (
-            <div className='py-3'>
-                <Paper variant="outlined" square className='d-flex'>
+    if (get_by_course_loading || !course) return <Loading />
+    if (get_by_course_error) return <div className="alert-screen-center"><Alert severity="error" className="mt-3 mb-3">{get_by_course_error}</Alert></div>
+    return (
+        <div className='py-3'>
+            <Paper variant="outlined" square className='d-flex'>
+                <Grid container spacing={0}>
                     <Grid container spacing={0}>
                         <Grid item xs={12} sm={12} md={7}>
                             <div className='course-image-container p-relative'>
-                                <img className='img course-image' src={data.img} alt={data.course_name} />
+                                <img className='img course-image' src={course.img} alt={course.course_name} />
                             </div>
                         </Grid>
                         <Grid item xs={12} sm={12} md={5}>
-                            <div className='course-info-area'>
+                            <div className='course-info-area gap-3'>
                                 <div>
-                                    <Typography variant="h2" component="h1">{data.course_name}</Typography>
-                                    <Divider/>
+                                    <Typography variant="h2" component="h1">{course.course_name}</Typography>
+                                    <Divider />
                                     <div className='course-info-text'>
                                         <Typography variant="h5" component="h5">Количество уроков:</Typography>
-                                        <Typography variant="h5" component="h5">{data.lessons.length}</Typography>
+                                        <Typography variant="h5" component="h5">{course.lessons.length}</Typography>
                                     </div>
                                 </div>
-                                {user.teather_id === "0" ? user.roles === 'user' ? 'В скором времени мы запишем вас в группу к учителю!' : '' :
-                                    (
-                                        <div>
-                                            <Typography variant="h6" >Учитель: </Typography>
-                                            <Paper variant="outlined" square >
-                                                <ListItem>
-                                                    <ListItemFirstAction>
-                                                        <ListItemIcon>
-                                                            <Avatar alt={user_data.firstname + " " + user_data.lastname} src={user_data.avatar} />
-                                                        </ListItemIcon>
-                                                        <ListItemText title={user_data.firstname + " " + user_data.lastname} subtitle={"Регалии: " + user_data.role_name} />
-                                                    </ListItemFirstAction>
-                                                </ListItem>
-                                            </Paper>
-                                        </div>
-                                    )}
-                                {data.passed_course_status === "finished" ?
+                                {user.teather &&
+                                    <div>
+                                        <Typography variant="h6" component="h6" >Ваш учитель: </Typography>
+                                        <Paper variant="outlined" square >
+                                            <ListItem>
+                                                <ListItemFirstAction>
+                                                    <ListItemIcon>
+                                                        <Avatar alt={user.teather.firstname + " " + user.teather.lastname} src={user.teather.avatar} />
+                                                    </ListItemIcon>
+                                                    <ListItemText title={user.teather.firstname + " " + user.teather.lastname} subtitle={"Регалии: " + user.teather.role_name} />
+                                                </ListItemFirstAction>
+                                            </ListItem>
+                                        </Paper>
+                                    </div>
+                                }
+                                {course.passed_course_status === "finished" &&
                                     (
                                         <Paper variant="outlined" square className="mb-3 p-3">
                                             <div className='done-area-title'>
                                                 <Typography variant="h5" component="h5">Курс пройден</Typography>
                                                 <CheckCircleOutlineIcon className='done-area-title-icon' fontSize="large" />
                                             </div>
-                                            <Typography variant="body" component="body">Оценка: {data.assessment}</Typography>
-                                            <Typography variant="body" component="body">Дата и время прохождения: {Moment(data.finish_time).locale('ru').format('Do MMMM YYYY, hh:mm:ss')}</Typography>
+                                            <Typography variant="body" component="body">Дата и время прохождения: {Moment(course.finish_time).locale('ru').format('Do MMMM YYYY, H:mm')}</Typography>
                                         </Paper>
-                                    ) : (null)
+                                    )
                                 }
                                 <div className='course-info-button'>
-                                    {this.renderCourseButton(
-                                        data.course_id,
-                                        data.category_name,
-                                        data.passed_course_status,
-                                        data.passed_course_id,
-                                        data.assessment,
-                                        data.finish_time,
-                                        user,
-                                        data.lessons
-                                    )}
+                                    <CourseActionButton history={history} user={user} course={course} enroll={enroll} create_passed_course_loading={create_passed_course_loading} delete_all_passed_lessons_by_course_loading={delete_all_passed_lessons_by_course_loading} />
                                 </div>
                             </div>
                         </Grid>
-                        <Grid item xs={12} sm={12}><Divider /></Grid>
-                        <Grid item sm={12} className={'ph-3 pb-3'}>
-
-                            <Typography variant="h5" component="h5">О курсе:</Typography>
-                            <Typography>{data.description}</Typography>
-                        </Grid>
                     </Grid>
 
-                </Paper>
-
-
-                {/*
-                data.passed_course_status === "inprocess" || data.passed_course_status === "finished" ? (
-                    <div>
-                        <h5>Уроки:</h5>
-                        <Grid
-                            container
-                            direction={"row"}
-                            justify={"space-around"}
-                            alignItems={"flex-start"}
-                            spacing={1}>
-                            {data.lessons.map((lesson, index) => (
-                                <Grid item xs key={index}>
-                                    <Paper >
-                                        <Card>
-                                            <Link to={`/courses/${data.category_name}/${data.course_id}/${lesson.id}`}>
-                                                <CardActionArea>
-
-                                                    <CardContent>
-                                                        <Typography gutterBottom variant="h6" component="h6">
-                                                            {lesson.name}
-                                                        </Typography>
-                                                        <ClampLines
-                                                            text={lesson.description.replace(/<\/?[^>]+>/g, '')}
-                                                            id="really-unique-id"
-                                                            lines={3}
-                                                            ellipsis="..."
-                                                            buttons={false}
-                                                            innerElement="p"
-                                                        />
-                                                    </CardContent>
-                                                </CardActionArea>
-                                            </Link>
-                                        </Card>
-                                    </Paper>
-                                </Grid>
-                            )
-                            )}
-                        </Grid>
-                    </div>
-                ) : (null)
-*/ }
-            </div>
-        );
-    }
+                    <Grid item xs={12} sm={12}><Divider className={'m-0'} /></Grid>
+                    <Grid item sm={12} className={'p-3'}>
+                        <Typography variant="h5" component="h5">О курсе:</Typography>
+                        <Typography>{course.description}</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={12}><Divider className={'m-0'} /></Grid>
+                    <Grid item xs={12} sm={12} className={'p-3'}>
+                        <div className='d-flex justify-content-end align-items-center'>
+                            <Share
+                                cleanLink={`${config.url}/courses/${course.category_name}/${course.course_id}`}
+                                link={`${course.name ? course.name + '%0A' : ''}${config.url}/courses/${course.category_name}/${course.course_id}`}
+                                show={openShareMenu}
+                                close={() => setOpenShareMenu(false)}
+                                whatsapp
+                                viber
+                                telegram
+                                sms
+                                copy
+                            />
+                            <ShareButton toogleShare={() => setOpenShareMenu(!openShareMenu)} />
+                        </div>
+                    </Grid>
+                </Grid>
+            </Paper>
+        </div>
+    );
 }
 
 function mapStateToProps(state) {
-    const { lesson, authentication, users } = state;
-    const { loading, data, lesson_error } = lesson;
-    const { user, jwt } = authentication;
-    const { user_data } = users;
-    return {
-        jwt,
-        user,
-        data,
-        user_data,
-        loading,
-        lesson_error
-    };
+    const { course, get_by_course_loading, get_by_course_message, get_by_course_error, create_passed_course_loading, delete_all_passed_lessons_by_course_loading } = state.lesson;
+    const { user, jwt } = state.authentication;
+    return { jwt, user, course, get_by_course_loading, get_by_course_message, get_by_course_error, create_passed_course_loading, delete_all_passed_lessons_by_course_loading };
 }
 
 const connectedCoursePage = connect(mapStateToProps)(CoursePage);

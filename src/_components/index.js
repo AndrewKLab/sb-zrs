@@ -8,6 +8,7 @@ export * from './Radio';
 export * from './RadioGroup';
 export * from './IconButton'
 export * from './Button'
+export * from './ButtonLoading'
 export * from './Alert'
 export * from './Loading'
 export * from './Divider'
@@ -65,12 +66,13 @@ export * from './Table/TableActions';
 export * from './Table/TableHeader';
 export * from './Table/TableHeaderText';
 export * from './Table/Row';
+export * from './Table/HeaderCell';
 export * from './Table/Cell';
 
 //User
 export * from './User/UserPlane';
 export * from './User/UserAccordionPlane';
-export * from './User/UsersListPlane';
+export * from './User/UserListItem';
 export * from './User/UserCourseProgress';
 
 //Chat
@@ -90,6 +92,13 @@ export * from './TextEditor';
 export * from './LessonText.jsx'; 
 
 //Notification
-
 export * from './Notifications/Notification'; 
+
+//Share
+export * from './Share/Share';
+export * from './Share/ShareButton';
+
+//_Dropdown
+export * from './Dropdown/_Dropdown';
+
 

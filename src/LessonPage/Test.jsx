@@ -1,203 +1,134 @@
 import React, { useState } from 'react'
-import { Form, Typography, Button, Alert, Divider } from '../_components';
+import { Typography, Button, Alert, Divider } from '../_components';
 import { lessonActions, userActions, courseActions } from '../_actions'
 import { LessonFinishedPlane, Question, LessonControlButton } from './';
-import { useForm } from "react-hook-form"
 import Moment from 'moment';
 import 'moment/locale/ru';
+import { connect } from 'react-redux';
+import { Formik, Form } from "formik";
 
-export const Test = ({ dispatch, history, jwt, user, category_name, course, passed_course_id, course_status, passed_course_assessment, passed_course_start_time, passed_course_finish_time, lessons, finishedLessonsLenght, lesson_id, number, status, lesson_passed_id, assessment, finish_time, questions }) => {
+const Test = ({ dispatch, jwt, user, history, course, inprocess_lesson, update_passed_lesson_loading, update_passed_lesson_error, update_passed_course_loading, update_passed_course_error }) => {
     const [testErrors, setTestErrors] = useState('')
-    const { register, handleSubmit, errors } = useForm();
-    const onSubmit = (data) => {
-        if (status === "finished") {
-            if (Number(number) === lessons.length && Number(finishedLessonsLenght) !== lessons.length) {
-                console.log('Предыдущий непройденый урок')
-                // Предыдущий непройденый урок
-                backToUnFinisfedLesson()
-            } else if (finishedLessonsLenght === lessons.length) {
-                //Пройти курс
-                if (course_status === "inprocess") {
-                    var result = lessons.reduce((acc, item) => {
-                        acc[item.id] = item.assessment;
-                        return Object.values(acc);
-                    }, {});
-                    var sum = 0;
-                    result = result.filter(i => i !== null && i !== '0');
-                    var assessment;
-                    if (result.length) {
-                        for (var i = 0; i < result.length; i++) {
-                            sum = sum + parseInt(result[i])
-                        }
-                        assessment = sum / result.length;
-                    } else {
-                        assessment = null
-                    }
-
-                    finishCourse(assessment)
-                } else {
-                    // Назад к курсу
-                    backToCourse()
-                }
-            } else {
-                goToNextLesson()
-            }
-        } else {
-            var err = ''
-            if (questions.length > 0) {
-                var isValid = true;
-                Object.values(data).every(element => {
-                    if (element === null) {
-                        isValid = false
-                        return false
-                    } else {
-                        return true
-                    }
-                })
-
-                if (isValid) {
-                    //верные ответы
-                    var currentAnserwers = questions.reduce((acc, item) => {
-                        acc[item.id] = item.question_type === 'checkbox' ?
-                            item.answers.map((answer, index) => (item.id === answer.question_id ? answer.current !== '0' ? answer.id : null : null)).filter(item => item !== null)
-                            : item.question_type === 'text' ? item.answers.filter(i => i.current !== '0')[0].answer : item.answers.filter(i => i.current !== '0')[0].id
-                        return acc;
-                    }, {});
-
-                    var currentAnserwersArr = Object.keys(currentAnserwers);
-                    var assessment = 0; //оценка
-                    for (var i = 0; i < currentAnserwersArr.length; i++) {
-                        let currAns = currentAnserwers[Object.keys(currentAnserwers)[i]]; //Правильный ответ
-                        let userAns = data[Object.keys(currentAnserwers)[i]]; //Ответ пользователя
-                        if (Array.isArray(currAns) && Array.isArray(userAns)) {
-                            for (var a = 0; a < currAns.length; a++) {
-                                if (currAns[i] === userAns[a]) {
-                                    assessment++
-                                }
-                            }
-                        } else {
-                            if (currAns.toUpperCase() == userAns.toUpperCase()) {
-                                assessment++
-                            } else {
-                            }
-                        }
-                    }
-                    assessment = Math.round(5 * (assessment/currentAnserwersArr.length))
-                } else {
-                    err = 'Пожалуйста пройдите тест!'
-                    setTestErrors('Пожалуйста пройдите тест!')
-                }
-            } else {
-                assessment = null
-            }
-            if (err === '') {
-                setTestErrors('')
-                finishLesson(lesson_passed_id, assessment, Moment().format())
-            }
-        }
-
-
-    };
 
     // Завершить курс
-    const finishCourse = (assessment) => {
-        const status = "УЧЕНИК"
-        if (user.status === "ИСКАТЕЛЬ") {
-            dispatch(userActions.updateSelf(user.id, jwt, user.firstname, user.lastname, user.phonenumber, user.country, user.sity, status, user.access, user.roles, user.admin_id, user.teather_id, user.avatar))
-                .then(() => dispatch(courseActions.updateCoursePassed(
-                    passed_course_id,
-                    'finished',
-                    assessment,
-                    passed_course_start_time,
-                    Moment().format()))
-                ).then(() => history.push(`/courses/${category_name}/${course}`))
-        } else {
-            dispatch(courseActions.updateCoursePassed(
-                passed_course_id,
-                'finished',
-                assessment,
-                passed_course_start_time,
-                Moment().format())
-            ).then(() => history.push(`/courses/${category_name}/${course}`))
+    const finishCourse = async (assessment) => {
+        try {
+            //if (user.role_type === "ROLE_USER" && role_name === "Искатель") await dispatch(userActions.updateSelf(jwt, { ...user, user_role_id: 6 }))
+            await dispatch(courseActions.updateCoursePassed(jwt, course.passed_course_id, 'finished', assessment, course.start_time, Moment().format()))
+            //history.push(`/courses/${category_name}/${course}`)
+        } catch (error) {
+            console.log(error)
         }
     }
 
     //Назад к курсу
     const backToCourse = () => {
-        history.push(`/courses/${category_name}/${course}`);
+        history.push(`/courses/${course.category_name}/${course.course_id}`);
     }
 
     //Назад предыдущему непройденому уроку
     const backToUnFinisfedLesson = () => {
-        for (var i = 0; i < lessons.length; i++) {
-            if (lessons[i].status === 'inprocess' || lessons[i].status === null) {
-                history.push(`/courses/${category_name}/${course}/${lessons[i].id}`)
+        for (var i = 0; i < course.lessons.length; i++) {
+            if (course.lessons[i].status === 'inprocess' || course.lessons[i].status === null) {
+                goToLesson(course.lessons[i])
                 break;
             }
         }
     }
 
-    //Следующий урок
-    const goToNextLesson = () => {
-        if (user != undefined) {
-            dispatch(lessonActions.createLessonPassed(course, lessons[Number(number)].id, user.id))
-                .then(() => {
-                    dispatch(lessonActions.getAllLessonsByCourse(course, user.id, user.teather_id))
-                        .then(() => {
-                            window.scrollTo(0, 0);
-                            history.push(`/courses/${category_name}/${course}/${lessons[Number(number)].id}`)
-                        }
-                        )
-                })
-
-        }
-    }
-
-    // Пройти урок
-    const finishLesson = (lesson_passed_id, assessment, finish_time) => {
-        dispatch(lessonActions.updateLessonPassed(lesson_passed_id, assessment, finish_time))
-    }
-
-    const handleBack = () => {
+    const goToLesson = (lesson) => {
         window.scrollTo(0, 0);
-        history.push(`/courses/${category_name}/${course}/${lessons[Number(number - 2)].id}`)
+        //dispatch(lessonActions.setInprocessLesson(course.lessons.find((item) => item.id === lesson.id)))
+        history.push(`/courses/${course.category_name}/${course.course_id}/${lesson.id}`);
     }
 
     return (
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Formik
+            initialValues={inprocess_lesson.questions.reduce((a, item) => ({ ...a, [item.id]: item.question_type === 'checkbox' ? [] : "" }), {})}
+            onSubmit={(values) => {
+                setTestErrors('')
+                if (inprocess_lesson.status === "finished") {
+                    if (Number(inprocess_lesson.number) === course.lessons.length && Number(course.lessons.filter(item => item.status === "finished").length) !== course.lessons.length) {
+                        // Предыдущий непройденый урок
+                        backToUnFinisfedLesson()
+                    } else if (course.lessons.filter(item => item.status === "finished").length === course.lessons.length) {
+                        //Пройти курс
+                        if (course.passed_course_status === "inprocess") finishCourse(0)
+                        // Назад к курсу
+                        else {
+                            history.push(`/courses/${course.category_name}/${course.course_id}`);
+                            console.log(312)
+                        }
+                    } else {
+                        //Следующий урок
+                        goToLesson(course.lessons.find(item => Number(item.number) === (Number(inprocess_lesson.number) + 1)))
+                    }
+                } else {
+                    var isValid = true;
+                    if (inprocess_lesson.questions.length > 0) {
+                        Object.values(values).every(element => {
+                            if (element === '' || (typeof element === 'object' && element.length === 0)) {
+                                isValid = false
+                                return false
+                            } else return true
+                        })
+                    }
+                    if (isValid) {
+                        console.log(values)
+                        dispatch(lessonActions.updateLessonPassed(jwt, inprocess_lesson.passed_id, 0, Moment().format(), values))
+                    }
+                    else setTestErrors('Пожалуйста пройдите тест!')
+                }
+            }}
+        >
+            {({ errors, values, handleChange, setFieldValue, touched }) => (
 
-            {status !== 'finished' ? (
-                <div>
-                    {questions.length !== 0 ? (<Typography component="h4" variant="h4" className='mb-2' >Тест:</Typography>) : (null)}
-                    {questions.map((question, index) => (
-                        <Question question={question} key={index} register={register} />
-                    ))}
-                </div>
-            ) : (
-                <LessonFinishedPlane assessment={assessment} finish_time={finish_time} />
+                <Form>
+                    {inprocess_lesson.status === 'finished' ? (
+                        <React.Fragment>
+                            <LessonFinishedPlane assessment={inprocess_lesson.assessment} finish_time={inprocess_lesson.finish_time} />
+                            <Divider />
+                        </React.Fragment>
+                    ) : (inprocess_lesson.questions.length > 0 &&
+                        <div>
+                            <Typography component="h4" variant="h4" className='mb-2' >Тест:</Typography>
+                            {inprocess_lesson.questions.map((question, index) => (
+                                <Question values={values} handleChange={handleChange} setFieldValue={setFieldValue} question={question} key={index} />
+                            ))}
+                            {testErrors !== '' && <Alert severity="error" className="mt-3 mb-3">{testErrors}</Alert>}
+                            {update_passed_lesson_error && <Alert severity="error" className="mt-3 mb-3">{update_passed_lesson_error}</Alert>}
+                            <Divider />
+                        </div>
+                    )}
+
+
+                    <div className={'d-flex grid-justify-xs-space-between'}>
+                        <Button
+                            color="primary"
+                            disabled={Number(inprocess_lesson.number) === 1}
+                            onPress={() => goToLesson(course.lessons.find(item => Number(item.number) === (Number(inprocess_lesson.number) - 1)))}>
+                            Предыдущий урок
+                        </Button>
+                        <LessonControlButton
+                            course={course}
+                            lesson={inprocess_lesson}
+                            finished_lessons_lenght={course.lessons.filter(item => item.status === "finished").length}
+                            update_passed_lesson_loading={update_passed_lesson_loading}
+                            update_passed_course_loading={update_passed_course_loading}
+                        />
+                    </div>
+                </Form>
             )}
-            {testErrors !== '' && <Alert severity="error" className="mt-3 mb-3">{testErrors}</Alert>}
-            <Divider />
-            <div className={'d-flex grid-justify-xs-space-between'}>
-                <Button
-                    color="primary"
-                    disabled={Number(number) === 1}
-                    onPress={() => handleBack()}>
-                    Предыдущий урок
-                </Button>
-                <LessonControlButton
-                    user={user}
-                    course={course}
-                    course_status={course_status}
-                    lessons={lessons}
-                    finishedLessonsLenght={finishedLessonsLenght}
-                    lesson_id={lesson_id}
-                    status={status}
-                    number={number}
-                    lesson_passed_id={lesson_passed_id}
-                    finish_time={finish_time}
-                />
-            </div>
-        </Form>
+        </Formik>
+
     )
 }
+
+function mapStateToProps(state) {
+    const { course, get_by_course_loading, get_by_course_message, get_by_course_error, inprocess_lesson, update_passed_lesson_loading, update_passed_lesson_error, update_passed_course_loading, update_passed_course_error } = state.lesson;
+    const { user, jwt } = state.authentication;
+    return { jwt, user, course, get_by_course_loading, get_by_course_message, get_by_course_error, inprocess_lesson, update_passed_lesson_loading, update_passed_lesson_error, update_passed_course_loading, update_passed_course_error };
+}
+
+const connectedTest = connect(mapStateToProps)(Test);
+export { connectedTest as Test };

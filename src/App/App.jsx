@@ -3,10 +3,15 @@ import { Router } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getDeviceInfo, getTokenHelper, history } from '../_helpers';
 import { userActions } from '../_actions'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fab } from '@fortawesome/free-brands-svg-icons'
+import { fas } from '@fortawesome/free-solid-svg-icons'
 
 import { Header, Footer, Loading } from '../_components';
 
 import { MainRouter } from '../App';
+
+if (library.add) library.add(fab, fas)
 
 const App = ({ jwt, dispatch, validate_token_loading, isLogined }) => {
     const [loading, setLoading] = useState(true)

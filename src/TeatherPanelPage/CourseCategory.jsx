@@ -39,7 +39,7 @@ export const CourseCategory = ({ history, user, name, category, deleteDialog, up
                                     </ListItemFirstAction>
                                     <ListItemSecondAction>
                                         <div title={item.published === "0" ? 'Неопубликованный курс' : 'Опубликованный курс'} className='mr-3'>
-                                            {user.roles === 'ROLE_ADMIN' || user.roles === 'ROLE_SUPER_ADMIN' ?
+                                            {user.role_type === 'ROLE_ADMIN' || user.role_type === 'ROLE_SUPER_ADMIN' ?
                                                 <IconButton onClick={() => updateDialog(item)}>
                                                     {item.published === "0" ? <EventBusyOutlinedIcon className='warning-area-title-icon' /> : <EventAvailableOutlinedIcon className='done-area-title-icon' />}
                                                 </IconButton>

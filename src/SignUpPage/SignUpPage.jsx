@@ -63,8 +63,10 @@ class SignUpPage extends React.Component {
         this.state = {
             phonenumber: "",
             password: "",
+            privacy: false,
             showPassword: false,
-            
+            signup_error_text: '',
+
             submitted: false
         };
     }
@@ -81,8 +83,14 @@ class SignUpPage extends React.Component {
         }
     };
 
+    privacy() {
+        const { privacy } = this.state;
+        this.setState({ privacy: !privacy })
+    }
+
     render() {
         const { signup_error } = this.props;
+        const { privacy, signup_error_text } = this.state;
         const { promouter_id, teather_id } = this.props.match.params;
         return (
             <Grid container>
@@ -95,17 +103,26 @@ class SignUpPage extends React.Component {
                             password: "",
                             passwordConfirmation: "",
                             country: "",
-                            sity: ""
+                            sity: "",
                         }}
                         validationSchema={SignupSchema}
 
                         onSubmit={(values) => {
                             const { firstname, lastname, phonenumber, country, sity, password } = values;
-                            this.setState({ submitted: true });
+                            const { privacy } = this.state;
                             const { dispatch } = this.props;
-                            if (phonenumber && password) {
-                                dispatch(userActions.signup(firstname, lastname, phonenumber, country, sity, password, teather_id, promouter_id));
+                            this.setState({ signup_error_text: '' });
+
+                            if (privacy) {
+                                this.setState({ submitted: true });
+
+                                if (phonenumber && password) {
+                                    dispatch(userActions.signup(firstname, lastname, phonenumber, country, sity, password, teather_id, promouter_id));
+                                }
+                            } else {
+                                this.setState({ signup_error_text: 'Пожалуйста дайте согласие на обработку персональных данных!' });
                             }
+
                         }
                         }
                     >
@@ -118,6 +135,9 @@ class SignUpPage extends React.Component {
 
                                 {signup_error && (
                                     <Alert className='error mb-3' severity="error">{signup_error}</Alert>
+                                )}
+                                {signup_error_text && (
+                                    <Alert className='error mb-3' severity="error">{signup_error_text}</Alert>
                                 )}
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} sm={12} md={6}>
@@ -251,18 +271,22 @@ class SignUpPage extends React.Component {
                                         />
                                     </Grid>
                                 </Grid>
+                                <FormControlLabel
+                                    control={<Checkbox checked={privacy} name='privacy' onChange={() => this.privacy()} />}
+                                    label={<a href='/privacy' target="_blank">Согласие на обработку персональных данных</a>}
+                                />
                                 <Button
                                     type="submit"
                                     fullWidth
                                     className='my-3'
                                 >
                                     Регистрация
-                    </Button>
+                                </Button>
                                 <Grid container justify="flex-end">
                                     <Grid item>
                                         <Link to="/sign-in" variant="body2">
                                             Уже есть аккаут? Войти
-                        </Link>
+                                        </Link>
                                     </Grid>
                                 </Grid>
                             </Form>
@@ -271,7 +295,7 @@ class SignUpPage extends React.Component {
                 </Grid>
 
                 <Grid className={'p-relative'} xs={12} sm={12} md={12} lg={6}>
-                    <img src={`${config.url}/assets/img/signup.webp`} width='100%' height={"100%"} style={{minHeight: '600px'}} alt="sign-up" />
+                    <img src={`${config.url}/assets/img/signup.webp`} width='100%' height={"100%"} style={{ minHeight: '600px' }} alt="sign-up" />
                     <div className='signup-img-text'>
                         <Typography className={'text-align-center'} variant={'h1'} component={'h1'}>Для чего нужна регистрация?</Typography>
                         <Typography variant={'body'} component={'body'}>Регистрация дает возможность завести для Вас на сайте личный кабинет, где хранятся Ваши достижения, "свитки" и пр.</Typography>

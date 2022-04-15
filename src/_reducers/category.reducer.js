@@ -1,6 +1,13 @@
 import { categoryConstants } from '../_constants';
+const initialState = {
+  basic: null,
+  social: null,
+  special: null,
+  national: null,
 
-export function categories(state = {}, action) {
+  loading: false,
+}
+export function categories(state = initialState, action) {
   switch (action.type) {
     //GET ALL CATEGORIES
     case categoryConstants.GETALL_REQUEST:
@@ -17,6 +24,7 @@ export function categories(state = {}, action) {
       };
     case categoryConstants.GETALL_FAILURE:
       return {
+        loading: false,
         error: action.error
       };
     default:

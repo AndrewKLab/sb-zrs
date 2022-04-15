@@ -3,17 +3,20 @@ import config from 'config';
 export const userService = {
     signin,
     signup,
+    createUser,
     logout,
     updateUser,
     deleteUser,
     validateToken,
     readOne,
+    readFullInfoByUser,
     readAll,
     getAllTeathers,
     getAllStudentsByUser,
     getAllStudentsByPromouter,
     createUserDevice,
-    getUserRoles
+    getUserRoles,
+    updateUserQuestionAnswer
 };
 
 
@@ -41,6 +44,16 @@ function signin(phonenumber, password, dvc_platform, dvc_client, dvc_signature, 
 
             return response;
         });
+}
+
+function createUser(token, user) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify(user)
+    };
+
+    return fetch(`/api/user/create.php`, requestOptions).then(handleResponse)
 }
 
 function signup(firstname, lastname, phonenumber, country, sity, password, teather_id, promouter_id) {
@@ -89,16 +102,25 @@ function logout(token, dvc_signature, dvc_fbc_token) {
 }
 
 function updateUser(token, user) {
-const userData = {
-    ...user, 
-    admin_id: typeof user.admin === "object" ? user.admin.id : user.admin_id !== undefined ?  user.admin_id : 0,
-    teather_id: typeof user.teather === "object" ? user.teather.id : user.teather_id !== undefined ?  user.teather_id : 0,
-    //promouter_id: typeof user.promouter === "object" ? user.promouter.id : 0
-}
+
+    const userData = {
+        ...user,
+        // admin_id: typeof user.admin === "object" ? user.admin.id : user.admin_id !== undefined ? user.admin_id : 0,
+        // teather_id: typeof user.teather === "object" ? user.teather.id : user.teather_id !== undefined ? user.teather_id : 0,
+        //promouter_id: typeof user.promouter === "object" ? user.promouter.id : 0
+    }
+
+    const data = new FormData();
+
+    for (var key in userData) {
+        data.append(key, userData[key]);
+    }
+
+
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify(userData)
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: data
     };
 
     return fetch(`/api/user/update.php?user_id=${userData.id}`, requestOptions).then(handleResponse)
@@ -132,6 +154,14 @@ function readOne(user_id, jwt) {
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwt}` }
     };
     return fetch(`${config.apiUrl}/user/read_one_user.php?user_id=${user_id}`, requestOptions).then(handleResponse);
+}
+
+function readFullInfoByUser(user_id, jwt) {
+    const requestOptions = {
+        method: 'GET',
+        headers: { 'Authorization': `Bearer ${jwt}` }
+    };
+    return fetch(`${config.apiUrl}/user/read_one_user_full_info.php?user_id=${user_id}`, requestOptions).then(handleResponse);
 }
 
 function readAll(jwt) {
@@ -179,6 +209,23 @@ function getUserRoles(token) {
         headers: { 'Authorization': `Bearer ${token}` },
     };
     return fetch(`/api/user/user_roles/get_user_roles.php`, requestOptions).then(handleResponse);
+}
+function updateUserQuestionAnswer(token, answer) {
+    const formData = new FormData();
+
+    formData.append('uqa_user_id', answer.uqa_user_id);
+    formData.append('uqa_lesson_passed_id', answer.uqa_lesson_passed_id);
+    formData.append('uqa_question_id', answer.uqa_question_id);
+    formData.append('uqa_user_answer', answer.uqa_user_answer);
+    formData.append('uqa_current', answer.uqa_current);
+
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+    };
+
+    return fetch(`/api/user_question_answers/update.php?uqa_id=${answer.uqa_id}`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {

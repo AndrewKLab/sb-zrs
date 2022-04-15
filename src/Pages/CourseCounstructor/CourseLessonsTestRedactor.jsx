@@ -50,14 +50,14 @@ const CourseLessonsTestRedactor = ({
     const saveQestion = () => {
         //dispatch(lessonActions.selectLessonTestQuestion(""))
         if (selectedQuestionState.question_text) {
-            if (selectedQuestionState.question_answers.filter(item => item.answer_answer === "").length > 0) {
-                setSelectedQuestionState({ ...selectedQuestionState, question_answers: selectedQuestionState.question_answers.map((answer, i) => answer.answer_answer === "" ? { ...answer, answer_error: 'Это поле является обязательным для заполнения.' } : answer) })
+            if (selectedQuestionState.question_answers.filter(item => selectedQuestionState.question_type !== 'text' && item.answer_answer === "").length > 0) {
+                setSelectedQuestionState({ ...selectedQuestionState, question_answers: selectedQuestionState.question_answers.map((answer, i) => selectedQuestionState.question_type !== 'text' && answer.answer_answer === "" ? { ...answer, answer_error: 'Это поле является обязательным для заполнения.' } : answer) })
             } else {
                 if (selectedQuestionState.question_answers.length > 0)
                     if (selected_question !== null && selected_question !== "") {
                         dispatch(lessonActions.updateLessonTestQuestion(selectedQuestionState))
                     } else {
-                        dispatch(lessonActions.createLessonTestQuestion(selectedQuestionState))
+                        dispatch(lessonActions.createLessonTestQuestion({ ...selectedQuestionState, question_id: `q-${selected_lesson.lesson_questions ? selected_lesson.lesson_questions.length : 0}` }))
                     } else {
                     setSelectedQuestionState({ ...selectedQuestionState, question_answers_error: 'Необходимо добавить хотябы один ответ.' })
                 }
@@ -72,7 +72,7 @@ const CourseLessonsTestRedactor = ({
     }
 
     const selectQestion = (question, index) => {
-        setSelectedQuestionState({...question, question_text_error: "", question_answers_error: ""})
+        setSelectedQuestionState({ ...question, question_text_error: "", question_answers_error: "" })
         dispatch(lessonActions.selectLessonTestQuestion(question, index))
     }
 
@@ -85,7 +85,12 @@ const CourseLessonsTestRedactor = ({
     const createAnswer = () => {
         setSelectedQuestionState({
             ...selectedQuestionState,
-            question_answers: [...selectedQuestionState.question_answers, {
+            question_answers: selectedQuestionState.question_answers ? [...selectedQuestionState.question_answers, {
+                answer_name: null,
+                answer_answer: "",
+                answer_current: "0",
+                answer_error: "",
+            }] : [{
                 answer_name: null,
                 answer_answer: "",
                 answer_current: "0",
@@ -161,7 +166,12 @@ const CourseLessonsTestRedactor = ({
                                             setSelectedQuestionState({
                                                 ...selectedQuestionState,
                                                 question_type: val.target.value,
-                                                question_answers: selectedQuestionState.question_answers.map((answer, index) => { return ({ ...answer, answer_current: "0" }) })
+                                                question_answers: val.target.value === 'text' ? [{
+                                                    answer_name: null,
+                                                    answer_answer: "",
+                                                    answer_current: "0",
+                                                    answer_error: ""
+                                                }] : selectedQuestionState.question_answers.map((answer, index) => { return ({ ...answer, answer_current: "0" }) })
                                             })
                                         }
                                         InputProps={{
@@ -170,7 +180,7 @@ const CourseLessonsTestRedactor = ({
                                             ),
                                             endAdornmentClass: 'select-arrow'
                                         }}
-                                        
+
                                         className='w-100 mb-3'
                                     >
                                         <SelectItem selectded={selectedQuestionState.question_type === 'checkbox'} value={'checkbox'}>Несколько верных ответов</SelectItem>
@@ -178,12 +188,12 @@ const CourseLessonsTestRedactor = ({
                                         <SelectItem selectded={selectedQuestionState.question_type === 'text'} value={'text'}>Текстовый ответ</SelectItem>
                                     </TextInput>
 
-                                    {selectedQuestionState.question_answers.length !== 0 &&
-                                        <table className='w-100'>
+                                    {selectedQuestionState.question_answers && selectedQuestionState.question_answers.length !== 0 &&
+                                        <table className={`${selectedQuestionState.question_type === 'text' ? 'd-none' : 'd-block'} w-100`}>
                                             <tbody>
                                                 <tr>
                                                     <th className='pb-2'>Ответы</th>
-                                                    <th className='text-align-end pb-2'>Правильный ответ</th>
+                                                    {selectedQuestionState.question_type !== 'text' && <th className='text-align-end pb-2'>Правильный ответ</th>}
                                                     <th className='text-align-end pb-2'>Действия</th>
                                                 </tr>
                                                 {selectedQuestionState.question_answers.map((answer, index) => (
@@ -205,15 +215,17 @@ const CourseLessonsTestRedactor = ({
                                                                 }
                                                             />
                                                         </td>
-                                                        <td className='text-align-end'>
-                                                            {selectedQuestionState.question_type === 'text' ?
-                                                                answer.answer_answer
-                                                                :
-                                                                <IconButton onClick={() => setCurrentAnswer(index)}>
-                                                                    {answer.answer_current !== '0' ? (<DoneIcon className='done-area-title-icon' />) : (<CloseIcon className='danger-area-title-icon' />)}
-                                                                </IconButton>
-                                                            }
-                                                        </td>
+                                                        {selectedQuestionState.question_type !== 'text' &&
+                                                            <td className='text-align-end'>
+                                                                {selectedQuestionState.question_type === 'text' ?
+                                                                    answer.answer_answer
+                                                                    :
+                                                                    <IconButton onClick={() => setCurrentAnswer(index)}>
+                                                                        {answer.answer_current !== '0' ? (<DoneIcon className='done-area-title-icon' />) : (<CloseIcon className='danger-area-title-icon' />)}
+                                                                    </IconButton>
+                                                                }
+                                                            </td>
+                                                        }
                                                         <td className='text-align-end'>
                                                             <IconButton onClick={() => deleteAnswer(index)}>
                                                                 <DeleteForeverOutlinedIcon className='danger-area-title-icon' />
@@ -223,7 +235,7 @@ const CourseLessonsTestRedactor = ({
                                                 ))}
                                             </tbody>
                                         </table>}
-                                    {selectedQuestionState.question_type === 'text' && selectedQuestionState.question_answers.length > 0 ? null : <Button fullWidth onPress={createAnswer}>{'Добавить ответ'}</Button>}
+                                    {selectedQuestionState.question_type === 'text' ? null : <Button fullWidth onPress={createAnswer}>{'Добавить ответ'}</Button>}
                                     <Divider />
                                     <div className='d-flex grid-justify-xs-space-between grid-align-items-xs-center'>
                                         <div>
@@ -251,8 +263,8 @@ const CourseLessonsTestRedactor = ({
                                             </IconButton>
                                         </div>
                                     </div>
-                                    <div className='d-flex grid-direction-xs-column ml-3 mr-3'>
-                                        <table className='w-100'>
+                                    <div className={`${question.question_type === 'text' ? 'd-none' : 'd-flex'} grid-direction-xs-column ml-3 mr-3`}>
+                                        <table  className={`${question.question_type === 'text' ? 'd-none' : 'd-block'} w-100`}>
                                             <tbody>
                                                 <tr>
                                                     <th>Ответы</th>
@@ -369,7 +381,12 @@ const CourseLessonsTestRedactor = ({
                             setSelectedQuestionState({
                                 ...selectedQuestionState,
                                 question_type: val.target.value,
-                                question_answers: selectedQuestionState.question_answers.map((answer, index) => { return ({ ...answer, answer_current: "0" }) })
+                                question_answers: val.target.value === 'text' ? [{
+                                    answer_name: null,
+                                    answer_answer: "",
+                                    answer_current: "0",
+                                    answer_error: ""
+                                }] : selectedQuestionState.question_answers.map((answer, index) => { return ({ ...answer, answer_current: "0" }) })
                             })
                         }
                         InputProps={{
@@ -386,7 +403,7 @@ const CourseLessonsTestRedactor = ({
                     </TextInput>
 
                     {selectedQuestionState.question_answers.length !== 0 &&
-                        <table className='w-100'>
+                        <table className={`${selectedQuestionState.question_type === 'text' ? 'd-none' : 'd-block'} w-100`}>
                             <tbody>
                                 <tr>
                                     <th className='pb-2'>Ответы</th>
@@ -430,7 +447,7 @@ const CourseLessonsTestRedactor = ({
                                 ))}
                             </tbody>
                         </table>}
-                    {selectedQuestionState.question_type === 'text' && selectedQuestionState.question_answers.length > 0 ? null : <Button fullWidth onPress={createAnswer}>{'Добавить ответ'}</Button>}
+                    {selectedQuestionState.question_type === 'text' ? null : <Button fullWidth onPress={createAnswer}>{'Добавить ответ'}</Button>}
                 </div>
             }
 

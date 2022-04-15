@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container } from '../../_components';
+import { Container, Grid, Typography } from '../../_components';
 import config from 'config';
 
 export class Footer extends React.Component {
@@ -7,31 +7,37 @@ export class Footer extends React.Component {
         return (
             <footer>
                 <Container>
-
-                    <div className="d-flex gap-5">
-                        <div >
-                            <p><b>Контакты</b></p>
-                            <div>
-                                <p className="m-0"><strong>Адрес:</strong> Подольский район, д. Сергеевка, д.1А</p>
-                                <p className="m-0"><strong>Телефоны:</strong>(495) 996-78-41; 996-78-42; 996-56-92</p>
-                                <p className="m-0"><strong>E-mail:</strong> <a href="mailto:zrsasd@gmail.com" className="text-dark">zrsasd@gmail.com</a></p>
-                            </div>
-                        </div>
-                        <div className="social-plane">
-                            <a href="/">
-                                <img src={`${config.url}/assets/icons/youtube.png`} />
-                            </a>
-                            <a href="/">
-                                <img src={`${config.url}/assets/icons/vk.png`} />
-                            </a>
-                            <a href="/">
+                    <Grid container>
+                        <Grid item md={12} sm={12}>
+                            <div className="d-flex gap-5">
+                                <div >
+                                    <p><b>Контакты</b></p>
+                                    <div>
+                                        <p className="m-0"><strong>Адрес: </strong>г. Тула, ул. Станиславского, д. 48</p>
+                                        <p className="m-0"><strong>Горячая линия: </strong><a href="tel:8(800)1001844" className="text-link">8 (800) 100 18 44</a></p>
+                                        <p className="m-0"><strong>E-mail: </strong> <a href="mailto:contact@kniga-knig.info" className="text-link">contact@kniga-knig.info</a></p>
+                                    </div>
+                                </div>
+                                <div className="social-plane">
+                                    <a href="/">
+                                        <img src={`${config.url}/assets/icons/youtube.png`} />
+                                    </a>
+                                    <a href="/">
+                                        <img src={`${config.url}/assets/icons/vk.png`} />
+                                    </a>
+                                    {/* <a href="/">
                                 <img src={`${config.url}/assets/icons/facebook.png`} />
                             </a>
                             <a href="/">
                                 <img src={`${config.url}/assets/icons/instagram.png`} />
-                            </a>
-                        </div>
-                    </div>
+                            </a> */}
+                                </div>
+                            </div>
+                        </Grid>
+                        <Grid item md={12} sm={12}>
+                            <div className='text-center'>© РТЦ «Голос надежды» 2022</div>
+                        </Grid>
+                    </Grid>
                 </Container>
             </footer>
         )

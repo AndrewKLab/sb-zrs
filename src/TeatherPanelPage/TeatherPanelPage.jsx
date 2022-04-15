@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { userActions, courseActions, chatActions } from '../_actions';
+import { Menu, Dropdown } from 'antd';
 import {
     Avatar,
     Accordion,
     IconButton,
-    Dialog,
+    Button,
     DialogTitle,
     DialogContent,
     DialogActions,
@@ -22,9 +23,9 @@ import {
     ListItemSubtitle,
     ListItemText,
     ListItemTitle,
-    Menu,
-    MenuItem,
-    TextInput
+
+    TextInput,
+    UserListItem
 } from '../_components';
 import { ProgressCircle } from '../LessonPage';
 import { TeatherCourses } from './';
@@ -32,11 +33,15 @@ import { UpdateUserAccessDialog, UpdateUserStatusDialog } from '../Dialogs';
 import config from 'config';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 
+import { CreateUserDialog } from '../Dialogs';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
 const TeatherPanelPage = ({ history, dispatch, jwt, user, courses, course_error, students, promouters }) => {
     const [loading, setLoading] = useState(true);
     const [statusDialog, setStatusDialog] = useState(false);
     const [accessDialog, setAccessDialog] = useState(false);
+    const [createUserDialog, setCreateUserDialog] = useState(false);
+
 
     const [userData, setUserData] = useState({});
 
@@ -49,6 +54,9 @@ const TeatherPanelPage = ({ history, dispatch, jwt, user, courses, course_error,
                     () => setLoading(false)))
         }
     }, []);
+
+    const openCreateUserDialog = () => { setCreateUserDialog(true) }
+    const closeCreateUserDialog = () => { setCreateUserDialog(false) }
 
     const openStatusDialog = (cur_user) => { setStatusDialog(true), dispatch(userActions.selectUser(cur_user)) }
     const closeStatusDialog = () => { setStatusDialog(false) }
@@ -87,96 +95,34 @@ const TeatherPanelPage = ({ history, dispatch, jwt, user, courses, course_error,
                     </Paper>
                 </Grid>
 
+                <Grid item xs={12} sm={12}>
+                    <Button onPress={openCreateUserDialog} variant='outlined' color="primary">Создать пользователя</Button>
+                </Grid>
                 <Grid item xs={12} sm={6}>
+                    <CreateUserDialog open={createUserDialog} close={closeCreateUserDialog} />
                     <UpdateUserAccessDialog open={accessDialog} close={closeAccessDialog} />
                     <UpdateUserStatusDialog open={statusDialog} close={closeStatusDialog} user={userData} />
                     <Typography component='h4' variant='h4'>Ваши ученики:</Typography>
                     <List>
-                        {students !== undefined && students.length > 0 ? students.map((student, index) => (
+                        {students && students.length > 0 ? students.map((student, index) => (
                             <div key={index}>
-                                <ListItem>
-                                    <ListItemFirstAction>
-                                        <ListItemIcon>
-                                            <Avatar src={student.avatar} alt={student.firstname + " " + student.lastname} />
-                                        </ListItemIcon>
-                                        <ListItemText>
-                                            <ListItemTitle>
-                                                {student.firstname + " " + student.lastname}
-                                            </ListItemTitle>
-                                            <ListItemSubtitle>
-                                                Статус: {student.role_name}
-                                            </ListItemSubtitle>
-                                        </ListItemText>
-                                    </ListItemFirstAction>
+                                <UserListItem button user={student} actions={
                                     <ListItemSecondAction>
                                         <IconButton onClick={() => dialog(student)}>
                                             <ChatBubbleOutlineIcon />
                                         </IconButton>
-                                        <Menu>
-                                            <MenuItem onPress={() => openStatusDialog(student)}>Изменить статус ученика</MenuItem>
-                                            {student.role_name !== 'Искатель' ?
-                                                <MenuItem onPress={() => openAccessDialog(student)}>Изменить доступ к курсам</MenuItem> : null
-                                            }
-                                        </Menu>
+                                        <Dropdown trigger={['click']} overlay={
+                                            <Menu>
+                                                <Menu.Item key="1" onClick={() => openStatusDialog(student)}>Изменить статус ученика</Menu.Item>
+                                                {student.role_name !== 'Искатель' ? <Menu.Item key="2" onClick={() => openAccessDialog(student)}>Изменить доступ к курсам</Menu.Item> : null}
+                                            </Menu>
+                                        }>
+                                            <IconButton >
+                                                <MoreHorizIcon />
+                                            </IconButton>
+                                        </Dropdown>
                                     </ListItemSecondAction>
-                                </ListItem>
-
-                                {student.courses !== undefined && student.courses !== null ? (
-                                    <Grid container spacing={2}>
-                                        {student.courses.inprocess !== undefined ? (
-                                            <Grid item xs={12} sm={student.courses.finished !== undefined ? 6 : 0}>
-                                                <Paper>
-                                                    <Typography className='m-2' variant="h4" component="h4">Курсы в процессе прохождения:</Typography>
-                                                    {student.courses.inprocess.map((course, index) => (
-                                                        <Accordion key={index} labеl={course.course_name}>
-                                                            <div>
-                                                                {course.lessons !== null ? (
-                                                                    course.lessons.map((lesson, index) => (
-                                                                        <div key={index} onClick={() => { history.push(`/courses/${course.category_name}/${course.course_id}/${lesson.id}`) }}>
-                                                                            <ListItem button >
-                                                                                <ListItemFirstAction>
-                                                                                    <ProgressCircle status={lesson.status} number={lesson.number} />
-                                                                                    <Typography className={'pl-3 step-text'}>{lesson.name}</Typography>
-                                                                                </ListItemFirstAction>
-                                                                            </ListItem>
-                                                                            {course.lessons.length !== Number(lesson.number) ? (<div className={'step-line'}></div>) : (null)}
-                                                                        </div>
-                                                                    ))
-                                                                ) : (course.course_name)}
-                                                            </div>
-                                                        </Accordion>
-                                                    ))}
-                                                </Paper>
-                                            </Grid>
-                                        ) : (null)}
-                                        {student.courses.finished !== undefined ? (
-                                            <Grid item xs={12} sm={student.courses.inprocess !== undefined ? 6 : 0}>
-                                                <Paper>
-                                                    <Typography className='m-2' variant="h4" component="h4">Пройденные курсы:</Typography>
-                                                    {student.courses.finished.map((course, index) => (
-                                                        <Accordion key={index} labеl={course.course_name}>
-                                                            <div>
-                                                                {course.lessons.map((lesson, index) => (
-                                                                    <div key={index} onClick={() => { history.push(`/courses/${course.category_name}/${course.course_id}/${lesson.id}`) }}>
-                                                                        <ListItem button >
-                                                                            <ListItemFirstAction>
-                                                                                <ProgressCircle status={lesson.status} number={lesson.number} />
-                                                                                <Typography className={'pl-3 step-text'}>{lesson.name}</Typography>
-                                                                            </ListItemFirstAction>
-                                                                        </ListItem>
-                                                                        {course.lessons.length !== Number(lesson.number) ? (<div className={'step-line'}></div>) : (null)}
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                        </Accordion>
-                                                    ))}
-                                                </Paper>
-                                            </Grid>
-                                        ) : (null)}
-
-                                    </Grid>
-                                ) : (null)}
-                                <Divider />
+                                } />
                             </div>
                         )) : 'У вас нет учеников'}
                     </List>
@@ -184,91 +130,25 @@ const TeatherPanelPage = ({ history, dispatch, jwt, user, courses, course_error,
                 <Grid item xs={12} sm={6}>
                     <Typography component='h4' variant='h4'>Ваши промоутеры:</Typography>
                     <List>
-                        {promouters !== undefined && students.length > 0 ? promouters.map((student, index) => (
+                        {promouters && promouters.length > 0 ? promouters.map((student, index) => (
                             <div key={index}>
-                                <ListItem>
-                                    <ListItemFirstAction>
-                                        <ListItemIcon>
-                                            <Avatar src={student.avatar} alt={student.firstname + " " + student.lastname} />
-                                        </ListItemIcon>
-                                        <ListItemText>
-                                            <ListItemTitle>
-                                                {student.firstname + " " + student.lastname}
-                                            </ListItemTitle>
-                                            <ListItemSubtitle>
-                                                Статус: {student.role_name}
-                                            </ListItemSubtitle>
-                                        </ListItemText>
-                                    </ListItemFirstAction>
+                                <UserListItem button user={student} actions={
                                     <ListItemSecondAction>
                                         <IconButton onClick={() => dialog(student)}>
                                             <ChatBubbleOutlineIcon />
                                         </IconButton>
-                                        <Menu>
-                                            <MenuItem onPress={() => openStatusDialog(student)}>Изменить статус ученика</MenuItem>
-                                            {student.role_name !== 'Искатель' ?
-                                                <MenuItem onPress={() => openAccessDialog(student)}>Изменить доступ к курсам</MenuItem> : null
-                                            }
-                                        </Menu>
+                                        <Dropdown trigger={['click']} overlay={
+                                            <Menu>
+                                                <Menu.Item key="1" onClick={() => openStatusDialog(student)}>Изменить статус ученика</Menu.Item>
+                                                {student.role_name !== 'Искатель' ? <Menu.Item key="2" onClick={() => openAccessDialog(student)}>Изменить доступ к курсам</Menu.Item> : null}
+                                            </Menu>
+                                        }>
+                                            <IconButton >
+                                                <MoreHorizIcon />
+                                            </IconButton>
+                                        </Dropdown>
                                     </ListItemSecondAction>
-                                </ListItem>
-
-                                {student.courses !== undefined && student.courses !== null ? (
-                                    <Grid container spacing={2}>
-                                        {student.courses.inprocess !== undefined ? (
-                                            <Grid item xs={12} sm={student.courses.finished !== undefined ? 6 : 0}>
-                                                <Paper>
-                                                    <Typography className='m-2' variant="h4" component="h4">Курсы в процессе прохождения:</Typography>
-                                                    {student.courses.inprocess.map((course, index) => (
-                                                        <Accordion key={index} labеl={course.course_name}>
-                                                            <div>
-                                                                {course.lessons !== null ? (
-                                                                    course.lessons.map((lesson, index) => (
-                                                                        <div key={index} onClick={() => { history.push(`/courses/${course.category_name}/${course.course_id}/${lesson.id}`) }}>
-                                                                            <ListItem button >
-                                                                                <ListItemFirstAction>
-                                                                                    <ProgressCircle status={lesson.status} number={lesson.number} />
-                                                                                    <Typography className={'pl-3 step-text'}>{lesson.name}</Typography>
-                                                                                </ListItemFirstAction>
-                                                                            </ListItem>
-                                                                            {course.lessons.length !== Number(lesson.number) ? (<div className={'step-line'}></div>) : (null)}
-                                                                        </div>
-                                                                    ))
-                                                                ) : (course.course_name)}
-                                                            </div>
-                                                        </Accordion>
-                                                    ))}
-                                                </Paper>
-                                            </Grid>
-                                        ) : (null)}
-                                        {student.courses.finished !== undefined ? (
-                                            <Grid item xs={12} sm={student.courses.inprocess !== undefined ? 6 : 0}>
-                                                <Paper>
-                                                    <Typography className='m-2' variant="h4" component="h4">Пройденные курсы:</Typography>
-                                                    {student.courses.finished.map((course, index) => (
-                                                        <Accordion key={index} labеl={course.course_name}>
-                                                            <div>
-                                                                {course.lessons.map((lesson, index) => (
-                                                                    <div key={index} onClick={() => { history.push(`/courses/${course.category_name}/${course.course_id}/${lesson.id}`) }}>
-                                                                        <ListItem button >
-                                                                            <ListItemFirstAction>
-                                                                                <ProgressCircle status={lesson.status} number={lesson.number} />
-                                                                                <Typography className={'pl-3 step-text'}>{lesson.name}</Typography>
-                                                                            </ListItemFirstAction>
-                                                                        </ListItem>
-                                                                        {course.lessons.length !== Number(lesson.number) ? (<div className={'step-line'}></div>) : (null)}
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                        </Accordion>
-                                                    ))}
-                                                </Paper>
-                                            </Grid>
-                                        ) : (null)}
-
-                                    </Grid>
-                                ) : (null)}
-                                <Divider />
+                                } />
                             </div>
                         )) : 'У вас нет своих промоутеров'}
                     </List>

@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-export const TextInput = ({ helperText, variant, id, name, autoComplete, label, onChange, onSelect, className, type, InputProps, fullWidth, reff, select, defaultValue, children, multiline, rows, value }) => {
+export const TextInput = ({ helperText, variant, id, name, autoComplete, label, labelFor, onChange, onSelect, className, type, InputProps, fullWidth, reff, select, defaultValue, children, multiline, rows, value, files }) => {
     const ref = useRef();
     let curRef = reff !== undefined ? reff : ref
     let styleClass = className == undefined ? '' : ' ' + className;
@@ -10,16 +11,22 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
     let selectType = select === undefined ? false : true;
     let textareaType = multiline === undefined ? false : true;
     let inputType;
-
+    let inputProps = null;
     if (selectType) {
         inputType = 'select'
-    } else if (textareaType) {
-        inputType = 'textarea'
-    } else if (selectType === undefined && textareaType === undefined) {
-        inputType = 'default'
-    } else {
-        inputType = 'default'
+        if (!InputProps) {
+            inputProps = {
+                endAdornment: (
+                    <ExpandMoreIcon />
+                ),
+                endAdornmentClass: 'select-arrow'
+            }
+        }
     }
+    else if (textareaType) inputType = 'textarea'
+    else if (type === 'file') inputType = 'file';
+    else inputType = 'default'
+
 
     switch (styleVariant) {
         case 'default':
@@ -157,12 +164,15 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
                             }
 
                             <div className={'text-input-' + variants + '' + styleFocused + styleFocusedColor + styleAlert}></div>
-                            {InputProps == undefined ? (null) : (
-                                InputProps.endAdornment && <div
-                                    className='text-input-end-adornment'
-                                >
-                                    {InputProps.endAdornment}
-                                </div>)}
+                            {InputProps ?
+                                (
+                                    InputProps.endAdornment && <div
+                                        className='text-input-end-adornment'
+                                    >
+                                        {InputProps.endAdornment}
+                                    </div>
+                                ) : (null)
+                            }
                         </div>
                         {helperText && <span className={"text-input-helper" + styleAlert}>{helperText}</span>}
                     </label>
@@ -251,12 +261,72 @@ export const TextInput = ({ helperText, variant, id, name, autoComplete, label, 
                             }
 
                             <div className={'text-input-' + variants + '' + styleFocused + styleFocusedColor + styleAlert}></div>
+                            {InputProps ?
+                                (
+                                    InputProps.endAdornment && <div
+                                        className='text-input-end-adornment'
+                                    >
+                                        {InputProps.endAdornment}
+                                    </div>
+                                ) : (
+                                    inputProps ? inputProps.endAdornment && <div
+                                        className={`${inputProps.endAdornmentClass} text-input-end-adornment`}
+                                    >
+                                        {inputProps.endAdornment}
+                                    </div> : (null)
+                                )}
+                        </div>
+                        {helperText && <span className={"text-input-helper" + styleAlert}>{helperText}</span>}
+                    </label>
+                </div>
+            )
+        case 'file':
+            return (
+                <div className={'text-input-group' + styleClass + fullWidthStyle}>
+                    <label className={"text-input-" + styleVariant} >
+                        <div className={'text-input'}
+                            onMouseEnter={onMouseEnter}
+                            onMouseLeave={onMouseLeave}>
                             {InputProps == undefined ? (null) : (
-                                InputProps.endAdornment && <div
-                                    className={'text-input-end-adornment'+InputProps.endAdornmentClass !== undefined ? InputProps.endAdornmentClass : ''}
+                                InputProps.startAdornment &&
+                                <div
+                                    className='text-input-start-adornment'
                                 >
-                                    {InputProps.endAdornment}
+                                    {InputProps.startAdornment}
                                 </div>)}
+
+                            <input
+                                className="file-input"
+                                ref={curRef}
+                                id={id}
+                                name={name}
+                                autoComplete={autoComplete}
+                                type={type}
+                                value={value}
+                                onChange={onChange}
+                                onFocus={onFocus}
+                                onBlur={onBlur}
+                            />
+                            <label for={labelFor} className={"file-input-label"}>
+                                <span>{files ? files : 'Выберите файлы...'}</span>
+                            </label>
+                            <label className={"text-input-label" + styleAlert + ' text-input-label-focused' + styleLabelFocusedColor}>{label}</label>
+                            {variants === 'fieldset' &&
+                                <fieldset className={"text-input-filed" + styleHovered + styleFocusedColor + styleAlert} aria-hidden="true">
+                                    <legend className={"text-input-label-plane text-input-label-plane-focused"} ><span>{label}</span></legend>
+                                </fieldset>
+                            }
+
+                            <div className={'text-input-' + variants + '' + ` text-input-${variants}-focused` + styleFocusedColor + styleAlert}></div>
+                            {InputProps ?
+                                (
+                                    InputProps.endAdornment && <div
+                                        className='text-input-end-adornment'
+                                    >
+                                        {InputProps.endAdornment}
+                                    </div>
+                                ) : (null)
+                            }
                         </div>
                         {helperText && <span className={"text-input-helper" + styleAlert}>{helperText}</span>}
                     </label>

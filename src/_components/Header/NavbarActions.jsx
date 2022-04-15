@@ -190,7 +190,7 @@ const NavbarActions = ({ dispatch, history, themes, currentTheme, user, search }
                     onClick={() => handleOpenDropdown()}
                     className="dropbtn"
                 >
-                    <Avatar alt="" className="dropbtn-img" src={`${config.url}/assets/img/unnamed.png`} />
+                    <Avatar alt="" className="dropbtn-img" src={user ? user.avatar : `/assets/img/unnamed.png`} />
                 </IconButton>
                 <div id="myDropdown" className="dropdown-content">
                     {user ? (
@@ -206,7 +206,7 @@ const NavbarActions = ({ dispatch, history, themes, currentTheme, user, search }
                         <ListItem>
                             <ListItemFirstAction>
                                 <ListItemIcon>
-                                    <Avatar alt="" src={`${config.url}/assets/img/unnamed.png`} />
+                                    <Avatar alt="" src={`/assets/img/unnamed.png`} />
                                 </ListItemIcon>
                                 <ListItemText title="Привет, посетитель!" />
                             </ListItemFirstAction>

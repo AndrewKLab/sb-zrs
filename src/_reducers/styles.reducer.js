@@ -21,6 +21,7 @@ const initialState = {
 
             'background-color-light': '245, 245, 245',
             'background-color-dark': '238, 238, 238',
+            'background-color-disabled': '228, 231, 234',
 
             'border-color': '232, 232, 232'
         },
@@ -39,6 +40,7 @@ const initialState = {
 
             'background-color-light': '52, 86, 104',
             'background-color-dark': '33, 66, 85',
+            'background-color-disabled': '89, 89, 89',
 
             'border-color': '10, 43, 62',
         }
@@ -50,6 +52,7 @@ export function style(state = initialState, action) {
     switch (action.type) {
         case stylesConstants.SET_THEME:
             return {
+                ...state,
                 currentTheme: action.theme.currentTheme,
                 themes: action.theme.themes,
             };

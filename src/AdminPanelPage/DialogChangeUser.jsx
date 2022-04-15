@@ -23,7 +23,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { userActions } from "../_actions";
 
 
-const DialogChangeUser = ({ jwt, user, dispatch, open, close, selected_user, teathers, admins, user_roles_loading, user_roles, user_roles_error }) => {
+const DialogChangeUser = ({ jwt, user, dispatch, open, close, selected_user, teathers, admins, user_roles_loading, user_roles, user_roles_error, update_user_loading }) => {
 
     useEffect(() => {
         const init = async () => {
@@ -153,7 +153,7 @@ const DialogChangeUser = ({ jwt, user, dispatch, open, close, selected_user, tea
 
                 </DialogContent>
                 <DialogActions>
-                    <Button type="submit" className={'mr-3'} variant='outlined' color="primary">Сохранить</Button>
+                    <Button type="submit" className={'mr-3'} variant='outlined' color="primary" loading={update_user_loading} disabled={update_user_loading}>Сохранить</Button>
                     <Button onPress={() => close()} variant='outlined' color="primary">Отмена</Button>
                 </DialogActions>
             </Form>
@@ -164,8 +164,8 @@ const DialogChangeUser = ({ jwt, user, dispatch, open, close, selected_user, tea
 
 function mapStateToProps(state) {
     const { jwt, user } = state.authentication;
-    const { user_roles_loading, user_roles, user_roles_error, selected_user } = state.users;
-    return { jwt, user, user_roles_loading, user_roles, user_roles_error, selected_user };
+    const { user_roles_loading, user_roles, user_roles_error, update_user_loading, selected_user } = state.users;
+    return { jwt, user, user_roles_loading, user_roles, user_roles_error, update_user_loading,  selected_user };
 }
 
 const connectedDialogChangeUser = connect(mapStateToProps)(DialogChangeUser);

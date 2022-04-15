@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
+import { ButtonLoading } from "./";
+
 import { TweenMax } from "gsap";
 
-export const Button = ({ id, type, children = null, className, variant, onPress, fullWidth, disabled }) => {
+export const Button = ({ id, type, children = null, className, variant, onPress, fullWidth, disabled, loading }) => {
     let styleClass = className !== undefined ? ' ' + className : '';
-    let buttonId = id !== undefined ?  id : null;
+    let buttonId = id !== undefined ? id : null;
     let buttonType;
     let styleVariant;
     let styleDisabled;
@@ -82,11 +84,12 @@ export const Button = ({ id, type, children = null, className, variant, onPress,
     }
 
     return (
-            <button  id={buttonId} type={buttonType} className={'button ripple' + styleVariant + styleClass + fullWidthStyle + styleDisabled} disabled={disabled} onClick={onPress} onMouseDown={handleClick}>
-                {children}
-                <svg viewBox={`0 0 ${width} ${height}`} className="ripple-obj">
-                    <circle ref={ref} cx="1" cy="1" r="1" />
-                </svg>
-            </button>
+        <button id={buttonId} type={buttonType} className={'button ripple' + styleVariant + styleClass + fullWidthStyle + styleDisabled} disabled={disabled} onClick={onPress} onMouseDown={handleClick}>
+            {loading && <ButtonLoading />}
+            {children}
+            <svg viewBox={`0 0 ${width} ${height}`} className="ripple-obj">
+                <circle ref={ref} cx="1" cy="1" r="1" />
+            </svg>
+        </button>
     );
 };

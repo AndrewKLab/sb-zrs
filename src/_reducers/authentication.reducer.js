@@ -16,6 +16,10 @@ const initialState = {
   signup_loading: false,
   signup_message: null,
   signup_error: null,
+
+  update_self_loading: false,
+  update_self_message: null,
+  update_self_error: null,
 };
 
 export function authentication(state = initialState, action) {
@@ -86,42 +90,25 @@ export function authentication(state = initialState, action) {
     case userConstants.USER_UPDATE_REQUEST:
       return {
         ...state,
-        loading: true,
-        jwt: action.jwt,
-        user: {
-          ...state.user,
-          firstname: action.firstname,
-          lastname: action.lastname,
-          phonenumber: action.phonenumber,
-          country: action.country,
-          sity: action.sity,
-          status: action.status,
-          access: action.access,
-          roles: action.roles,
-          avatar: action.avatar,
-          teather_id: action.teather_id
-        }
+        update_self_loading: true,
+        update_self_message: null,
+        update_self_error: null,
       };
     case userConstants.USER_UPDATE_SUCCESS:
       return {
-        loading: false,
-        jwt: action.user.jwt,
-        user: {
-          ...state.user,
-          firstname: action.user.firstname,
-          lastname: action.user.lastname,
-          phonenumber: action.user.phonenumber,
-          country: action.user.country,
-          sity: action.user.sity,
-          status: action.user.status,
-          access: action.user.access,
-          roles: action.user.roles,
-          avatar: action.user.avatar,
-          teather_id: action.user.teather_id
-        }
+        ...state,
+        update_self_loading: false,
+        update_self_error: null,
+        update_self_message: action.message,
+        user: action.user
       };
     case userConstants.USER_UPDATE_FAILURE:
-      return {};
+      return {
+        ...state,
+        update_self_loading: false,
+        update_self_message: null,
+        update_self_error: action.error,
+      };
 
     //VALIDATE-USER
     case userConstants.VALIDATE_TOKEN_REQUEST:

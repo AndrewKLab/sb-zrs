@@ -20,7 +20,8 @@ import {
     CardActionArea,
     IconButton,
     UserPlane,
-    Paper
+    Paper,
+    Loading
 } from '../_components';
 import Carousel from 'nuka-carousel';
 
@@ -28,17 +29,20 @@ import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import ShareIcon from '@material-ui/icons/Share';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import { categoryActions } from '../_actions';
 
 
-const HomePage = () => {
+const HomePage = ({ dispatch, loading, basic, special, currentTheme }) => {
 
     useEffect(() => {
         document.getElementById('app').classList.add('back-lines')
+        dispatch(categoryActions.getAllCategories())
         return function cleanup() {
             document.getElementById('app').classList.remove('back-lines')
         };
-    });
+    }, []);
 
+    if (!basic || !special || loading) return <Loading />
     return (
         <div className="col-md-6 col-md-offset-3 pb-3">
             <div className="home-page-main-baner">
@@ -55,7 +59,7 @@ const HomePage = () => {
                     <div className='d-flex'>
                         <div className="home-page-main-baner-item">
                             <div className="home-page-main-baner-item-text">
-                                <h1>Книга</h1><h1 style={{ marginLeft: '11rem' }}> Книг</h1>
+                                <h1>Книга <br /><div style={{ marginLeft: '11rem' }}>Книг</div></h1>
                                 <div className="typing-demo">Открывай. Учись. Практикуй.</div>
                             </div>
                         </div>
@@ -72,7 +76,7 @@ const HomePage = () => {
                     <div className='d-flex'>
                         <div className="home-page-main-baner-item">
                             <div className="home-page-main-baner-item-text">
-                                <img src="https://kniga-knig.info/assets/img/logo.png" height={'100px'} />
+                                <img src={`${config.url}/assets/img/${currentTheme === 'dark' ? 'logo-dark' : 'logo'}.png`} height={'100px'} />
                                 <h2>Уважаемый друг!</h2>
                                 <p className="typing-demo-text">Приветствуем вас на сайте, где Вы сможете научиться понимать Библию, пройдя понравившиеся Вам циклы уроков</p>
                                 <div className='p-relative w-50'>
@@ -138,36 +142,23 @@ const HomePage = () => {
                 <div className="container-content mt-3">
                     <h1>Новые курсы</h1>
                     <ul className="cards">
-                        <li>
-                            <a href="/courses/basic/199" className="card__pure">
-                                <img src="https://kniga-knig.info/assets/img/medicine-5103043_960_720.webp" className="card__image" alt="" />
-                                <div className="card__overlay">
-                                    <div className="card__header">
-                                        <svg className="card__arc" xmlns="http://www.w3.org/2000/svg"><path /></svg>
-                                        <div className="card__header-text">
-                                            <h3 className="card__title">Проект Здоровье</h3>
-                                            <span className="card__status">8 уроков</span>
+                        {basic.map((course, index) =>
+                            <li className={course.id === '198' || course.id === '218' ? 'd-block':'d-none' }>
+                                <a href={`/courses/${course.category_name}/${course.id}`} className="card__pure">
+                                    <img src={course.img} className="card__image" alt={course.name} />
+                                    <div className="card__overlay">
+                                        <div className="card__header">
+                                            <svg className="card__arc" xmlns="http://www.w3.org/2000/svg"><path /></svg>
+                                            <div className="card__header-text">
+                                                <h3 className="card__title">{course.name}</h3>
+                                                <span className="card__status">{course.lessons_count} уроков</span>
+                                            </div>
                                         </div>
+                                        <p className="card__description">{course.description}</p>
                                     </div>
-                                    <p className="card__description">В этом курсе собраны факты и современные исследования о здоровом образе жизни. Каждая тема раскрывает один из 8 факторов, которые делают наибольший вклад в наше здоровье, согласно последним исследованиям.</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/courses/basic/198" className="card__pure">
-                                <img src="https://kniga-knig.info/assets/img/question-mark-1495858_1920.webp" className="card__image" alt="" />
-                                <div className="card__overlay">
-                                    <div className="card__header">
-                                        <svg className="card__arc" xmlns="http://www.w3.org/2000/svg"><path /></svg>
-                                        <div className="card__header-text">
-                                            <h3 className="card__title">10 вопросов Богу</h3>
-                                            <span className="card__status">10 уроков</span>
-                                        </div>
-                                    </div>
-                                    <p className="card__description">10 уроков, которые отвечают на вопросы, волнующие современную молодежь: Есть ли настоящая любовь? Будет ли конец злу, страданиям и смерти? Кто придумал секс? Как попасть на небо? Как Тебе позвонить? И другие…</p>
-                                </div>
-                            </a>
-                        </li>
+                                </a>
+                            </li>
+                        )}
                     </ul>
                 </div>
             </div>
@@ -175,7 +166,7 @@ const HomePage = () => {
                 <h1 className="text-align-center">Наши преподаватели</h1>
                 <Grid container spacing={2} className="mt-3 mb-3">
 
-                    <Grid item sm={3} xs={12} className={'d-flex justify-content-center'} className={'d-flex justify-content-center'}>
+                    <Grid item sm={3} xs={12} className={'d-flex justify-content-center'}>
                         <div className="card-container" >
                             <img className="round" src="https://kniga-knig.info/assets/img/image3.webp" alt="user" width="80%" />
                             <h3>Кудрявцев Глеб</h3>
@@ -267,36 +258,23 @@ const HomePage = () => {
                 <div className="container-content  mt-3">
                     <div className="text-align-end"><h1 >Специальные курсы и вебинары</h1></div>
                     <ul className="cards">
-                        <li>
-                            <a href="/courses/special/197" className="card__pure">
-                                <img src="https://kniga-knig.info/assets/img/man-2179326_1920.webp" className="card__image" alt="" />
-                                <div className="card__overlay">
-                                    <div className="card__header">
-                                        <svg className="card__arc" xmlns="http://www.w3.org/2000/svg"><path /></svg>
-                                        <div className="card__header-text">
-                                            <h3 className="card__title">1 часть. Основы сильной молитвы.</h3>
-                                            <span className="card__status">3 урока</span>
+                    {special.map((course, index) =>
+                            <li className={course.id === '197' || course.id === '202' ? 'd-block':'d-none' }>
+                                <a href={`/courses/${course.category_name}/${course.id}`} className="card__pure">
+                                    <img src={course.img} className="card__image" alt={course.name} />
+                                    <div className="card__overlay">
+                                        <div className="card__header">
+                                            <svg className="card__arc" xmlns="http://www.w3.org/2000/svg"><path /></svg>
+                                            <div className="card__header-text">
+                                                <h3 className="card__title">{course.name}</h3>
+                                                <span className="card__status">{course.lessons_count} уроков</span>
+                                            </div>
                                         </div>
+                                        <p className="card__description">{course.description}</p>
                                     </div>
-                                    <p className="card__description">Раскройте для себя потенциал молитвы, как мощного инструмента в решении проблем и в достижении поставленных целей!</p>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/courses/special/186" className="card__pure">
-                                <img src="https://kniga-knig.info/assets/img/berlin-cathedral-3408348_1920.webp" className="card__image" alt="" />
-                                <div className="card__overlay">
-                                    <div className="card__header">
-                                        <svg className="card__arc" xmlns="http://www.w3.org/2000/svg"><path /></svg>
-                                        <div className="card__header-text">
-                                            <h3 className="card__title">Вера Иисуса</h3>
-                                            <span className="card__status">20 уроков</span>
-                                        </div>
-                                    </div>
-                                    <p className="card__description">Начальный курс по изучению Библии. Библия является источником истины, на вдохновлена Святым Духом. Библия — это мерило истины, следовательно, не-разумно отвергать ее учение так же Библия обладает силой изменять жизнь.</p>
-                                </div>
-                            </a>
-                        </li>
+                                </a>
+                            </li>
+                        )}
                     </ul>
                 </div>
             </div>
@@ -305,10 +283,13 @@ const HomePage = () => {
 }
 
 function mapStateToProps(state) {
-    const { authentication } = state;
-    const { user } = authentication;
+    const { user } = state.authentication;
+    const { currentTheme } = state.style;
+    const { loading, basic, special } = state.categories;
     return {
-        user
+        user,
+        currentTheme,
+        loading, basic, special
     };
 }
 

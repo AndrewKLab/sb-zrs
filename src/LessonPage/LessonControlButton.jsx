@@ -1,9 +1,9 @@
 import React from 'react'
 import { Button } from '../_components';
 
-export const LessonControlButton = ({course_status, lessons, finishedLessonsLenght, status, number }) => {
-    if (status === "finished") {
-        if (Number(number) === lessons.length && Number(finishedLessonsLenght) !== lessons.length) {
+export const LessonControlButton = ({ course, lesson, finished_lessons_lenght, update_passed_lesson_loading, update_passed_course_loading }) => {
+    if (lesson.status === "finished") {
+        if (Number(lesson.number) === course.lessons.length && Number(finished_lessons_lenght) !== course.lessons.length) {
             return (
                 <Button
                     variant="contained"
@@ -12,13 +12,16 @@ export const LessonControlButton = ({course_status, lessons, finishedLessonsLeng
                     Предыдущий непройденый урок
                 </Button>
             )
-        } else if (finishedLessonsLenght === lessons.length) {
-            if (course_status === "inprocess") {
+        } else if (finished_lessons_lenght === course.lessons.length) {
+            if (course.passed_course_status === "inprocess") {
                 return (
                     <Button
                         variant="contained"
                         color="primary"
-                        type="submit">
+                        type="submit"
+                        disabled={update_passed_course_loading}
+                        loading={update_passed_course_loading}
+                    >
                         Завершить курс
                     </Button>
                 )
@@ -48,6 +51,8 @@ export const LessonControlButton = ({course_status, lessons, finishedLessonsLeng
                 variant="contained"
                 color="primary"
                 type="submit"
+                disabled={update_passed_lesson_loading}
+                loading={update_passed_lesson_loading}
             >
                 Пройти урок
             </Button>

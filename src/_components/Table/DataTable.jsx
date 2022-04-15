@@ -9,6 +9,8 @@ import KeyboardArrowRightOutlinedIcon from '@material-ui/icons/KeyboardArrowRigh
 import FirstPageOutlinedIcon from '@material-ui/icons/FirstPageOutlined';
 import LastPageOutlinedIcon from '@material-ui/icons/LastPageOutlined';
 
+import moment from 'moment';
+
 import { IconButton } from '../'
 
 export const DataTable = ({ columns, data, dialog, edit, remove, more, ititSortBy, ititSortType, EmptyTableComponent }) => {
@@ -52,6 +54,8 @@ export const DataTable = ({ columns, data, dialog, edit, remove, more, ititSortB
 
     const CustomRows = ({cell, row}) =>{
         switch (cell.column.Header) {
+            case 'Дата регистрации':
+                return  <td {...cell.getCellProps()}>{moment(row.original.created).format('DD/MM/YYYY')}</td>
             case 'Действия':
                 return  <td {...cell.getCellProps()}><TableActions user={row.original} dialog={dialog} edit={edit} remove={remove} more={more} /></td>
             case 'Учитель':
@@ -94,8 +98,8 @@ export const DataTable = ({ columns, data, dialog, edit, remove, more, ititSortB
                             prepareRow(row)
                             return (
                                 <tr className='row'{...row.getRowProps()}>
-                                    {row.cells.map(cell => {
-                                        return <CustomRows cell={cell} row={row}/>
+                                    {row.cells.map((cell, index) => {
+                                        return <CustomRows key={index} cell={cell} row={row}/>
                                     })}
                                 </tr>
                             )

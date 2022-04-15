@@ -9,7 +9,8 @@ import {
     Typography,
     Form,
     TextInput,
-    SelectItem
+    SelectItem,
+    Loading
 } from '../_components';
 
 import { userActions } from "../_actions";

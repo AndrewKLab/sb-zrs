@@ -201,11 +201,11 @@ class SignInPage extends React.Component {
                                     </Button>
 
                                     <Grid container>
-                                        <Grid item xs>
+                                        {/* <Grid item xs>
                                             <Link to="#" >
                                                 Забыли пароль?
                                             </Link>
-                                        </Grid>
+                                        </Grid> */}
                                         <Grid item>
                                             <Link to="/sign-up" >
                                                 {"Регистрация"}

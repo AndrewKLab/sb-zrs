@@ -4,8 +4,9 @@ import { courseActions, lessonActions } from '../../_actions';
 import { Alert, Loading, Paper, TextInput, Switch, SelectItem, Button, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Divider, TextEditor } from '../../_components';
 import Dropzone from "react-dropzone";
 import Thumb from "../../_components/Thumb";
-import { Formik, Form  } from "formik";
+import { Formik, Form } from "formik";
 import * as yup from "yup";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 //icons
@@ -43,6 +44,9 @@ const CourseLessonsRedactor = ({
     const formRef = useRef()
     const [loading, setLoading] = useState(true);
     const [addTest, setAddTest] = useState(false);
+
+    const [selectedAudioFile, setSelectedAudioFile] = useState(null);
+
     let styleClass = className !== undefined ? ' ' + className : '';
     let SignupSchema = yup.object().shape({
         lesson_name: yup
@@ -82,6 +86,7 @@ const CourseLessonsRedactor = ({
                 setLoading(false);
             }
         }
+        setSelectedAudioFile(null)
         //return handleSubmit
     }, [selected_lesson_id]);
 
@@ -89,12 +94,6 @@ const CourseLessonsRedactor = ({
 
         setAddTest(!addTest)
     }
-
-    const handleSubmit = () => {
-        if (formRef.current) {
-          formRef.current.handleSubmit()
-        }
-      }
 
     if (selected_lesson_loading || set_lesson_editing_data_loading || loading) return <Loading />;
     if (selected_lesson_id === null || selected_lesson === null) return null;
@@ -165,15 +164,15 @@ const CourseLessonsRedactor = ({
                         />
                         <TextInput
                             error={errors.lesson_videolink && touched.lesson_videolink}
-                            value={values.lesson_videolink}
                             id="lesson_videolink"
                             name="lesson_videolink"
-                            label="Ссылка на видео к уроку"
-                            type={'text'}
+                            labelFor={"lesson_videolink"}
+                            label="Аудиофаил к уроку"
+                            type={'file'}
                             autoComplete="lesson_videolink"
                             variant={'outlined'}
-                            onChange={handleChange}
-                            onSelect={val => setFieldValue("lesson_videolink", val)}
+                            files={values.lesson_videolink.name ? values.lesson_videolink.name : values.lesson_videolink}
+                            onChange={(event) =>{ setFieldValue('lesson_videolink', event.target.files[0])}}
                             helperText={
                                 errors.lesson_videolink && touched.lesson_videolink ? errors.lesson_videolink : null
                             }
@@ -190,7 +189,7 @@ const CourseLessonsRedactor = ({
                                 handleChange={handleChange}
                                 onChange={(val) => setFieldValue('lesson_description', val)}
                             />
-                            {errors.lesson_description && touched.lesson_description  ? <span className="text-input-helper text-input-danger">{errors.lesson_description}</span> : null}
+                            {errors.lesson_description && touched.lesson_description ? <span className="text-input-helper text-input-danger">{errors.lesson_description}</span> : null}
                         </div>
 
                         <div className={errors.lesson_text && touched.lesson_text ? "text-input-danger" : ""}>
@@ -217,13 +216,14 @@ const CourseLessonsRedactor = ({
                         <CourseLessonsTestRedactor />
 
                         <Divider className='mv-3' />
-                        <div className={`d-flex grid-align-items-xs-center grid-justify-xs-${create_lesson_success_message !== null || create_lesson_error !== null || update_lesson_success_message !== null || update_lesson_error !== null ? 'space-between' : 'flex-end'}`}>
+                        <div className={`d-flex grid-align-items-xs-center grid-justify-xs-${create_lesson_success_message !== null || create_lesson_error !== null || update_lesson_success_message !== null || update_lesson_error !== null || update_lesson_loading || create_lesson_loading ? 'space-between' : 'flex-end'}`}>
                             {(create_lesson_error || update_lesson_error) && (
                                 <Alert className='error' severity="error">{create_lesson_error || update_lesson_error}</Alert>
                             )}
                             {(create_lesson_success_message || update_lesson_success_message) && (
                                 <Alert severity="success">{create_lesson_success_message || update_lesson_success_message}</Alert>
                             )}
+                            {create_lesson_loading || update_lesson_loading && <CircularProgress />}
                             <Button type='submit'>{lesson_editing_status === 'create' ? 'Сохранить изменения' : 'Сохранить изменения'}</Button>
                         </div>
                     </Form>

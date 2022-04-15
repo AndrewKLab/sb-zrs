@@ -29,14 +29,20 @@ export const Menu = ({ children, control, className }) => {
 
     return (
         <div ref={node} className={'menu' + styleClass}>
-            <IconButton onClick={(e) => setOpen(!open)} >
-                <MoreHorizIcon />
-            </IconButton>
-            {open === true ? 
-            <div className={'menu-panel'} onClick={(e) => setOpen(!open)}>
-                {children}
+            <div onClick={(e) => setOpen(!open)}>
+            {control ? 
+                control
+                :
+                <IconButton >
+                    <MoreHorizIcon />
+                </IconButton>
+            }
             </div>
-            : null
+            {open === true ?
+                <div className={'menu-panel'} onClick={(e) => setOpen(!open)}>
+                    {children}
+                </div>
+                : null
             }
         </div>
     );

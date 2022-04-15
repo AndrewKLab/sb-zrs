@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { TextInput, Checkbox, FormControlLabel, Radio } from '../_components'
 
-export const Answer = ({ question_type, answer, register, selected, setSelected }) => {
+export const Answer = ({ question_type, answer, values, handleChange, setFieldValue }) => {
     switch (question_type) {
         case "checkbox":
             const [checked, setChecked] = useState(false);
@@ -14,8 +14,15 @@ export const Answer = ({ question_type, answer, register, selected, setSelected 
                             checked={checked}
                             name={answer.question_id}
                             value={answer.id}
-                            reff={register}
-                            onChange={() => setChecked(!checked)}
+                            onChange={e => {
+                                setChecked(e.target.checked)                            
+                                if (e.target.checked) {
+                                    values[answer.question_id].push(answer.id);
+                                } else {
+                                  const idx = values[answer.question_id].indexOf(answer.id);
+                                  values[answer.question_id].splice(idx,1);
+                                }
+                              }}
                         />
                     }
                     label={answer.answer}
@@ -28,9 +35,8 @@ export const Answer = ({ question_type, answer, register, selected, setSelected 
                         <Radio
                             name={answer.question_id}
                             value={answer.id}
-                            reff={register}
-                            selected={selected}
-                            onChange={setSelected}
+                            selected={values[answer.question_id] === answer.id}
+                            onChange={() => setFieldValue(answer.question_id, answer.id)}
                         />
                     }
                     label={answer.answer}
@@ -43,7 +49,7 @@ export const Answer = ({ question_type, answer, register, selected, setSelected 
                     type="text"
                     label="Ответ"
                     name={answer.question_id}
-                    reff={register}
+                    onChange={handleChange}
                 />
             );
 

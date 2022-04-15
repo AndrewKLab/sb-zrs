@@ -1,10 +1,10 @@
 import React from "react";
 
-export const Table = ({ children, className, header }) => {
+export const Table = ({ children, className, header, sm }) => {
     let styleClass = className !== undefined ? ' ' + className : '';
 
     return (
-        <table className={`table${styleClass}`}>
+        <table className={`table${sm ? ' table-sm' : ''}${styleClass}`}>
             <thead>
                 {header}
             </thead>

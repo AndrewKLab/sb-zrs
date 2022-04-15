@@ -14,6 +14,7 @@ import {
     CardContent,
     CardMedia
 } from '../_components';
+import { CourseCardItem } from '.';
 
 
 class CoursesPage extends React.Component {
@@ -67,7 +68,8 @@ class CoursesPage extends React.Component {
                     spacing={1}>
                     {Object.values(courses).map((course, index) => (
                         <Grid item xs={12} sm={12} md={4} key={index}>
-                            <Card className="h-100">
+                            <CourseCardItem categoty_name={this.props.match.params.category_name} course={course} />
+                            {/* <Card className="h-100">
                                 <Link to={`/courses/${this.props.match.params.category_name}/${course.id}`} >
                                     <CardActionArea className="h-100">
                                         <div className="course-image-container">
@@ -94,7 +96,7 @@ class CoursesPage extends React.Component {
                                         </CardContent>
                                     </CardActionArea>
                                 </Link>
-                            </Card>
+                            </Card> */}
                         </Grid>
 
                     )

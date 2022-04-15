@@ -125,24 +125,33 @@ function getAllCoursesByAutor(autor_id) {
     function failure(error) { return { type: courseConstants.GETALL_BY_AUTOR_FAILURE, error } }
 }
 
-function createCoursePassed(course_id, user_id) {
+function createCoursePassed(jwt, course_id, user_id) {
     return dispatch => {
-        courseService.createCoursePassed(course_id, user_id)
-            .then(
-                data => dispatch(create(data))
-            );
+        dispatch(request());
+        courseService.createCoursePassed(jwt, course_id, user_id)
+        .then(
+            res => dispatch(success(res.message, res.course)),
+            error => dispatch(failure(error))
+        );
     };
-    function create(data) { return { type: courseConstants.CREATE_PASSED_COURSE, data } }
+    function request() { return { type: courseConstants.CREATE_PASSED_COURSE_REQUEST } }
+    function success(message, course) { return { type: courseConstants.CREATE_PASSED_COURSE_SUCCESS, message, course } }
+    function failure(error) { return { type: courseConstants.CREATE_PASSED_COURSE_FAILURE, error } }
 }
 
-function updateCoursePassed(passed_course_id, status, assessment, start_time, finish_time) {
+function updateCoursePassed(jwt, passed_course_id, status, assessment, start_time, finish_time) {
     return dispatch => {
-        return courseService.updateCoursePassed(passed_course_id, status, assessment, start_time, finish_time)
+        dispatch(request());
+        return courseService.updateCoursePassed(jwt, passed_course_id, status, assessment, start_time, finish_time)
             .then(
-                dispatch(update(passed_course_id, status, assessment, start_time, finish_time))
+                res => dispatch(success(res.message, res.course)),
+                error => dispatch(failure(error))
             );
     };
-    function update() { return { type: courseConstants.UPDATE_PASSED_COURSE, passed_course_id, status, assessment, start_time, finish_time } }
+
+    function request() { return { type: courseConstants.UPDATE_PASSED_COURSE_REQUEST } }
+    function success(message, course) { return { type: courseConstants.UPDATE_PASSED_COURSE_SUCCESS, message, course } }
+    function failure(error) { return { type: courseConstants.UPDATE_PASSED_COURSE_FAILURE, error } }
 }
 
 function deleteCoursePassed(passed_course_id) {

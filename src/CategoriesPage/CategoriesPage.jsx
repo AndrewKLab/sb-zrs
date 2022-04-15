@@ -33,7 +33,7 @@ class CategoriesPage extends React.Component {
 
         return (
             <div className='p-3'>
-                {basic !== undefined &&
+                {basic &&
                     <div>
                         <Typography variant="h3" component="h1" className={"text-align-center courses-category-title"} >{'Основные курсы'}</Typography>
                         <div className="title-underline-container mb-3">
@@ -43,7 +43,7 @@ class CategoriesPage extends React.Component {
                         <ToAllButton categoty_name={'basic'}>Все основные курсы</ToAllButton>
                     </div>
                 }
-                {special !== undefined &&
+                {special &&
                     <div >
                         <Typography variant="h3" component="h1" className={"text-align-center courses-category-title"} >{'Специальные курсы'}</Typography>
                         <div className="title-underline-container mb-3">
@@ -53,7 +53,7 @@ class CategoriesPage extends React.Component {
                         <ToAllButton categoty_name={'special'}>Все специальные курсы</ToAllButton>
                     </div>
                 }
-                {social !== undefined &&
+                {social &&
                     <div>
                         <Typography variant="h3" component="h1" className={"text-align-center courses-category-title"} >{'Социальные курсы'}</Typography>
                         <div className="title-underline-container mb-3">
@@ -63,7 +63,7 @@ class CategoriesPage extends React.Component {
                         <ToAllButton categoty_name={'social'}>Все социальные курсы</ToAllButton>
                     </div>
                 }
-                {national !== undefined &&
+                {national &&
                     <div>
                         <Typography variant="h3" component="h1" className={"text-align-center courses-category-title"} >{'Национальные курсы'}</Typography>
                         <div className="title-underline-container mb-3">

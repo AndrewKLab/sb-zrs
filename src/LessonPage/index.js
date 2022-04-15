@@ -1,4 +1,5 @@
 export * from './LessonPage' 
+export * from './LessonPlane' 
 export * from './LessonControlButton'
 export * from './Question'
 export * from './Answer'
